@@ -38,7 +38,7 @@ class CelebA(Dataset):
 
         x,y = self.train_dataset.__getitem__(idx)
 
-        return x,y[self.target_inds]
+        return x,y[self.target_inds].unsqueeze(1)
 
 class Config:
     imagenette = [0, 217, 482, 491, 497, 566, 569, 571, 574, 701]
@@ -218,8 +218,6 @@ def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None
 
     return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv
 
-
-
 class TensorDataset(Dataset):
     def __init__(self, images, labels): # images: n x c x h x w tensor
         self.images = images.detach().float()
@@ -231,13 +229,9 @@ class TensorDataset(Dataset):
     def __len__(self):
         return self.images.shape[0]
 
-
-
 def get_default_convnet_setting():
     net_width, net_depth, net_act, net_norm, net_pooling = 128, 3, 'relu', 'instancenorm', 'avgpooling'
     return net_width, net_depth, net_act, net_norm, net_pooling
-
-
 
 def get_network(model, channel, num_classes, im_size=(32, 32), dist=True):
     torch.random.manual_seed(int(time.time() * 1000) % 100000)
