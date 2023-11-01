@@ -7,6 +7,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 def get_train_loader(batch_size):
     transform=transforms.Compose([
     transforms.ToTensor(),
+    transforms.Resize(64),
     transforms.Normalize(
         (0.5, 0.5, 0.5), 
         (0.5, 0.5, 0.5))
@@ -27,6 +28,7 @@ def get_train_loader(batch_size):
 def get_val_loader(batch_size):
     transform=transforms.Compose([
     transforms.ToTensor(),
+    transforms.Resize(64),
     transforms.Normalize(
         (0.5, 0.5, 0.5), 
         (0.5, 0.5, 0.5))
@@ -46,6 +48,7 @@ def get_val_loader(batch_size):
 def get_test_loader(batch_size, shuffle=True):
     transform=transforms.Compose([
     transforms.ToTensor(),
+    transforms.Resize(64),
     transforms.Normalize(
         (0.5, 0.5, 0.5), 
         (0.5, 0.5, 0.5))
