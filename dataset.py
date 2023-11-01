@@ -27,7 +27,7 @@ class CelebA(Dataset):
 
         x,y = self.train_dataset.__getitem__(idx)
 
-        return x,y[self.target_inds].squeeze()
+        return x,y[self.target_inds]
 
 
 def get_train_loader(batch_size):
