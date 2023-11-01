@@ -42,7 +42,7 @@ def main(args):
         labels_all.append(sample[1].item())
 
     images_all = torch.cat(images_all, dim=0).to("cpu")
-    labels_all = torch.tensor(labels_all, dtype=torch.long, device="cpu").unsqueeze(1)
+    labels_all = torch.tensor(labels_all, dtype=torch.float32, device="cpu").unsqueeze(1)
 
     criterion = nn.BCEWithLogitsLoss().to(args.device)
 
