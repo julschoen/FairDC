@@ -14,8 +14,9 @@ class CelebA(Dataset):
             transform=transform,
         )
 
+        self.classes = attributes
         self.target_inds = []
-        for attr in attributes:
+        for attr in self.classes:
             self.target_inds.append(self.train_dataset.attr_names.index(attr))
 
     def __len__(self):
