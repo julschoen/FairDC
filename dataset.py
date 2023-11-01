@@ -15,7 +15,7 @@ def get_train_loader(batch_size):
     train_dataset = datasets.CelebA(
     root="../data",
     split='train',
-    download=True,
+    download=False,
     transform=transform,
     )
 
@@ -35,7 +35,7 @@ def get_val_loader(batch_size):
     valid_dataset = datasets.CelebA(
     root="../data",
     split='valid',
-    download=True,
+    download=False,
     transform=transform,
     )
 
@@ -54,7 +54,7 @@ def get_test_loader(batch_size, shuffle=True):
     test_dataset = datasets.CelebA(
     root="../data",
     split='test',
-    download=True,
+    download=False,
     transform=transform,
     )
 
