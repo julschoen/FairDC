@@ -49,7 +49,7 @@ def get_train_loader(batch_size):
     download=False,
     transform=transform,
     )
-    print(train_dataset.attr)
+    print(train_dataset.attr_names)
 
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=batch_size, num_workers=4, pin_memory=True
