@@ -166,12 +166,12 @@ def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None
 
         if args.zca:
             transform = transforms.Compose([transforms.ToTensor(),
-                                        transforms.Resize(im_size),
+                                        transforms.Resize(im_size, antialias=True),
                                         transforms.CenterCrop(im_size)])
         else:
             transform = transforms.Compose([transforms.ToTensor(),
                                             transforms.Normalize(mean=mean, std=std),
-                                            transforms.Resize(im_size),
+                                            transforms.Resize(im_size, antialias=True),
                                             transforms.CenterCrop(im_size)])
         dst_train = CelebA(split='train', transform=transform)  # no augmentation
         dst_test = CelebA(split='test', transform=transform)
