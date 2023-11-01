@@ -6,7 +6,7 @@ from torch.utils.data import Dataset
 
 class CelebA(Dataset):
     """Face Landmarks dataset."""
-    def __init__(self, split='train', transform=None):
+    def __init__(self, split='train', transform=None, attributes=['Blond_Hair']):
         self.train_dataset = datasets.CelebA(
             root="../data",
             split=split,
@@ -14,24 +14,20 @@ class CelebA(Dataset):
             transform=transform,
         )
 
+        self.target_inds = []
+        for attr in attributes:
+            self.target_inds.append(self.train_dataset.attr_names.index(attr))
+
     def __len__(self):
-        return len(self.landmarks_frame)
+        return self.train_dataset.__len__()
 
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        img_name = os.path.join(self.root_dir,
-                                self.landmarks_frame.iloc[idx, 0])
-        image = io.imread(img_name)
-        landmarks = self.landmarks_frame.iloc[idx, 1:]
-        landmarks = np.array([landmarks], dtype=float).reshape(-1, 2)
-        sample = {'image': image, 'landmarks': landmarks}
-
-        if self.transform:
-            sample = self.transform(sample)
-
-        return sample
+        x,y = self.train_dataset.__getitem__(idx)
+        
+        return x,y[:,ind]
 
 
 def get_train_loader(batch_size):
@@ -43,13 +39,7 @@ def get_train_loader(batch_size):
         (0.5, 0.5, 0.5))
     ])
     
-    train_dataset = datasets.CelebA(
-    root="../data",
-    split='train',
-    download=False,
-    transform=transform,
-    )
-    print(train_dataset.attr_names)
+    train_dataset = CelebA(transform=transform)
 
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=batch_size, num_workers=4, pin_memory=True
