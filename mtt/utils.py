@@ -373,7 +373,9 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False)
         output = net(img)
         loss = criterion(output, lab)
 
-        acc = np.sum(np.equal(np.argmax(output.cpu().data.numpy(), axis=-1), lab.cpu().data.numpy()))
+
+
+        acc = np.sum(np.equal(output.cpu().data.numpy() > 0.5, lab.cpu().data.numpy()))
 
         loss_avg += loss.item()*n_b
         acc_avg += acc
