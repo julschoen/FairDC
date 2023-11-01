@@ -3,16 +3,6 @@ from torchvision import datasets
 from torchvision import transforms
 from torch.utils.data.sampler import SubsetRandomSampler
 
-import csv
-import os
-from collections import namedtuple
-from typing import Any, Callable, List, Optional, Tuple, Union
-
-import PIL
-import torch
-
-from .utils import check_integrity, download_file_from_google_drive, extract_archive, verify_str_arg
-from .vision import VisionDataset
 
 class CelebA(Dataset):
     """Face Landmarks dataset."""
