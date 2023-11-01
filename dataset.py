@@ -26,7 +26,7 @@ class CelebA(Dataset):
             idx = idx.tolist()
 
         x,y = self.train_dataset.__getitem__(idx)
-        
+        print(y.shape)
         return x,y[:,self.target_inds]
 
 
