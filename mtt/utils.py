@@ -38,7 +38,7 @@ class CelebA(Dataset):
 
         x,y = self.train_dataset.__getitem__(idx)
 
-        return x,y[self.target_inds].unsqueeze(1)
+        return x,y[self.target_inds]
 
 class Config:
     imagenette = [0, 217, 482, 491, 497, 566, 569, 571, 574, 701]
