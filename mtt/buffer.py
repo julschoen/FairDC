@@ -41,6 +41,8 @@ def main(args):
         images_all.append(torch.unsqueeze(sample[0], dim=0))
         labels_all.append(sample[1].item())
 
+    images_all = torch.cat(images_all, dim=0).to("cpu")
+    labels_all = torch.tensor(labels_all, dtype=torch.long, device="cpu")
 
     criterion = nn.CrossEntropyLoss().to(args.device)
 
