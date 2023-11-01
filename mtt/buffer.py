@@ -36,6 +36,7 @@ def main(args):
     labels_all = []
     indices_class = [[] for c in range(num_classes)]
     print("BUILDING DATASET")
+    print(class_map)
     for i in tqdm(range(len(dst_train))):
         sample = dst_train[i]
         images_all.append(torch.unsqueeze(sample[0], dim=0))
