@@ -55,12 +55,7 @@ def get_val_loader(batch_size):
         (0.5, 0.5, 0.5))
     ])
     
-    valid_dataset = datasets.CelebA(
-    root="../data",
-    split='valid',
-    download=False,
-    transform=transform,
-    )
+    valid_dataset = CelebA(split='valid', transform=transform)
 
     return torch.utils.data.DataLoader(
         valid_dataset, batch_size=batch_size, num_workers=4, pin_memory=True
@@ -75,12 +70,7 @@ def get_test_loader(batch_size, shuffle=True):
         (0.5, 0.5, 0.5))
     ])
     
-    test_dataset = datasets.CelebA(
-    root="../data",
-    split='test',
-    download=False,
-    transform=transform,
-    )
+    test_dataset = CelebA(split='test', transform=transform)
 
     return torch.utils.data.DataLoader(
         test_dataset, batch_size=batch_size, num_workers=4, pin_memory=True
