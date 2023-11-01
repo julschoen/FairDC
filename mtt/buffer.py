@@ -41,16 +41,6 @@ def main(args):
         images_all.append(torch.unsqueeze(sample[0], dim=0))
         labels_all.append(sample[1].item())
 
-    for i, lab in tqdm(enumerate(labels_all)):
-        indices_class[lab].append(i)
-    images_all = torch.cat(images_all, dim=0).to("cpu")
-    labels_all = torch.tensor(labels_all, dtype=torch.long, device="cpu")
-
-    for c in range(num_classes):
-        print('class c = %d: %d real images'%(c, len(indices_class[c])))
-
-    for ch in range(channel):
-        print('real images channel %d, mean = %.4f, std = %.4f'%(ch, torch.mean(images_all[:, ch]), torch.std(images_all[:, ch])))
 
     criterion = nn.CrossEntropyLoss().to(args.device)
 
