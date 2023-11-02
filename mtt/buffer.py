@@ -120,6 +120,7 @@ if __name__ == '__main__':
     parser.add_argument('--mom', type=float, default=0, help='momentum')
     parser.add_argument('--l2', type=float, default=0, help='l2 regularization')
     parser.add_argument('--save_interval', type=int, default=10)
+    parser.add_argument('--attributes', type=str, default='Blond_Hair')
 
     args = parser.parse_args()
     main(args)

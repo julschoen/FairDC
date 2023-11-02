@@ -173,8 +173,8 @@ def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None
                                             transforms.Normalize(mean=mean, std=std),
                                             transforms.Resize(im_size, antialias=True),
                                             transforms.CenterCrop(im_size)])
-        dst_train = CelebA(split='train', transform=transform)  # no augmentation
-        dst_test = CelebA(split='test', transform=transform)
+        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split('_'))  # no augmentation
+        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split('_'))
         class_names = dst_train.classes
         class_map = {x: x for x in range(num_classes)}
 
