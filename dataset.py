@@ -6,18 +6,13 @@ from torch.utils.data import Dataset
 
 class MNIST(Dataset):
     """Face Landmarks dataset."""
-    def __init__(self, train=True, transform=None, attributes=['Blond_Hair']):
+    def __init__(self, train=True, transform=None):
         self.train_dataset = datasets.MNIST(
             root="../data",
             train=train,
             download=True,
             transform=transform,
         )
-
-        self.classes = attributes
-        self.target_inds = []
-        for attr in self.classes:
-            self.target_inds.append(self.train_dataset.attr_names.index(attr))
 
     def __len__(self):
         return self.train_dataset.__len__()
