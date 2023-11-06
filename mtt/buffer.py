@@ -44,7 +44,7 @@ def main(args):
     images_all = torch.cat(images_all, dim=0).to("cpu")
     labels_all = torch.tensor(labels_all, dtype=torch.float32, device="cpu").unsqueeze(1)
 
-    criterion = nn.BCEWithLogitsLoss().to(args.device)
+    criterion = nn.CrossEntropyLoss().to(args.device)
 
     trajectories = []
 
