@@ -22,7 +22,7 @@ class MNIST(Dataset):
             idx = idx.tolist()
 
         x,y = self.train_dataset.__getitem__(idx)
-        print(y.shape)
+        print(x.shape)
         return x,y
 
 
