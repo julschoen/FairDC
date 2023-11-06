@@ -9,7 +9,7 @@ class MNIST(Dataset):
     def __init__(self, train=True, transform=None, attributes=['Blond_Hair']):
         self.train_dataset = datasets.MNIST(
             root="../../data",
-            train=Train,
+            train=train,
             download=True,
             transform=transform,
         )
