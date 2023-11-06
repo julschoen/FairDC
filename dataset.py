@@ -22,8 +22,7 @@ class MNIST(Dataset):
             idx = idx.tolist()
 
         x,y = self.train_dataset.__getitem__(idx)
-        print(x.shape)
-        return x,y
+        return x.repeat(3,1,1),y
 
 
 def get_train_loader(batch_size):
