@@ -27,7 +27,7 @@ class MNIST(Dataset):
     }
 
     def convert(self, image, label):
-        image = image.convert("RGB")  # Convert grayscale to RGB
+        image = image.repeat(3,1,1)  # Convert grayscale to RGB
         # Apply the color corresponding to the class label
         r, g, b = self.color_map[label]
         colored_image = transforms.functional.adjust_hue(image, r/255.0)
