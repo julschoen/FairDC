@@ -95,9 +95,6 @@ class ConvNet(nn.Module):
     def _make_layers(self, channel, net_width, net_depth, net_norm, net_act, net_pooling, im_size):
         layers = []
         in_channels = channel
-        #if im_size[0] == 28:
-            #mnist = True
-            #im_size = (32, 32)
         shape_feat = [in_channels, im_size[0], im_size[1]]
         for d in range(net_depth):
             layers += [nn.Conv2d(in_channels, net_width, kernel_size=3, padding=3 if channel == 1 and d == 0 else 1)]
