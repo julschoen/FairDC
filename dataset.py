@@ -27,13 +27,11 @@ class MNIST(Dataset):
     }
 
     def convert(self, image, label):
-        image = image.repeat(3,1,1)  # Convert grayscale to RGB
+        rgb_image = image.clone().repeat(3,1,1)  # Convert grayscale to RGB
         # Apply the color corresponding to the class label
-        r, g, b = self.color_map[label]
-        colored_image = transforms.functional.adjust_hue(image, r/255.0)
-        colored_image = transforms.functional.adjust_saturation(colored_image, g/255.0)
-        colored_image = transforms.functional.adjust_brightness(colored_image, b/255.0)
-        return colored_image, label
+        c = self.color_map[label]
+        rgb_image[image == 1] = c
+        return rgb_image, label
 
     def __len__(self):
         return self.train_dataset.__len__()
