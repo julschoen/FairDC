@@ -393,11 +393,8 @@ def get_network(model, channel, num_classes, im_size=(32, 32), dist=True):
 
     return net
 
-
-
 def get_time():
     return str(time.strftime("[%Y-%m-%d %H:%M:%S]", time.localtime()))
-
 
 def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False):
     loss_avg, acc_avg, num_exp = 0, 0, 0
@@ -414,6 +411,9 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False)
     for i_batch, datum in enumerate(dataloader):
         img = datum[0].float().to(args.device)
         lab = datum[1].float().to(args.device)
+
+        print(img.shape, lab.shape)
+        print(lab)
 
         if mode == "train" and texture:
             img = torch.cat([torch.stack([torch.roll(im, (torch.randint(args.im_size[0]*args.canvas_size, (1,)), torch.randint(args.im_size[0]*args.canvas_size, (1,))), (1,2))[:,:args.im_size[0],:args.im_size[1]] for im in img]) for _ in range(args.canvas_samples)])
