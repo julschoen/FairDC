@@ -101,7 +101,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Parameter Processing')
-    parser.add_argument('--dataset', type=str, default='CIFAR10', help='dataset')
+    parser.add_argument('--dataset', type=str, default='MNIST', help='dataset')
     parser.add_argument('--subset', type=str, default='imagenette', help='subset')
     parser.add_argument('--model', type=str, default='ConvNet', help='model')
     parser.add_argument('--num_experts', type=int, default=100, help='training iterations')
