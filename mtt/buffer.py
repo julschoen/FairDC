@@ -39,7 +39,7 @@ def main(args):
     for i in tqdm(range(len(dst_train))):
         sample = dst_train[i]
         images_all.append(torch.unsqueeze(sample[0], dim=0))
-        labels_all.append(sample[1].item())
+        labels_all.append(class_map[torch.tensor(sample[1]).item()])
 
     images_all = torch.cat(images_all, dim=0).to("cpu")
     labels_all = torch.tensor(labels_all, dtype=torch.float32, device="cpu").unsqueeze(1)
