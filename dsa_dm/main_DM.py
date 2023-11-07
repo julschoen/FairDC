@@ -127,8 +127,8 @@ def main():
                 ''' visualize and save '''
                 save_name = os.path.join(args.save_path, 'vis_%s_%s_%s_%dipc_exp%d_iter%d.png'%(args.method, args.dataset, args.model, args.ipc, exp, it))
                 image_syn_vis = copy.deepcopy(image_syn.detach().cpu())
-                #for ch in range(channel):
-                #    image_syn_vis[:, ch] = image_syn_vis[:, ch]  * std[ch] + mean[ch]
+                for ch in range(channel):
+                    image_syn_vis[:, ch] = image_syn_vis[:, ch]  * std[ch] + mean[ch]
                 image_syn_vis[image_syn_vis<-1] = -1.0
                 image_syn_vis[image_syn_vis>1] = 1.0
                 save_image(image_syn_vis, save_name, nrow=args.ipc) # Trying normalize = True/False may get better visual effects.
