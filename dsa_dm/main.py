@@ -13,7 +13,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='Parameter Processing')
     parser.add_argument('--method', type=str, default='DC', help='DC/DSA')
-    parser.add_argument('--dataset', type=str, default='CIFAR10', help='dataset')
+    parser.add_argument('--dataset', type=str, default='MNIST', help='dataset')
     parser.add_argument('--model', type=str, default='ConvNet', help='model')
     parser.add_argument('--ipc', type=int, default=10, help='image(s) per class')
     parser.add_argument('--eval_mode', type=str, default='S', help='eval_mode') # S: the same to training model, M: multi architectures,  W: net width, D: net depth, A: activation function, P: pooling layer, N: normalization layer,
@@ -138,7 +138,7 @@ def main():
                 image_syn_vis = copy.deepcopy(image_syn.detach().cpu())
                 for ch in range(channel):
                     image_syn_vis[:, ch] = image_syn_vis[:, ch]  * std[ch] + mean[ch]
-                image_syn_vis[image_syn_vis<0] = 0.0
+                image_syn_vis[image_syn_vis<-1] = -1.0
                 image_syn_vis[image_syn_vis>1] = 1.0
                 save_image(image_syn_vis, save_name, nrow=args.ipc) # Trying normalize = True/False may get better visual effects.
 
