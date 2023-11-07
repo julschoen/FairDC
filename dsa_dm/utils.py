@@ -109,6 +109,8 @@ def get_dataset(dataset, data_path):
         dst_train = MNIST(train=True, transform=transform) # no augmentation
         dst_test = MNIST(train=False, transform=transform)
         class_names = [str(c) for c in range(num_classes)]
+        mean = (0.5, 0.5, 0.5)
+        std = (0.5, 0.5, 0.5)
 
     elif dataset == 'FashionMNIST':
         channel = 1
