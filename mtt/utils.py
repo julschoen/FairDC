@@ -410,7 +410,7 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False)
 
     for i_batch, datum in enumerate(dataloader):
         img = datum[0].float().to(args.device)
-        lab = datum[1].int().squeeze().to(args.device)
+        lab = datum[1].long().squeeze().to(args.device)
 
         if mode == "train" and texture:
             img = torch.cat([torch.stack([torch.roll(im, (torch.randint(args.im_size[0]*args.canvas_size, (1,)), torch.randint(args.im_size[0]*args.canvas_size, (1,))), (1,2))[:,:args.im_size[0],:args.im_size[1]] for im in img]) for _ in range(args.canvas_samples)])
