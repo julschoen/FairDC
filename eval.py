@@ -37,7 +37,7 @@ def main():
     image_syn, label_syn = torch.load(file)['data'][-1]
     
     for model_eval in model_eval_pool:
-        print('-------------------------\nEvaluation\nmodel_train = %s, model_eval = %s, iteration = %d'%(args.model, model_eval, it))
+        print('-------------------------\nEvaluation\nmodel_eval = %s, iteration = %d'%(model_eval, it))
         accs = []
         for it_eval in range(args.num_eval):
             net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device) # get a random model
