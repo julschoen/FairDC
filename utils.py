@@ -240,36 +240,6 @@ def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None
     else:
         exit('unknown dataset: %s'%dataset)
 
-    if args.zca:
-        images = []
-        labels = []
-        print("Train ZCA")
-        for i in tqdm.tqdm(range(len(dst_train))):
-            im, lab = dst_train[i]
-            images.append(im)
-            labels.append(lab)
-        images = torch.stack(images, dim=0).to(args.device)
-        labels = torch.tensor(labels, dtype=torch.long, device="cpu")
-        zca = K.enhance.ZCAWhitening(eps=0.1, compute_inv=True)
-        zca.fit(images)
-        zca_images = zca(images).to("cpu")
-        dst_train = TensorDataset(zca_images, labels)
-
-        images = []
-        labels = []
-        print("Test ZCA")
-        for i in tqdm.tqdm(range(len(dst_test))):
-            im, lab = dst_test[i]
-            images.append(im)
-            labels.append(lab)
-        images = torch.stack(images, dim=0).to(args.device)
-        labels = torch.tensor(labels, dtype=torch.long, device="cpu")
-
-        zca_images = zca(images).to("cpu")
-        dst_test = TensorDataset(zca_images, labels)
-
-        args.zca_trans = zca
-
 
     testloader = torch.utils.data.DataLoader(dst_test, batch_size=128, shuffle=False, num_workers=2)
 
