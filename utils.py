@@ -17,7 +17,7 @@ from networks import MLP, ConvNet, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, Res
 class MNIST(Dataset):
     def __init__(self, train=True, transform=None, majority=0.5):
         self.train_dataset = datasets.MNIST(
-            root="../../data",
+            root="../data",
             train=train,
             download=True,
             transform=transform,
