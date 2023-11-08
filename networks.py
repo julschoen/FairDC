@@ -183,7 +183,7 @@ class LeNet(nn.Module):
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
-        self.fc_1 = nn.Linear(100, 120)
+        self.fc_1 = nn.Linear(256, 120)
         self.fc_2 = nn.Linear(120, 84)
         self.fc_3 = nn.Linear(84, num_classes)
 
