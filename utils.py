@@ -415,8 +415,6 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False,
 
 def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, return_loss=False, texture=False, full=False):
     net = net.to(args.device)
-    images_train = images_train.to(args.device)
-    labels_train = labels_train.to(args.device)
     lr = float(args.lr_net)
     Epoch = int(args.epoch_eval_train)
     lr_schedule = [Epoch//2+1]
@@ -427,6 +425,8 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
     if full:
         dst_train=images_train
     else:
+        images_train = images_train.to(args.device)
+        labels_train = labels_train.to(args.device)
         dst_train = TensorDataset(images_train, labels_train)
     trainloader = torch.utils.data.DataLoader(dst_train, batch_size=args.batch_train, shuffle=True, num_workers=0)
 
