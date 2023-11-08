@@ -7,7 +7,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torchvision.utils import save_image
-from utils import get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, match_loss, get_time, TensorDataset, epoch, DiffAugment, ParamDiffAug
+from utils import get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, TensorDataset, epoch, DiffAugment, ParamDiffAug
 
 def main():
 
