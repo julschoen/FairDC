@@ -37,17 +37,16 @@ def main():
     for key in model_eval_pool:
         model_weights[key] = []
 
-    for image_syn, label_syn in data:
-	    for model_eval in model_eval_pool:
-	        accs = []
-	        weights = []
-	        for it_eval in range(args.num_eval):
-	            net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device) # get a random model
-	            _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, dst_train, None, testloader, args, full=True)
-	            accs.append(acc_test)
-	            weights.append(net_eval.state_dict())
-	        accs_all_exps[model_eval] += accs
-	        model_weights[model_eval] += weights
+    for model_eval in model_eval_pool:
+        accs = []
+        weights = []
+        for it_eval in range(args.num_eval):
+            net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device) # get a random model
+            _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, dst_train, None, testloader, args, full=True)
+            accs.append(acc_test)
+            weights.append(net_eval.state_dict())
+        accs_all_exps[model_eval] += accs
+        model_weights[model_eval] += weights
 
 
     print('\n==================== Final Results ====================\n')
