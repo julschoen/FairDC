@@ -258,29 +258,28 @@ class VGG(nn.Module):
     def _make_layers(self, cfg, norm):
         layers = []
         in_channels = self.channel
-        i = 1
         for ic, x in enumerate(cfg):
             if x == 'M':
-                continue
+                layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
             else:
-                if cfg[ic+1] == 'M':
-                    layers += [(f'conv{i}', nn.Conv2d(in_channels, x, kernel_size=3, padding=3 if self.channel==1 and ic==0 else 1)),
-                           (f'norm{i}', nn.GroupNorm(x, x, affine=True) if norm=='instancenorm' else nn.BatchNorm2d(x)),
-                           (f'nonlin{i}', nn.ReLU(inplace=True)),
-                           (f'act{i}', nn.MaxPool2d(kernel_size=2, stride=2))
-                           ]
-                else:
-                    layers += [(f'conv{i}', nn.Conv2d(in_channels, x, kernel_size=3, padding=3 if self.channel==1 and ic==0 else 1)),
-                               (f'norm{i}', nn.GroupNorm(x, x, affine=True) if norm=='instancenorm' else nn.BatchNorm2d(x)),
-                               (f'act{i}', nn.ReLU(inplace=True))
-                               ]
-                if ic-1 == len(cfg):
-                    layers += [(f'final{i}', nn.AvgPool2d(kernel_size=1, stride=1))]
-                i += 1
-
-                
+                layers += [nn.Conv2d(in_channels, x, kernel_size=3, padding=3 if self.channel==1 and ic==0 else 1),
+                           nn.GroupNorm(x, x, affine=True) if norm=='instancenorm' else nn.BatchNorm2d(x),
+                           nn.ReLU(inplace=True)]
                 in_channels = x
-        return nn.Sequential(OrderedDict(layers))
+        layers += [nn.AvgPool2d(kernel_size=1, stride=1)]
+        return nn.Sequential(*layers)
+
+
+def VGG11(channel, num_classes):
+    return VGG('VGG11', channel, num_classes)
+def VGG11BN(channel, num_classes):
+    return VGG('VGG11', channel, num_classes, norm='batchnorm')
+def VGG13(channel, num_classes):
+    return VGG('VGG13', channel, num_classes)
+def VGG16(channel, num_classes):
+    return VGG('VGG16', channel, num_classes)
+def VGG19(channel, num_classes):
+    return VGG('VGG19', channel, num_classes)
 
 
 def VGG11(channel, num_classes):
