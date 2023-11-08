@@ -244,7 +244,7 @@ def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None
     testloader = torch.utils.data.DataLoader(dst_test, batch_size=128, shuffle=False, num_workers=2)
 
 
-    return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv
+    return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader
 
 class TensorDataset(Dataset):
     def __init__(self, images, labels): # images: n x c x h x w tensor
