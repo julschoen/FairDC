@@ -414,8 +414,6 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False)
 
     return loss_avg, acc_avg
 
-
-
 def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, return_loss=False, texture=False):
     net = net.to(args.device)
     images_train = images_train.to(args.device)
@@ -454,7 +452,6 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
         return net, acc_train_list, acc_test, loss_train_list, loss_test
     else:
         return net, acc_train_list, acc_test
-
 
 def augment(images, dc_aug_param, device):
     # This can be sped up in the future.
@@ -517,8 +514,6 @@ def augment(images, dc_aug_param, device):
 
     return images
 
-
-
 def get_daparam(dataset, model, model_eval, ipc):
     # We find that augmentation doesn't always benefit the performance.
     # So we do augmentation for some of the settings.
@@ -538,11 +533,10 @@ def get_daparam(dataset, model, model_eval, ipc):
 
     return dc_aug_param
 
-
 def get_eval_pool(eval_mode, model, model_eval):
     if eval_mode == 'M': # multiple architectures
         # model_eval_pool = ['MLP', 'ConvNet', 'AlexNet', 'VGG11', 'ResNet18', 'LeNet']
-        model_eval_pool = ['ConvNet', 'LeNet', 'AlexNet', 'VGG11', 'ResNet18', 'ViT']
+        model_eval_pool = ['ConvNet', 'LeNet', 'AlexNet', 'ResNet18', 'ViT']
         # model_eval_pool = ['MLP', 'ConvNet', 'AlexNet', 'VGG11', 'ResNet18']
     elif eval_mode == 'W': # ablation study on network width
         model_eval_pool = ['ConvNetW32', 'ConvNetW64', 'ConvNetW128', 'ConvNetW256']
