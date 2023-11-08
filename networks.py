@@ -2,6 +2,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 from collections import OrderedDict, namedtuple
+from einops import rearrange, repeat
+from einops.layers.torch import Rearrange
+
 # Acknowledgement to
 # https://github.com/kuangliu/pytorch-cifar,
 # https://github.com/BIGBALLON/CIFAR-ZOO,
