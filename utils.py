@@ -370,9 +370,6 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False)
     loss_avg, acc_avg, num_exp = 0, 0, 0
     net = net.to(args.device)
 
-    if args.dataset == "ImageNet":
-        class_map = {x: i for i, x in enumerate(config.img_net_classes)}
-
     if mode == 'train':
         net.train()
     else:
@@ -396,6 +393,8 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False)
             lab = torch.tensor([class_map[x.item()] for x in lab]).to(args.device)
 
         n_b = lab.shape[0]
+
+        print(img.shape)
 
         output = net(img)
         loss = criterion(output, lab)
