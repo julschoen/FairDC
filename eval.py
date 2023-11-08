@@ -34,19 +34,21 @@ def main():
         accs_all_exps[key] = []
 
     file = glob.glob(os.path.join(args.cond_path, '*.pt'))[-1]
-    image_syn, label_syn = torch.load(file)['data'][-1]
-    
-    for model_eval in model_eval_pool:
-        print('-------------------------\nEvaluation\nmodel_eval = %s'%(model_eval))
-        accs = []
-        for it_eval in range(args.num_eval):
-            net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device) # get a random model
-            image_syn_eval, label_syn_eval = copy.deepcopy(image_syn.detach()), copy.deepcopy(label_syn.detach()) # avoid any unaware modification
-            _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args)
-            accs.append(acc_test)
-        print('Evaluate %d random %s, mean = %.4f std = %.4f\n-------------------------'%(len(accs), model_eval, np.mean(accs), np.std(accs)))
 
-        accs_all_exps[model_eval] += accs
+    data = torch.load(file)['data']
+
+    for image_syn, label_syn in data:
+	    for model_eval in model_eval_pool:
+	        print('-------------------------\nEvaluation\nmodel_eval = %s'%(model_eval))
+	        accs = []
+	        for it_eval in range(args.num_eval):
+	            net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device) # get a random model
+	            image_syn_eval, label_syn_eval = copy.deepcopy(image_syn.detach()), copy.deepcopy(label_syn.detach()) # avoid any unaware modification
+	            _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args)
+	            accs.append(acc_test)
+	        print('Evaluate %d random %s, mean = %.4f std = %.4f\n-------------------------'%(len(accs), model_eval, np.mean(accs), np.std(accs)))
+
+	        accs_all_exps[model_eval] += accs
 
 
     print('\n==================== Final Results ====================\n')
