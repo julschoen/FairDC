@@ -413,7 +413,7 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False,
 
     return loss_avg, acc_avg
 
-def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, return_loss=False, texture=False):
+def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, return_loss=False, texture=False, full=False):
     net = net.to(args.device)
     images_train = images_train.to(args.device)
     labels_train = labels_train.to(args.device)
