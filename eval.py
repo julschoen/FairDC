@@ -43,7 +43,6 @@ def main():
 
     for image_syn, label_syn in data:
 	    for model_eval in model_eval_pool:
-	        print('-------------------------\nEvaluation\nmodel_eval = %s'%(model_eval))
 	        accs = []
 	        weights = []
 	        for it_eval in range(args.num_eval):
@@ -52,8 +51,6 @@ def main():
 	            _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args)
 	            accs.append(acc_test)
 	            weights.append(net_eval.state_dict())
-	        print('Evaluate %d random %s, mean = %.4f std = %.4f\n-------------------------'%(len(accs), model_eval, np.mean(accs), np.std(accs)))
-
 	        accs_all_exps[model_eval] += accs
 	        model_weights[model_eval] += weights
 
