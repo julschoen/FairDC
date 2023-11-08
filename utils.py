@@ -538,7 +538,7 @@ def get_daparam(dataset, model, model_eval, ipc):
 def get_eval_pool(eval_mode, model, model_eval):
     if eval_mode == 'M': # multiple architectures
         # model_eval_pool = ['MLP', 'ConvNet', 'AlexNet', 'VGG11', 'ResNet18', 'LeNet']
-        model_eval_pool = ['ConvNet', 'LeNet', 'AlexNet', 'ResNet18', 'ViT']
+        model_eval_pool = ['ConvNet', 'LeNet', 'AlexNet', 'ResNet18', 'VGG11' 'ViT']
         # model_eval_pool = ['MLP', 'ConvNet', 'AlexNet', 'VGG11', 'ResNet18']
     elif eval_mode == 'W': # ablation study on network width
         model_eval_pool = ['ConvNetW32', 'ConvNetW64', 'ConvNetW128', 'ConvNetW256']
