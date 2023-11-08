@@ -52,7 +52,7 @@ def main():
     print('\n==================== Final Results ====================\n')
     for key in model_eval_pool:
         accs = accs_all_exps[key]
-        print('Run %d experiments, train on %s, evaluate %d random %s, mean  = %.2f%%  std = %.2f%%'%(args.num_exp, args.model, len(accs), key, np.mean(accs)*100, np.std(accs)*100))
+        print('evaluate %d random %s, mean  = %.2f%%  std = %.2f%%'%(len(accs), key, np.mean(accs)*100, np.std(accs)*100))
 
 
 
