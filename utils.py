@@ -394,8 +394,6 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False)
 
         n_b = lab.shape[0]
 
-        print(img.shape)
-
         output = net(img)
         loss = criterion(output, lab)
 
