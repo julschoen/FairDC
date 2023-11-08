@@ -2,6 +2,7 @@ import os
 import time
 import copy
 import glob
+import gc
 import argparse
 import numpy as np
 import torch
@@ -51,6 +52,9 @@ def main():
 	            _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args)
 	            accs.append(acc_test)
 	            weights.append(net_eval.state_dict())
+	            net_eval=None
+	            gc.collect()
+	            torch.cuda.empty_cache()
 	        accs_all_exps[model_eval] += accs
 	        model_weights[model_eval] += weights
 
