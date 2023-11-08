@@ -366,7 +366,7 @@ def get_network(model, channel, num_classes, im_size=(32, 32), dist=True):
 def get_time():
     return str(time.strftime("[%Y-%m-%d %H:%M:%S]", time.localtime()))
 
-def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False):
+def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False, full=False):
     loss_avg, acc_avg, num_exp = 0, 0, 0
     net = net.to(args.device)
 
@@ -424,7 +424,10 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
 
     criterion = nn.CrossEntropyLoss().to(args.device)
 
-    dst_train = TensorDataset(images_train, labels_train)
+    if full:
+        dst_train=images_train
+    else:
+        dst_train = TensorDataset(images_train, labels_train)
     trainloader = torch.utils.data.DataLoader(dst_train, batch_size=args.batch_train, shuffle=True, num_workers=0)
 
     acc_train_list = []
