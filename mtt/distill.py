@@ -339,7 +339,7 @@ def main(args):
         param_dist_list = []
         indices_chunks = []
 
-        syn_lr = torch.clamp(syn_lr, min=1e-8)
+        #syn_lr = torch.clamp(syn_lr, min=1e-8)
 
         for step in range(args.syn_steps):
 
