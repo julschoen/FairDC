@@ -348,7 +348,7 @@ def main(args):
             these_indices = indices_chunks.pop()
 
 
-            x = torch.tanh(syn_images[these_indices])
+            x = syn_images[these_indices]
             this_y = y_hat[these_indices]
 
             if args.texture:
@@ -373,8 +373,8 @@ def main(args):
         param_loss = torch.tensor(0.0).to(args.device)
         param_dist = torch.tensor(0.0).to(args.device)
 
-        param_loss += torch.nn.functional.mse_loss(student_params[-1], target_params, reduction="sum")
-        param_dist += torch.nn.functional.mse_loss(starting_params, target_params, reduction="sum")
+        param_loss += torch.nn.functional.mse_loss(student_params[-1], target_params, reduction="mean")
+        param_dist += torch.nn.functional.mse_loss(starting_params, target_params, reduction="mean")
 
         param_loss_list.append(param_loss)
         param_dist_list.append(param_dist)
