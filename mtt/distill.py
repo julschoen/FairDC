@@ -379,6 +379,8 @@ def main(args):
         param_loss_list.append(param_loss)
         param_dist_list.append(param_dist)
 
+        print(param_loss, param_dist)
+
 
         param_loss /= num_params
         param_dist /= num_params
