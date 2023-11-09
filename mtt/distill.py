@@ -376,6 +376,8 @@ def main(args):
         param_loss += torch.nn.functional.mse_loss(student_params[-1], target_params, reduction="mean")
         param_dist += torch.nn.functional.mse_loss(starting_params, target_params, reduction="mean")
 
+        print(param_loss, param_dist)
+
         param_loss_list.append(param_loss)
         param_dist_list.append(param_dist)
 
