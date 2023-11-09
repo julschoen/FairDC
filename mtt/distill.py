@@ -410,13 +410,13 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Parameter Processing')
 
-    parser.add_argument('--dataset', type=str, default='CIFAR10', help='dataset')
+    parser.add_argument('--dataset', type=str, default='MNIST', help='dataset')
 
     parser.add_argument('--subset', type=str, default='imagenette', help='ImageNet subset. This only does anything when --dataset=ImageNet')
 
     parser.add_argument('--model', type=str, default='ConvNet', help='model')
 
-    parser.add_argument('--ipc', type=int, default=1, help='image(s) per class')
+    parser.add_argument('--ipc', type=int, default=10, help='image(s) per class')
 
     parser.add_argument('--eval_mode', type=str, default='S',
                         help='eval_mode, check utils.py for more info')
