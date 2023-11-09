@@ -348,7 +348,7 @@ def main(args):
             these_indices = indices_chunks.pop()
 
 
-            x = syn_images[these_indices]
+            x = torch.tanh(syn_images[these_indices])
             this_y = y_hat[these_indices]
 
             if args.texture:
