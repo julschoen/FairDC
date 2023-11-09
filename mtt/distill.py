@@ -324,11 +324,6 @@ def main(args):
         start_epoch = np.random.randint(0, args.max_start_epoch)
         starting_params = expert_trajectory[start_epoch]
 
-        for epoch in expert_trajectory:
-            for i,p in enumerate(epoch):
-                if i == len(epoch)-1:
-                    print(p.data.reshape(-1))
-                    break
         target_params = expert_trajectory[start_epoch+args.expert_epochs]
         target_params = torch.cat([p.data.to(args.device).reshape(-1) for p in target_params], 0)
 
@@ -378,17 +373,11 @@ def main(args):
         param_loss = torch.tensor(0.0).to(args.device)
         param_dist = torch.tensor(1e-5).to(args.device)
 
-        print(starting_params)
-        print(target_params)
-
         param_loss += torch.nn.functional.mse_loss(student_params[-1], target_params, reduction="sum")
         param_dist += torch.nn.functional.mse_loss(starting_params, target_params, reduction="sum")
 
         param_loss_list.append(param_loss)
         param_dist_list.append(param_dist)
-
-        print(param_loss, param_dist)
-
 
         param_loss /= num_params
         param_dist /= num_params
