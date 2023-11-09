@@ -395,7 +395,7 @@ def main(args):
         optimizer_img.step()
         optimizer_lr.step()
 
-        syn_lr.data.clamp_(0)
+        syn_lr.data.clamp_(1e-8)
 
         wandb.log({"Grand_Loss": grand_loss.detach().cpu(),
                    "Start_Epoch": start_epoch})
