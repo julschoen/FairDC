@@ -326,7 +326,7 @@ def main(args):
 
         for epoch in expert_trajectory:
             for i,p in enumerate(epoch):
-                if i == 1:
+                if i == 2:
                     print(p.data.reshape(-1))
                     break
         target_params = expert_trajectory[start_epoch+args.expert_epochs]
