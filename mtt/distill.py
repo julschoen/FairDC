@@ -395,7 +395,7 @@ def main(args):
         optimizer_img.step()
         optimizer_lr.step()
 
-        syn_lr[syn_lr < 0] = 1e-8
+        syn_lr = torch.clamp(syn_lr, min=1e-8)
 
         wandb.log({"Grand_Loss": grand_loss.detach().cpu(),
                    "Start_Epoch": start_epoch})
