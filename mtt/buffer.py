@@ -81,7 +81,7 @@ def main(args):
 
             print("Itr: {}\tEpoch: {}\tTrain Acc: {}\tTest Acc: {}".format(it, e, train_acc, test_acc))
 
-            timestamps.append([p.detach().cpu() for p in teacher_net.parameters()])
+            timestamps.append([p.detach().clone().cpu() for p in teacher_net.parameters()])
 
             if e in lr_schedule and args.decay:
                 lr *= 0.1
