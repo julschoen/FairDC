@@ -339,8 +339,6 @@ def main(args):
         param_dist_list = []
         indices_chunks = []
 
-        #syn_lr = torch.clamp(syn_lr, min=1e-8)
-
         for step in range(args.syn_steps):
 
             if not indices_chunks:
@@ -396,6 +394,8 @@ def main(args):
 
         optimizer_img.step()
         optimizer_lr.step()
+
+        syn_lr.data.clamp_(0)
 
         wandb.log({"Grand_Loss": grand_loss.detach().cpu(),
                    "Start_Epoch": start_epoch})
