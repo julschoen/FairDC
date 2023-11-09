@@ -67,7 +67,7 @@ def main(args):
 
         timestamps = []
 
-        timestamps.append([p.detach().cpu() for p in teacher_net.parameters()])
+        timestamps.append([p.detach().clone().cpu() for p in teacher_net.parameters()])
 
         lr_schedule = [args.train_epochs // 2 + 1]
 
