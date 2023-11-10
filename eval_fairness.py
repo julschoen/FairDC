@@ -68,11 +68,8 @@ def main():
 
             # Print the results
             print("Metric Frame Results by Group:")
-            print(metric_frame.by_group)
+            print(metric_frame.by_group.keys())
 
-            # You can also get the overall metrics (not broken down by group)
-            print("\nOverall Metrics:")
-            print(metric_frame.overall)
 
             net_eval=None
             gc.collect()
