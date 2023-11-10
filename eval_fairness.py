@@ -56,6 +56,8 @@ def main():
             net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
+
+            print(true, sf)
             
             metric_frame = MetricFrame(
                 metrics=metrics,
