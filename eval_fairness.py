@@ -94,6 +94,7 @@ def main():
         for key in r.keys():
             print(key)
             gap = np.array(r[key][True]) - np.array(r[key][False])
+            print(gap)
             print('Gap of %.2f\\pm%.2f'%(np.mean(gap)*100, np.std(gap)*100))
 
 
