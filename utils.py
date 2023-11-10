@@ -69,8 +69,8 @@ class MNIST(Dataset):
 
     def convert(self, image, id):
         rgb_image = image.clone().repeat(3,1,1)
-        r,g,b = self.index_color_map[id]
-        r,g,b = r/255.0, g/255.0, b/255.0
+        c = self.index_color_map[id]
+        r,g,b = c[0]/255.0, c[1]/255.0, c[2]/255.0
         image = (image+1)/2
         rgb_image[0] = (image*r*2)-1
         rgb_image[1] = (image*g*2)-1
@@ -79,7 +79,7 @@ class MNIST(Dataset):
         sf = -1
         if self.return_sf:
             for label, color in self.color_map.items():
-                if (r,g,b) == color:
+                if c == color:
                     sf = label
                     break
 
