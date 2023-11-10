@@ -50,31 +50,31 @@ def main():
     # Add 'weighted' or other averages as needed
     }
 
-    for image_syn, label_syn in data:
-        for model_eval in model_eval_pool:
-            for it_eval in range(args.num_eval):
-                net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
-                net_eval.load_state_dict(model_weights[model_eval][it_eval])
-                pred, true, sf = evaluate_model(net_eval, testloader, args)
-                
-                metric_frame = MetricFrame(
-                    metrics=metrics,
-                    y_true=true,
-                    y_pred=pred,
-                    sensitive_features=sf
-                )
+    
+    for model_eval in model_eval_pool:
+        for it_eval in range(args.num_eval):
+            net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
+            net_eval.load_state_dict(model_weights[model_eval][it_eval])
+            pred, true, sf = evaluate_model(net_eval, testloader, args)
+            
+            metric_frame = MetricFrame(
+                metrics=metrics,
+                y_true=true,
+                y_pred=pred,
+                sensitive_features=sf
+            )
 
-                # Print the results
-                print("Metric Frame Results by Group:")
-                print(metric_frame.by_group)
+            # Print the results
+            print("Metric Frame Results by Group:")
+            print(metric_frame.by_group)
 
-                # You can also get the overall metrics (not broken down by group)
-                print("\nOverall Metrics:")
-                print(metric_frame.overall)
+            # You can also get the overall metrics (not broken down by group)
+            print("\nOverall Metrics:")
+            print(metric_frame.overall)
 
-                net_eval=None
-                gc.collect()
-                torch.cuda.empty_cache()
+            net_eval=None
+            gc.collect()
+            torch.cuda.empty_cache()
 
 
 
