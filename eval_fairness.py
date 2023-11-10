@@ -51,11 +51,12 @@ def main():
     }
 
     results = dict()
-    for key in metrics.keys():
-        results[key] = {
-            True: [],
-            False: []
-        }
+    for model in model_eval_pool:
+        for key in metrics.keys():
+            results[model][key] = {
+                True: [],
+                False: []
+            }
 
     
     for model_eval in model_eval_pool:
@@ -74,11 +75,11 @@ def main():
             )
 
             # Print the results
-            print("Metric Frame Results by Group:")
             res_grouped = metric_frame.by_group
             for key in res_grouped.keys():
                 minor, major = res_grouped[key]
-                print(minor, major)
+                results[model_eval][key][True].append(major)
+                results[model_eval][key][False].append(minor)
 
 
             net_eval=None
