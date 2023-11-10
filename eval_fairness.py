@@ -75,19 +75,8 @@ def main():
                 net_eval=None
                 gc.collect()
                 torch.cuda.empty_cache()
-            accs_all_exps[model_eval] += accs
-            model_weights[model_eval] += weights
 
 
-    print('\n==================== Final Results ====================\n')
-    for key in model_eval_pool:
-        accs = accs_all_exps[key]
-        print('Evaluate %d random %s on %d SynSets, %.2f%%\\pm%.2f%%'%(len(accs)/len(data), key, len(data), np.mean(accs)*100, np.std(accs)*100))
-
-    torch.save({
-            'weights': model_weights,
-            'accs': accs_all_exps
-        }, os.path.join(args.cond_path, 'eval.pt'))
 
 
 
