@@ -371,7 +371,7 @@ def main(args):
 
 
         param_loss = torch.tensor(0.0).to(args.device)
-        param_dist = torch.tensor(1e-5).to(args.device)
+        param_dist = torch.tensor(0.0).to(args.device)
 
         param_loss += torch.nn.functional.mse_loss(student_params[-1], target_params, reduction="sum")
         param_dist += torch.nn.functional.mse_loss(starting_params, target_params, reduction="sum")
