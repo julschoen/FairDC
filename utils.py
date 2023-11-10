@@ -475,7 +475,7 @@ def evaluate_model(net, testloader, args):
     with torch.no_grad():
         for x,y,s in testloader:
             p = net(x.to(args.device))
-
+            p = torch.argmax(p, dim=0)
             pred = np.concatenate((pred, p.detach().squeeze().cpu().numpy()), axis=0)
             true = np.concatenate((true, y.detach().squeeze().cpu().numpy()), axis=0)
             sf = np.concatenate((sf, s.detach().squeeze().cpu().numpy()), axis=0)
