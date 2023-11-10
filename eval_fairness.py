@@ -11,7 +11,7 @@ import argparse
 import torch
 import torch.nn as nn
 from torchvision.utils import save_image
-from utils import get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, TensorDataset, epoch, DiffAugment, ParamDiffAug
+from utils import get_dataset, get_network, get_eval_pool, evaluate_model, get_daparam, DiffAugment, ParamDiffAug
 
 def main():
 
