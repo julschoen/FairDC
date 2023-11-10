@@ -77,6 +77,7 @@ def main():
 
             # Print the results
             res_grouped = metric_frame.by_group
+            print(metric_frame.by_group)
             for key in res_grouped.keys():
                 minor, major = res_grouped[key]
                 results[model_eval][key][True].append(major)
