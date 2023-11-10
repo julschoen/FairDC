@@ -43,6 +43,7 @@ def main():
     data = torch.load(file)['data']
 
     for image_syn, label_syn in data:
+        image_syn = torch.clamp(image_syn, -1, 1)
 	    for model_eval in model_eval_pool:
 	        accs = []
 	        weights = []
