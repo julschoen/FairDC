@@ -467,17 +467,18 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
 
 def evaluate_model(net, testloader, args):
     net = net.to(args.device)
-    pred = []
-    true = []
-    sf = []
+    pred = np.array([])
+    true = np.array([])
+    sf = np.array([])
 
     
     with torch.no_grad():
         for x,y,s in testloader:
             p = net(x.to(args.device))
-            pred.append(p.detach().cpu().numpy())
-            true.append(y.detach().cpu().numpy())
-            sf.append(s.detach().cpu().numpy())
+
+            pred = np.concatenate((pred, p.detach().cpu().numpy()), axis=0)
+            true = np.concatenate((true, y.detach().cpu().numpy()), axis=0)
+            sf = np.concatenate((sf, s.detach().cpu().numpy()), axis=0)
 
     return pred, true, sf
 
