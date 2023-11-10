@@ -50,6 +50,13 @@ def main():
     # Add 'weighted' or other averages as needed
     }
 
+    results = dict()
+    for key in metrics.keys():
+        results[key] = {
+            True: [],
+            False: []
+        }
+
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
@@ -68,7 +75,9 @@ def main():
 
             # Print the results
             print("Metric Frame Results by Group:")
-            print(metric_frame.by_group.keys())
+            res_grouped = metric_frame.by_group
+            for key in res_grouped.keys():
+                print(res_grouped[key])
 
 
             net_eval=None
