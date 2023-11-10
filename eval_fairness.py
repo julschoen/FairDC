@@ -52,11 +52,13 @@ def main():
 
     results = dict()
     for model in model_eval_pool:
+        r = dict()
         for key in metrics.keys():
-            results[model][key] = {
+            r[key] = {
                 True: [],
                 False: []
             }
+        results[model] = r
 
     
     for model_eval in model_eval_pool:
