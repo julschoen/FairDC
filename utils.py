@@ -449,6 +449,22 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
     else:
         return net, acc_train_list, acc_test
 
+def evaluate_model(net, testloader, args):
+    net = net.to(args.device)
+    pred = []
+    true = []
+    sf = []
+
+    
+    with torch.no_grad():
+        for x,y,s in testloader:
+            p = net(x.to(args.device))
+            pred.append(p.detach().cpu().numpy())
+            true.append(y.detach().cpu().numpy())
+            sf.append(s.detach().cpu().numpy())
+
+    return pred, true, sf
+
 def augment(images, dc_aug_param, device):
     # This can be sped up in the future.
 
