@@ -77,8 +77,7 @@ def main():
             print("Metric Frame Results by Group:")
             res_grouped = metric_frame.by_group
             for key in res_grouped.keys():
-                for k in res_grouped[key]:
-                    print(res_grouped[key][k])
+                print(res_grouped[key])
 
 
             net_eval=None
