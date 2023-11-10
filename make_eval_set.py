@@ -21,7 +21,7 @@ def main():
 
     data_save = []
 
-    for run in os.path.listdir(args.cond_path):
+    for run in os.listdir(args.cond_path):
         image_syn = torch.load(os.path.join(args.cond_path, 'images_best.pt'))
         label_syn = torch.load(os.path.join(args.cond_path, 'labels_best.pt'))
         data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
