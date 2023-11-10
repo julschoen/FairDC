@@ -77,7 +77,6 @@ def main():
 
             # Print the results
             res_grouped = metric_frame.by_group
-            print(res_grouped)
             for key in res_grouped.keys():
                 minor, major = res_grouped[key]
                 results[model_eval][key][True].append(major)
@@ -90,12 +89,10 @@ def main():
 
     for model_eval in model_eval_pool:
         print(model_eval)
-        r = results[model]
+        r = results[model_eval]
         for key in r.keys():
-            print(key)
             gap = np.array(r[key][True]) - np.array(r[key][False])
-            print(gap)
-            print('Gap of %.2f\\pm%.2f'%(np.mean(gap)*100, np.std(gap)*100))
+            print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
 
 
 
