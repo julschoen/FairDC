@@ -88,6 +88,15 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
 
+    for model_eval in model_eval_pool:
+        print(model_eval)
+        r = results[model]
+        for key in r.keys():
+            print(key)
+            gap = r[key][True] - r[key][False]
+            print('Gap of %.2f\\pm%.2f'%(np.mean(gap)*100, np.std(gap)*100))
+
+
 
 
 
