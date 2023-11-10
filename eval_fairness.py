@@ -37,7 +37,7 @@ def main():
     for key in model_eval_pool:
         accs_all_exps[key] = []
 
-    model_weights = torch.load(os.path.join(args.cond_path, 'eval.pt'))['weights']
+    model_weights = torch.load(os.path.join(args.cond_path, 'eval_clipped.pt'))['weights']
 
     metrics = {
     'accuracy': accuracy_score,
