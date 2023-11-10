@@ -467,9 +467,9 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
 
 def evaluate_model(net, testloader, args):
     net = net.to(args.device)
-    pred = np.array([])
-    true = np.array([])
-    sf = np.array([])
+    pred = np.array([[]])
+    true = np.array([[]])
+    sf = np.array([[]])
 
     
     with torch.no_grad():
