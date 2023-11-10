@@ -15,7 +15,7 @@ from scipy.ndimage.interpolation import rotate as scipyrotate
 from networks import MLP, ConvNet, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, ResNet18BN_AP, ResNet18_AP, ViT
 
 class MNIST(Dataset):
-    def __init__(self, train=True, transform=None, majority=0.5):
+    def __init__(self, train=True, transform=None, majority=0.5, sf=False):
         self.train_dataset = datasets.MNIST(
             root="../data",
             train=train,
@@ -40,6 +40,7 @@ class MNIST(Dataset):
 
         # Precompute the indices for the majority and minority splits
         self.index_color_map = self._precompute_indices()
+        self.return_sf = sf
 
     def _precompute_indices(self):
         # Determine the number of samples per class
@@ -74,7 +75,18 @@ class MNIST(Dataset):
         rgb_image[0] = (image*r*2)-1
         rgb_image[1] = (image*g*2)-1
         rgb_image[2] = (image*b*2)-1
-        return rgb_image
+
+        sf = -1
+        if self.return_sf:
+            for label, color in self.color_map.items():
+                if (r,g,b) == color:
+                    sf = label
+                    break
+
+        if self.return_sf:
+            return rgb_image, sf
+        else:
+            return rgb_image
 
     def __len__(self):
         return self.train_dataset.__len__()
@@ -83,7 +95,11 @@ class MNIST(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
         x,y = self.train_dataset.__getitem__(idx)
-        return self.convert(x,idx),y
+        if self.return_sf:
+            im, sf = self.convert(x,idx)
+            return im, y, sf
+        else:
+            return self.convert(x,idx),y
 
 class Config:
     imagenette = [0, 217, 482, 491, 497, 566, 569, 571, 574, 701]
@@ -114,7 +130,7 @@ class Config:
 
 config = Config()
 
-def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None):
+def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.5):
     class_map = None
     loader_train_dict = None
     class_map_inv = None
@@ -126,8 +142,8 @@ def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None
         mean = (0.5)
         std = (0.5)
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
-        dst_train = MNIST(train=True, transform=transform) # no augmentation
-        dst_test = MNIST(train=False, transform=transform)
+        dst_train = MNIST(train=True, transform=transform, sf=sf, majority=color_split) # no augmentation
+        dst_test = MNIST(train=False, transform=transform, sf=sf, majority=color_split)
         class_names = [str(c) for c in range(num_classes)]
         class_map = {x:x for x in range(num_classes)}
         mean = (0.5, 0.5, 0.5)
