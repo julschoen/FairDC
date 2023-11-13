@@ -8,6 +8,15 @@ import torch.nn as nn
 from torchvision.utils import save_image
 from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, match_loss, get_time, TensorDataset, epoch, DiffAugment, ParamDiffAug
 
+def att_map(feats, p):
+    return torch.pow(feats.sum(dim=1), p)
+
+def l_sam(att_real, att_syn):
+    att_real = att_real.reshape(att_real.shape[0], -1)
+    att_syn = att_syn.reshape(att_syn.shape[0], -1)
+    att_real = att_real/torch.norm(att_real,2)
+    att_syn = att_syn/torch.norm(att_syn,2)
+    return torch.sum((torch.mean(att_syn, dim=0) - torch.mean(att_real, dim=0))**2)
 
 def main():
 
@@ -137,6 +146,7 @@ def main():
 
             ''' Train synthetic data '''
             net = get_network(args.model, channel, num_classes, im_size).to(args.device) # get a random model
+            print(net)
             net.train()
             for param in list(net.parameters()):
                 param.requires_grad = False
