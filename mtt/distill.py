@@ -413,7 +413,7 @@ def main(args):
             del _
 
         if it%10 == 0:
-            print('%s iter = %04d, loss = %.4f' % (get_time(), it, grand_loss.item()))
+            print('%s iter = %04d, loss = %.4f' % (get_time(), it, grand_loss.item()), flush=True)
 
     wandb.finish()
     tracker.stop()

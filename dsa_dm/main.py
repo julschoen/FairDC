@@ -233,7 +233,7 @@ def main():
             tracker.epoch_end()
 
             if it%10 == 0:
-                print('%s iter = %04d, loss = %.4f' % (get_time(), it, loss_avg))
+                print('%s iter = %04d, loss = %.4f' % (get_time(), it, loss_avg), flush=True)
 
             if it == args.Iteration: # only record the final results
                 data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
