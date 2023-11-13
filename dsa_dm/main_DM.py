@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 from torchvision.utils import save_image
 from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, match_loss, get_time, TensorDataset, epoch, DiffAugment, ParamDiffAug
+from carbontracker.tracker import CarbonTracker
 
 
 def main():
@@ -103,8 +104,13 @@ def main():
         optimizer_img.zero_grad()
         print('%s training begins'%get_time())
 
-        for it in range(args.Iteration+1):
+        if not os.path.isdir('../carbon'):
+            os.mkdir('../carbon')
+        if not os.path.isdir('../carbon/dm'):
+            os.mkdir('../carbon/dm')
+        tracker = CarbonTracker(epochs=args.Iteration, log_dir='../carbon/dm/')
 
+        for it in range(args.Iteration+1):
             ''' Evaluate synthetic data '''
             if it in eval_it_pool:
                 for model_eval in model_eval_pool:
@@ -134,8 +140,8 @@ def main():
                 save_image(image_syn_vis, save_name, nrow=args.ipc) # Trying normalize = True/False may get better visual effects.
 
 
-
             ''' Train synthetic data '''
+            tracker.epoch_start()
             net = get_network(args.model, channel, num_classes, im_size).to(args.device) # get a random model
             net.train()
             for param in list(net.parameters()):
@@ -195,6 +201,7 @@ def main():
 
 
             loss_avg /= (num_classes)
+            tracker.epoch_end()
 
             if it%10 == 0:
                 print('%s iter = %05d, loss = %.4f' % (get_time(), it, loss_avg))
@@ -203,11 +210,11 @@ def main():
                 data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
                 torch.save({'data': data_save, 'accs_all_exps': accs_all_exps, }, os.path.join(args.save_path, 'res_%s_%s_%s_%dipc.pt'%(args.method, args.dataset, args.model, args.ipc)))
 
-
     print('\n==================== Final Results ====================\n')
     for key in model_eval_pool:
         accs = accs_all_exps[key]
         print('Run %d experiments, train on %s, evaluate %d random %s, mean  = %.2f%%  std = %.2f%%'%(args.num_exp, args.model, len(accs), key, np.mean(accs)*100, np.std(accs)*100))
+    tracker.stop()
 
 
 

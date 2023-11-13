@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 from torchvision.utils import save_image
 from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, match_loss, get_time, TensorDataset, epoch, DiffAugment, ParamDiffAug
+from carbontracker.tracker import CarbonTracker
 
 
 def main():
@@ -103,6 +104,14 @@ def main():
         optimizer_img = torch.optim.SGD([image_syn, ], lr=args.lr_img, momentum=0.5) # optimizer_img for synthetic data
         optimizer_img.zero_grad()
         criterion = nn.CrossEntropyLoss().to(args.device)
+
+        if not os.path.isdir('../carbon'):
+            os.mkdir('../carbon')
+        tracker_path = os.path.join('../carbon', args.method)
+        if not os.path.isdir(tracker_path):
+            os.mkdir(tracker_path)
+        tracker = CarbonTracker(epochs=args.Iteration, log_dir=tracker_path)
+
         print('%s training begins'%get_time())
 
         for it in range(args.Iteration+1):
@@ -147,6 +156,7 @@ def main():
 
 
             ''' Train synthetic data '''
+            tracker.epoch_start()
             net = get_network(args.model, channel, num_classes, im_size).to(args.device) # get a random model
             net.train()
             net_parameters = list(net.parameters())
@@ -220,6 +230,8 @@ def main():
 
             loss_avg /= (num_classes*args.outer_loop)
 
+            tracker.epoch_end()
+
             if it%10 == 0:
                 print('%s iter = %04d, loss = %.4f' % (get_time(), it, loss_avg))
 
@@ -232,6 +244,8 @@ def main():
     for key in model_eval_pool:
         accs = accs_all_exps[key]
         print('Run %d experiments, train on %s, evaluate %d random %s, mean  = %.2f%%  std = %.2f%%'%(args.num_exp, args.model, len(accs), key, np.mean(accs)*100, np.std(accs)*100))
+
+    tracker.stop()
 
 
 

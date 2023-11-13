@@ -11,6 +11,7 @@ import wandb
 import copy
 import random
 from reparam_module import ReparamModule
+from carbontracker.tracker import CarbonTracker
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -62,6 +63,12 @@ def main(args):
                job_type="CleanRepo",
                config=args,
                )
+
+    if not os.path.isdir('../carbon'):
+        os.mkdir('../carbon')
+    if not os.path.isdir('../carbon/mtt'):
+        os.mkdir('../carbon/mtt')
+    tracker = CarbonTracker(epochs=args.Iteration, log_dir='../carbon/mtt/')
 
     args = type('', (), {})()
 
@@ -291,6 +298,7 @@ def main(args):
 
         wandb.log({"Synthetic_LR": syn_lr.detach().cpu()}, step=it)
 
+        tracker.epoch_start()
         student_net = get_network(args.model, channel, num_classes, im_size, dist=False).to(args.device)  # get a random model
 
         student_net = ReparamModule(student_net)
@@ -394,6 +402,8 @@ def main(args):
         optimizer_img.step()
         optimizer_lr.step()
 
+        tracker.epoch_end()
+
         syn_lr.data.clamp_(1e-8)
 
         wandb.log({"Grand_Loss": grand_loss.detach().cpu(),
@@ -406,6 +416,7 @@ def main(args):
             print('%s iter = %04d, loss = %.4f' % (get_time(), it, grand_loss.item()))
 
     wandb.finish()
+    tracker.stop()
 
 
 if __name__ == '__main__':
