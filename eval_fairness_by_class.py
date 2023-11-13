@@ -103,7 +103,7 @@ def main():
             for key in r.keys():
                 for k in r[key].keys():
                     acc = r[key][k]
-                    print('%s %s Acc %.2f\\pm%.2f'%(key, np.mean(acc)*100, np.std(acc)*100))
+                    print('%s %s Acc %.2f\\pm%.2f'%(key, k, np.mean(acc)*100, np.std(acc)*100))
 
 
 
