@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 from torchvision.utils import save_image
 from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, match_loss, get_time, TensorDataset, epoch, DiffAugment, ParamDiffAug
+from carbontracker.tracker import CarbonTracker
 
 def att_map(feats, p=4):
     return torch.pow(feats.sum(dim=1), p)
@@ -92,7 +93,11 @@ def main():
         images_all = torch.cat(images_all, dim=0).to(args.device)
         labels_all = torch.tensor(labels_all, dtype=torch.long, device=args.device)
 
-
+        if not os.path.isdir('../carbon'):
+            os.mkdir('../carbon')
+        if not os.path.isdir('../carbon/dataDAM'):
+            os.mkdir('../carbon/dataDAM')
+        tracker = CarbonTracker(epochs=args.Iteration, log_dir='../carbon/dataDAM/')
 
         for c in range(num_classes):
             print('class c = %d: %d real images'%(c, len(indices_class[c])))
@@ -123,7 +128,6 @@ def main():
         print('%s training begins'%get_time())
 
         for it in range(args.Iteration+1):
-
             ''' Evaluate synthetic data '''
             if it in eval_it_pool:
                 for model_eval in model_eval_pool:
@@ -155,6 +159,7 @@ def main():
 
 
             ''' Train synthetic data '''
+            tracker.epoch_start()
             net = get_network(args.model, channel, num_classes, im_size).to(args.device) # get a random model
             net.train()
             for param in list(net.parameters()):
@@ -222,8 +227,10 @@ def main():
 
             loss_avg /= (num_classes)
 
+            tracker.epoch_end()
+
             if it%10 == 0:
-                print('%s iter = %05d, loss = %.4f' % (get_time(), it, loss_avg))
+                print('%s iter = %05d, loss = %.4f' % (get_time(), it, loss_avg),flush=True)
 
             if it == args.Iteration: # only record the final results
                 data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
@@ -234,6 +241,7 @@ def main():
     for key in model_eval_pool:
         accs = accs_all_exps[key]
         print('Run %d experiments, train on %s, evaluate %d random %s, mean  = %.2f%%  std = %.2f%%'%(args.num_exp, args.model, len(accs), key, np.mean(accs)*100, np.std(accs)*100))
+    tracker.stop()
 
 
 
