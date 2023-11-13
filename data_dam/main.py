@@ -19,7 +19,7 @@ def l_sam(att_real, att_syn):
     return torch.sum((torch.mean(att_syn, dim=0) - torch.mean(att_real, dim=0))**2)
 
 def sam_full(out_real, out_fake, args):
-    loss = torch.tenor([0], dtype=torch.float, device=args.device)
+    loss = torch.tensor([0], dtype=torch.float, device=args.device)
     for l, f_t_l in enumerate(out_real):
         a_t_l = att_map(f_t_l)
         a_s_l = att_map(out_fake[l])
