@@ -47,13 +47,16 @@ class ConvNet(nn.Module):
         out = self.classifier(out)
         return out
 
-    def embed(self, x):
+    def embed(self, x, detach=False):
         feats = []
         out = x
         for _, module in self.features.named_children():
             out = module(out)
             if isinstance(module, nn.AvgPool2d):
-                feats.append(out.clone())
+                if detach:
+                    feats.append(out.clone().detach())
+                else:
+                    feats.append(out.clone())
         return feats
 
     def _get_activation(self, net_act):
