@@ -90,7 +90,7 @@ def main():
                 res_grouped = metric_frame.by_group
                 for key in res_grouped.keys():
                     res = res_grouped[key]
-                    print(res)
+                    print(res.keys())
                     results[model_eval][key][True].append(major)
                     results[model_eval][key][False].append(minor)
 
