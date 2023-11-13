@@ -96,6 +96,43 @@ def main():
                 net_eval=None
                 gc.collect()
                 torch.cuda.empty_cache()
+import torch
+import torch.distributions as dist
+import matplotlib.pyplot as plt
+
+# Define your target distribution (e.g., a normal distribution)
+target_mean = 5.0
+target_stddev = 2.0
+target_distribution = dist.Normal(target_mean, target_stddev)
+
+# Generate random samples from the target distribution
+num_samples = 10000
+samples = target_distribution.sample((num_samples,))
+
+# Calculate the CDF of the target distribution
+cdf_values = target_distribution.cdf(samples)
+
+# Transform the samples to a uniform distribution using the inverse CDF
+uniform_samples = torch.rand_like(cdf_values)
+
+# Plot the original and transformed distributions for visualization
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.hist(samples.numpy(), bins=50, density=True, alpha=0.5, color='blue', label='Target Distribution')
+plt.title('Original Distribution')
+plt.xlabel('Value')
+plt.ylabel('Density')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.hist(uniform_samples.numpy(), bins=50, density=True, alpha=0.5, color='green', label='Uniform Distribution')
+plt.title('Uniform Approximation')
+plt.xlabel('Value')
+plt.ylabel('Density')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
 
         for model_eval in model_eval_pool:
             print(model_eval, c)
