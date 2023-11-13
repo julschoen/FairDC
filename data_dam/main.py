@@ -182,7 +182,7 @@ def main():
                     att_syn = output_syn[:-1]
 
                     output_real = output_real[-1].reshape(img_real.shape[0], -1)
-                    output_syn = output_real[-1].reshape(img_syn.shape[0], -1)
+                    output_syn = output_syn[-1].reshape(img_syn.shape[0], -1)
 
                     loss += sam_full(att_real, att_syn, args)
                     loss += torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
