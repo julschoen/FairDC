@@ -52,7 +52,7 @@ def main():
     print('\n==================== Final Results ====================\n')
     for key in model_eval_pool:
         accs = accs_all_exps[key]
-        print('Evaluate %d random %s on Full, %.2f%%\\pm%.2f%%'%(len(accs), key, np.mean(accs)*100, np.std(accs)*100))
+        print('Evaluate %d random %s on Full, %.2f\\pm%.2f'%(len(accs), key, np.mean(accs)*100, np.std(accs)*100))
 
     torch.save({
             'weights': model_weights,
