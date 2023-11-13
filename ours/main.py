@@ -193,10 +193,8 @@ def main():
                 images_syn_all = torch.cat(images_syn_all, dim=0)
 
                 output_real = embed(images_real_all).detach()
-                output_syn = embed(images_syn_all)
-
                 output_real = to_uniform(output_real)
-                output_syn = to_uniform(output_syn)
+                output_syn = embed(images_syn_all)
 
                 loss += torch.sum((torch.mean(output_real.reshape(num_classes, args.batch_real, -1), dim=1) - torch.mean(output_syn.reshape(num_classes, args.ipc, -1), dim=1))**2)
 
