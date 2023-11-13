@@ -91,7 +91,7 @@ def main():
                 for key in res_grouped.keys():
                     res = res_grouped[key]
                     for k in res.keys():
-                        results[model_eval][key][k].append(res[key][k])
+                        results[model_eval][key][k].append(res[k])
 
                 net_eval=None
                 gc.collect()
