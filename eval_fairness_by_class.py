@@ -54,8 +54,16 @@ def main():
     for model in model_eval_pool:
         for key in metrics.keys():
             results[model] = { key : {
-                    True: [],
-                    False: []
+                    0: [],
+                    1: [],
+                    2: [],
+                    3: [],
+                    4: [],
+                    5: [],
+                    6: [],
+                    7: [],
+                    8: [],
+                    9: []
                 }
             }
 
@@ -81,7 +89,8 @@ def main():
                 # Print the results
                 res_grouped = metric_frame.by_group
                 for key in res_grouped.keys():
-                    minor, major = res_grouped[key]
+                    res = res_grouped[key]
+                    print(res)
                     results[model_eval][key][True].append(major)
                     results[model_eval][key][False].append(minor)
 
