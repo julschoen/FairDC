@@ -47,7 +47,7 @@ def main():
     parser.add_argument('--data_path', type=str, default='data', help='dataset path')
     parser.add_argument('--save_path', type=str, default='result', help='path to save results')
     parser.add_argument('--dis_metric', type=str, default='ours', help='distance metric')
-    parser.add_argument('--lam_mmd', type=float, default=)
+    parser.add_argument('--lam_mmd', type=float, default=0.01)
 
     args = parser.parse_args()
     args.method = 'DM'
@@ -186,7 +186,7 @@ def main():
                     output_syn = output_syn[-1].reshape(img_syn.shape[0], -1)
 
                     loss += sam_full(att_real, att_syn, args)
-                    loss += torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
+                    loss += args.lam_mmd*torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
 
             else: # for ConvNetBN
                 images_real_all = []
