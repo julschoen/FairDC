@@ -48,9 +48,22 @@ class ConvNet(nn.Module):
         return out
 
     def embed(self, x):
-        out = self.features(x)
-        out = out.view(out.size(0), -1)
+        feats = []
+        out = x
+        for _, module in self.features.named_children():
+            out = module(out)
+            if isinstance(module, nn.AvgPool2d):
+                feats.append(out.clone())
         return out
+
+    def acts(self):
+        out = x
+        for name, module in self.features.named_children():
+            if isinstance(module, nn.AvgPool2d)
+            out = module(out)
+            if name == layer_name:
+                return out
+        return None
 
     def _get_activation(self, net_act):
         if net_act == 'sigmoid':

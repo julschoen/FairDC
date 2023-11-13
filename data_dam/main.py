@@ -18,6 +18,15 @@ def l_sam(att_real, att_syn):
     att_syn = att_syn/torch.norm(att_syn,2)
     return torch.sum((torch.mean(att_syn, dim=0) - torch.mean(att_real, dim=0))**2)
 
+def sam_full(out_real, out_fake, args):
+    loss = torch.tenor([0], dtype=torch.float, device=args.device)
+    for l, f_t_l in enumerate(out_real):
+        a_t_l = att_map(f_t_l)
+        a_s_l = att_map(out_fake[l])
+        loss.add_(l_sam(a_t_l, a_s_l))
+    return loss
+
+
 def main():
 
     parser = argparse.ArgumentParser(description='Parameter Processing')
@@ -146,7 +155,6 @@ def main():
 
             ''' Train synthetic data '''
             net = get_network(args.model, channel, num_classes, im_size).to(args.device) # get a random model
-            print(net)
             net.train()
             for param in list(net.parameters()):
                 param.requires_grad = False
@@ -170,6 +178,13 @@ def main():
                     output_real = embed(img_real).detach()
                     output_syn = embed(img_syn)
 
+                    att_real = output_real[:-1]
+                    att_syn = output_syn[:-1]
+
+                    output_real = output_real[-1].reshape(img_real.shape[0], -1)
+                    output_syn = output_real[-1].reshape(img_syn.shape[0], -1)
+
+                    loss += sam_full(att_real, att_syn, args)
                     loss += torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
 
             else: # for ConvNetBN
