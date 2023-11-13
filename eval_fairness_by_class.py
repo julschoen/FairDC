@@ -90,10 +90,8 @@ def main():
                 res_grouped = metric_frame.by_group
                 for key in res_grouped.keys():
                     res = res_grouped[key]
-                    print(res.keys())
-                    results[model_eval][key][True].append(major)
-                    results[model_eval][key][False].append(minor)
-
+                    for k in res.keys():
+                        results[model_eval][key][k].append(major)
 
                 net_eval=None
                 gc.collect()
@@ -103,8 +101,9 @@ def main():
             print(model_eval, c)
             r = results[model_eval]
             for key in r.keys():
-                gap = np.array(r[key][True]) - np.array(r[key][False])
-                print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
+                for k in r[key].keys():
+                    acc = r[key][k]
+                    print('%s %s Acc %.2f\\pm%.2f'%(key, np.mean(acc)*100, np.std(acc)*100))
 
 
 
