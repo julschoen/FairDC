@@ -8,7 +8,7 @@ import torch.nn as nn
 from torchvision.utils import save_image
 from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, match_loss, get_time, TensorDataset, epoch, DiffAugment, ParamDiffAug
 
-def att_map(feats, p):
+def att_map(feats, p=4):
     return torch.pow(feats.sum(dim=1), p)
 
 def l_sam(att_real, att_syn):
