@@ -19,7 +19,7 @@ def l_sam(att_real, att_syn):
     return torch.sum((torch.mean(att_syn, dim=0) - torch.mean(att_real, dim=0))**2)
 
 def sam_full(out_real, out_fake, args):
-    loss = torch.tensor([0], dtype=torch.float, device=args.device)
+    loss = torch.tensor(0, dtype=torch.float, device=args.device)
     for l, f_t_l in enumerate(out_real):
         a_t_l = att_map(f_t_l)
         a_s_l = att_map(out_fake[l])
@@ -47,6 +47,7 @@ def main():
     parser.add_argument('--data_path', type=str, default='data', help='dataset path')
     parser.add_argument('--save_path', type=str, default='result', help='path to save results')
     parser.add_argument('--dis_metric', type=str, default='ours', help='distance metric')
+    parser.add_argument('--lam_mmd', type=float, default=)
 
     args = parser.parse_args()
     args.method = 'DM'
