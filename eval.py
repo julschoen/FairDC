@@ -68,7 +68,7 @@ def main():
     torch.save({
             'weights': model_weights,
             'accs': accs_all_exps
-        }, os.path.join(args.cond_path, 'eval_lr.pt'))
+        }, os.path.join(args.cond_path, 'eval.pt'))
 
 
 
