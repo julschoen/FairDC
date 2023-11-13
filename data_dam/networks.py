@@ -54,7 +54,7 @@ class ConvNet(nn.Module):
             out = module(out)
             if isinstance(module, nn.AvgPool2d):
                 feats.append(out.clone())
-        return out
+        return feats
 
     def _get_activation(self, net_act):
         if net_act == 'sigmoid':
