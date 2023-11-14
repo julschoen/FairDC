@@ -11,7 +11,7 @@ def main():
     parser.add_argument('--dataset', type=str, default='MNIST', help='dataset')
     parser.add_argument('--ipc', type=int, default=10, help='image(s) per class')
     parser.add_argument('--num_exp', type=int, default=5, help='the number of experiments')
-    args.add_argument('--save_path', type=str, default='random')
+    parser.add_argument('--save_path', type=str, default='random')
     args = parser.parse_args()
 
     if not os.path.exists(args.save_path):
