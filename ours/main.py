@@ -35,6 +35,7 @@ def main():
     parser.add_argument('--data_path', type=str, default='data', help='dataset path')
     parser.add_argument('--save_path', type=str, default='result', help='path to save results')
     parser.add_argument('--dis_metric', type=str, default='ours', help='distance metric')
+    parser.add_argument('--kld',type=bool,default=False)
 
     args = parser.parse_args()
     args.method = 'DM'
@@ -193,8 +194,16 @@ def main():
                 images_syn_all = torch.cat(images_syn_all, dim=0)
 
                 output_real = embed(images_real_all).detach()
-                output_real = to_uniform(output_real)
                 output_syn = embed(images_syn_all)
+
+                if args.kld:
+                    p = torch.distributions.normal.Normal(output_real.mean(), 10000)
+                    q = torch.distributions.normal.Normal(output_syn.mean(), output_syn.std())
+                        
+                    loss += torch.distributions.kl_divergence(p, q)
+                else:
+                    output_real = to_uniform(output_real)
+                
 
                 loss += torch.sum((torch.mean(output_real.reshape(num_classes, args.batch_real, -1), dim=1) - torch.mean(output_syn.reshape(num_classes, args.ipc, -1), dim=1))**2)
 
