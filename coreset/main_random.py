@@ -18,7 +18,7 @@ def main():
         os.mkdir(args.save_path)
 
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "")
-
+    data_save = []
 
     for exp in range(args.num_exp):
         print('\n================== Exp %d ==================\n '%exp)
