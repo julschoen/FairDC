@@ -169,10 +169,19 @@ def main():
                         img_real = DiffAugment(img_real, args.dsa_strategy, seed=seed, param=args.dsa_param)
                         img_syn = DiffAugment(img_syn, args.dsa_strategy, seed=seed, param=args.dsa_param)
 
-                    output_real = embed(img_real).detach()
-                    output_syn = embed(img_syn)
+                    output_real = embed(images_real_all).detach()
+                    output_syn = embed(images_syn_all)
 
-                    loss += torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
+                    if args.kld:
+                        p = torch.distributions.normal.Normal(output_real.mean(), 10000)
+                        q = torch.distributions.normal.Normal(output_syn.mean(), output_syn.std())
+                        kld = torch.distributions.kl_divergence(p, q)
+                        loss += kld
+                    else:
+                        output_real = to_uniform(output_real)
+                    
+                    mmd = torch.sum((torch.mean(output_real.reshape(num_classes, args.batch_real, -1), dim=1) - torch.mean(output_syn.reshape(num_classes, args.ipc, -1), dim=1))**2)
+                    loss += mmd
 
             else: # for ConvNetBN
                 images_real_all = []
