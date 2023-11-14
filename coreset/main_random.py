@@ -23,7 +23,6 @@ def main():
     for exp in range(args.num_exp):
         print('\n================== Exp %d ==================\n '%exp)
         print('Hyper-parameters: \n', args.__dict__)
-        print('Evaluation model pool: ', model_eval_pool)
 
         ''' organize the real dataset '''
         images_all = []
