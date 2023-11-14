@@ -173,7 +173,7 @@ def main():
                     output_syn = embed(img_syn)
 
                     if args.kld:
-                        p = torch.distributions.normal.Normal(output_real.mean(), 10000)
+                        p = torch.distributions.normal.Normal(output_real.mean(), 100)
                         q = torch.distributions.normal.Normal(output_syn.mean(), output_syn.std())
                         kld = torch.distributions.kl_divergence(p, q)
                         loss += kld
