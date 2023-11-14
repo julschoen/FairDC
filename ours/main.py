@@ -169,8 +169,8 @@ def main():
                         img_real = DiffAugment(img_real, args.dsa_strategy, seed=seed, param=args.dsa_param)
                         img_syn = DiffAugment(img_syn, args.dsa_strategy, seed=seed, param=args.dsa_param)
 
-                    output_real = embed(images_real).detach()
-                    output_syn = embed(images_syn)
+                    output_real = embed(img_real).detach()
+                    output_syn = embed(img_syn)
 
                     if args.kld:
                         p = torch.distributions.normal.Normal(output_real.mean(), 10000)
