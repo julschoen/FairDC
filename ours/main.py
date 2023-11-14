@@ -199,13 +199,13 @@ def main():
                 if args.kld:
                     p = torch.distributions.normal.Normal(output_real.mean(), 10000)
                     q = torch.distributions.normal.Normal(output_syn.mean(), output_syn.std())
-                        
-                    loss += torch.distributions.kl_divergence(p, q)
+                    kld = torch.distributions.kl_divergence(p, q)
+                    loss += kld
                 else:
                     output_real = to_uniform(output_real)
                 
-
-                loss += torch.sum((torch.mean(output_real.reshape(num_classes, args.batch_real, -1), dim=1) - torch.mean(output_syn.reshape(num_classes, args.ipc, -1), dim=1))**2)
+                mmd = torch.sum((torch.mean(output_real.reshape(num_classes, args.batch_real, -1), dim=1) - torch.mean(output_syn.reshape(num_classes, args.ipc, -1), dim=1))**2)
+                loss += mmd
 
 
 
@@ -219,7 +219,10 @@ def main():
             tracker.epoch_end()
 
             if it%10 == 0:
-                print('%s iter = %05d, loss = %.4f' % (get_time(), it, loss_avg), flush=True)
+                if kld:
+                    print('%s iter = %05d, loss = %.4f, MMD = %.4f, KLD = %.4f' % (get_time(), it, loss_avg, mmd, kld), flush=True)
+                else:
+                    print('%s iter = %05d, loss = %.4f' % (get_time(), it, loss_avg), flush=True)
 
             if it == args.Iteration: # only record the final results
                 data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
