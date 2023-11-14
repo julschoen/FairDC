@@ -36,6 +36,7 @@ def main():
     parser.add_argument('--save_path', type=str, default='result', help='path to save results')
     parser.add_argument('--dis_metric', type=str, default='ours', help='distance metric')
     parser.add_argument('--kld',type=bool,default=False)
+    parser.add_argument('--kld_coef',type=float,default=0.0001)
 
     args = parser.parse_args()
     args.method = 'DM'
@@ -175,7 +176,7 @@ def main():
                     if args.kld:
                         p = torch.distributions.normal.Normal(output_real.mean(), 100)
                         q = torch.distributions.normal.Normal(output_syn.mean(), output_syn.std())
-                        kld = torch.distributions.kl_divergence(p, q)
+                        kld = args.kld_coef*torch.distributions.kl_divergence(p, q)
                         loss += kld
                     else:
                         output_real = to_uniform(output_real)
@@ -208,7 +209,7 @@ def main():
                 if args.kld:
                     p = torch.distributions.normal.Normal(output_real.mean(), 10000)
                     q = torch.distributions.normal.Normal(output_syn.mean(), output_syn.std())
-                    kld = torch.distributions.kl_divergence(p, q)
+                    kld = args.kld_coef*torch.distributions.kl_divergence(p, q)
                     loss += kld
                 else:
                     output_real = to_uniform(output_real)
