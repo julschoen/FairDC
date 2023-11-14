@@ -48,7 +48,7 @@ def main():
             image_syn.data[c*args.ipc:(c+1)*args.ipc] = get_images(c, args.ipc).detach().data
         
         data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
-        torch.save({'data': data_save, 'accs_all_exps': accs_all_exps, }, os.path.join(args.save_path, 'res_%s_%dipc.pt'%(args.dataset, args.ipc)))
+        torch.save({'data': data_save}, os.path.join(args.save_path, 'res_%s_%dipc.pt'%(args.dataset, args.ipc)))
 
 
 if __name__ == '__main__':
