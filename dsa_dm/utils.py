@@ -44,7 +44,6 @@ class MNIST(Dataset):
 
         index_color_map = {}
         for class_label, class_color in self.color_map.items():
-            print(class_label, class_color)
             class_indices = indices[targets == class_label]
             np.random.shuffle(class_indices)
 
