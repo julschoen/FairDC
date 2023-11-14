@@ -219,7 +219,7 @@ def main():
             tracker.epoch_end()
 
             if it%10 == 0:
-                if kld:
+                if args.kld:
                     print('%s iter = %05d, loss = %.4f, MMD = %.4f, KLD = %.4f' % (get_time(), it, loss_avg, mmd, kld), flush=True)
                 else:
                     print('%s iter = %05d, loss = %.4f' % (get_time(), it, loss_avg), flush=True)
