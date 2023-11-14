@@ -111,9 +111,9 @@ def main():
 
         if not os.path.isdir('../carbon'):
             os.mkdir('../carbon')
-        if not os.path.isdir('../carbon/dm'):
-            os.mkdir('../carbon/dm')
-        tracker = CarbonTracker(epochs=args.Iteration, log_dir='../carbon/dm/')
+        if not os.path.isdir('../carbon/ours'):
+            os.mkdir('../carbon/ours')
+        tracker = CarbonTracker(epochs=args.Iteration, log_dir='../carbon/ours/')
 
         for it in range(args.Iteration+1):
             ''' Evaluate synthetic data '''
