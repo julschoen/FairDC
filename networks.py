@@ -225,7 +225,7 @@ class AlexNet(nn.Module):
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
-        self.fc = nn.Linear(192 * 3 * 3, num_classes)
+        self.fc = nn.Linear(192 * 4 * 4, num_classes)
 
     def forward(self, x):
         x = self.features(x)
@@ -654,9 +654,9 @@ class SPT(nn.Module):
         return self.to_patch_tokens(x_with_shifts)
 
 class ViT(nn.Module):
-    def __init__(self, cl=True, image_size=(32,32), patch_size=4, num_classes=10, dim=256, depth=6, heads=8, mlp_dim=256, pool = 'cls', channels = 1, dim_head = 64, dropout = 0, emb_dropout = 0):
+    def __init__(self, cl=True, im_size=(32,32), patch_size=4, num_classes=10, dim=256, depth=6, heads=8, mlp_dim=256, pool = 'cls', channels = 1, dim_head = 64, dropout = 0, emb_dropout = 0):
         super().__init__()
-        image_height, image_width = image_size
+        image_height, image_width = im_size
         patch_height, patch_width = pair(patch_size)
 
         self.cl = cl
