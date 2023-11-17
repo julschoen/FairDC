@@ -30,6 +30,7 @@ def main():
     parser.add_argument('--data_path', type=str, default='data', help='dataset path')
     parser.add_argument('--save_path', type=str, default='result', help='path to save results')
     parser.add_argument('--dis_metric', type=str, default='ours', help='distance metric')
+    parser.add_argument('--attributes', type=str, default='Blond_Hair')
 
     args = parser.parse_args()
     args.method = 'DM'
