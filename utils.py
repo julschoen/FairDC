@@ -14,6 +14,32 @@ from torchvision import datasets, transforms
 from scipy.ndimage.interpolation import rotate as scipyrotate
 from networks import MLP, ConvNet, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, ResNet18BN_AP, ResNet18_AP, ViT
 
+class CelebA(Dataset):
+    """Face Landmarks dataset."""
+    def __init__(self, split='train', transform=None, attributes=['Blond_Hair']):
+        self.train_dataset = datasets.CelebA(
+            root="../../data",
+            split=split,
+            download=False,
+            transform=transform,
+        )
+
+        self.classes = attributes
+        self.target_inds = []
+        for attr in self.classes:
+            self.target_inds.append(self.train_dataset.attr_names.index(attr))
+
+    def __len__(self):
+        return self.train_dataset.__len__()
+
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+
+        x,y = self.train_dataset.__getitem__(idx)
+
+        return x, torch.eye(2)[y[self.target_inds]]
+
 class MNIST(Dataset):
     def __init__(self, train=True, transform=None, majority=0.5, sf=False):
         self.train_dataset = datasets.MNIST(
@@ -206,6 +232,7 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
                                             transforms.Normalize(mean=mean, std=std),
                                             transforms.Resize(im_size),
                                             transforms.CenterCrop(im_size)])
+
 
         dst_train = datasets.ImageNet(data_path, split="train", transform=transform) # no augmentation
         dst_train_dict = {c : torch.utils.data.Subset(dst_train, np.squeeze(np.argwhere(np.equal(dst_train.targets, config.img_net_classes[c])))) for c in range(len(config.img_net_classes))}
