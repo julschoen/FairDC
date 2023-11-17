@@ -182,17 +182,17 @@ class ConvNetGAP(nn.Module):
 
 ''' LeNet '''
 class LeNet(nn.Module):
-    def __init__(self, channel, num_classes):
+    def __init__(self, channel, num_classes, im_size=(32,32)):
         super(LeNet, self).__init__()
         self.features = nn.Sequential(
-            nn.Conv2d(channel, 6, kernel_size=5, padding=2 if channel==1 else 0),
+            nn.Conv2d(channel, 6, kernel_size=5, padding=2 if (im_size[0]==28) or (channel==1) else 0),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(6, 16, kernel_size=5),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
-        self.fc_1 = nn.Linear(16*4*4, 120)
+        self.fc_1 = nn.Linear(16*5*5, 120)
         self.fc_2 = nn.Linear(120, 84)
         self.fc_3 = nn.Linear(84, num_classes)
 
@@ -208,10 +208,10 @@ class LeNet(nn.Module):
 
 ''' AlexNet '''
 class AlexNet(nn.Module):
-    def __init__(self, channel, num_classes):
+    def __init__(self, channel, num_classes, im_size=(32,32)):
         super(AlexNet, self).__init__()
         self.features = nn.Sequential(
-            nn.Conv2d(channel, 128, kernel_size=5, stride=1, padding=4 if channel==1 else 2),
+            nn.Conv2d(channel, 128, kernel_size=5, stride=1, padding=4 if channel==1(im_size[0]==28) or (channel==1) else 2),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(128, 192, kernel_size=5, padding=2),
@@ -539,7 +539,7 @@ class ResNetImageNet(nn.Module):
 def ResNet18BN(channel, num_classes):
     return ResNet(BasicBlock, [2,2,2,2], channel=channel, num_classes=num_classes, norm='batchnorm')
 
-def ResNet18(channel, num_classes):
+def ResNet18(channel, num_classes,im_size=(32,32)):
     return ResNet(BasicBlock, [2,2,2,2], channel=channel, num_classes=num_classes)
 
 def ResNet34(channel, num_classes):
@@ -654,9 +654,9 @@ class SPT(nn.Module):
         return self.to_patch_tokens(x_with_shifts)
 
 class ViT(nn.Module):
-    def __init__(self, cl=True, image_size=28, patch_size=4, num_classes=10, dim=256, depth=6, heads=8, mlp_dim=256, pool = 'cls', channels = 1, dim_head = 64, dropout = 0, emb_dropout = 0):
+    def __init__(self, cl=True, image_size=(32,32), patch_size=4, num_classes=10, dim=256, depth=6, heads=8, mlp_dim=256, pool = 'cls', channels = 1, dim_head = 64, dropout = 0, emb_dropout = 0):
         super().__init__()
-        image_height, image_width = pair(image_size)
+        image_height, image_width = image_size
         patch_height, patch_width = pair(patch_size)
 
         self.cl = cl

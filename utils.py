@@ -518,21 +518,21 @@ def get_network(model, channel, num_classes, im_size=(32, 32), dist=True):
     elif model == 'ConvNet':
         net = ConvNet(channel=channel, num_classes=num_classes, net_width=net_width, net_depth=net_depth, net_act=net_act, net_norm=net_norm, net_pooling=net_pooling, im_size=im_size)
     elif model == 'LeNet':
-        net = LeNet(channel=channel, num_classes=num_classes)
+        net = LeNet(channel=channel, num_classes=num_classes, im_size=im_size)
     elif model == 'AlexNet':
-        net = AlexNet(channel=channel, num_classes=num_classes)
+        net = AlexNet(channel=channel, num_classes=num_classes, im_size=im_size)
     elif model == 'VGG11':
         net = VGG11( channel=channel, num_classes=num_classes)
     elif model == 'VGG11BN':
         net = VGG11BN(channel=channel, num_classes=num_classes)
     elif model == 'ResNet18':
-        net = ResNet18(channel=channel, num_classes=num_classes)
+        net = ResNet18(channel=channel, num_classes=, im_size=im_size)
     elif model == 'ResNet18BN_AP':
         net = ResNet18BN_AP(channel=channel, num_classes=num_classes)
     elif model == 'ResNet18_AP':
         net = ResNet18_AP(channel=channel, num_classes=num_classes)
     elif model == 'ViT':
-        net = ViT(channels=channel, num_classes=num_classes)
+        net = ViT(channels=channel, num_classes=num_classes, im_size=im_size)
 
     elif model == 'ConvNetD1':
         net = ConvNet(channel=channel, num_classes=num_classes, net_width=net_width, net_depth=1, net_act=net_act, net_norm=net_norm, net_pooling=net_pooling, im_size=im_size)
