@@ -38,7 +38,7 @@ class CelebA(Dataset):
 
         x,y = self.train_dataset.__getitem__(idx)
 
-        return x, y[self.target_inds]
+        return x, y[self.target_inds].item()
 
 class MNIST(Dataset):
     def __init__(self, train=True, transform=None, majority=0.5, sf=False):
