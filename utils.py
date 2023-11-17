@@ -326,7 +326,6 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
 
     return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv
 
-
 def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.5):
     class_map = None
     loader_train_dict = None
@@ -434,16 +433,11 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
         num_classes = 1
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
-
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor(),
+        
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
                                         transforms.Resize(im_size, antialias=True),
                                         transforms.CenterCrop(im_size)])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(),
-                                            transforms.Normalize(mean=mean, std=std),
-                                            transforms.Resize(im_size, antialias=True),
-                                            transforms.CenterCrop(im_size)])
         dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
         dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
         class_names = dst_train.classes
@@ -470,13 +464,15 @@ class TensorDataset(Dataset):
     def __len__(self):
         return self.images.shape[0]
 
-def get_default_convnet_setting():
+def get_default_convnet_setting(im_size=32):
     net_width, net_depth, net_act, net_norm, net_pooling = 128, 3, 'relu', 'instancenorm', 'avgpooling'
+    if im_size > 32:
+        net_depth = 4
     return net_width, net_depth, net_act, net_norm, net_pooling
 
 def get_network(model, channel, num_classes, im_size=(32, 32), dist=True):
     torch.random.manual_seed(int(time.time() * 1000) % 100000)
-    net_width, net_depth, net_act, net_norm, net_pooling = get_default_convnet_setting()
+    net_width, net_depth, net_act, net_norm, net_pooling = get_default_convnet_setting(im_size[0])
 
     if model == 'MLP':
         net = MLP(channel=channel, num_classes=num_classes)
