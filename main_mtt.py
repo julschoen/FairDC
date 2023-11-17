@@ -481,6 +481,7 @@ if __name__ == '__main__':
     parser.add_argument('--max_experts', type=int, default=None, help='number of experts to read per file (leave as None unless doing ablations)')
 
     parser.add_argument('--force_save', action='store_true', help='this will save images for 50ipc')
+    parser.add_argument('--attributes', type=str, default='Blond_Hair')
 
     args = parser.parse_args()
 
