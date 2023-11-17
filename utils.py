@@ -268,7 +268,7 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
     elif dataset.startswith('CelebASmall'):
         channel = 3
         im_size = (64, 64)
-        num_classes = 1
+        num_classes = 2
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
 
@@ -290,7 +290,7 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
     elif dataset.startswith('CelebA'):
         channel = 3
         im_size = (64, 64)
-        num_classes = 1
+        num_classes = 2
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
 
@@ -452,7 +452,7 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
     elif dataset.startswith('CelebASmall'):
         channel = 3
         im_size = (32, 32)
-        num_classes = 1
+        num_classes = 2
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
         
@@ -469,7 +469,7 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
     elif dataset.startswith('CelebA'):
         channel = 3
         im_size = (64, 64)
-        num_classes = 1
+        num_classes = 2
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
         
