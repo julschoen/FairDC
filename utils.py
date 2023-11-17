@@ -18,7 +18,7 @@ class CelebA(Dataset):
     """Face Landmarks dataset."""
     def __init__(self, split='train', transform=None, attributes=['Blond_Hair']):
         self.train_dataset = datasets.CelebA(
-            root="../../data",
+            root="../data",
             split=split,
             download=False,
             transform=transform,
