@@ -526,7 +526,7 @@ def get_network(model, channel, num_classes, im_size=(32, 32), dist=True):
     elif model == 'VGG11BN':
         net = VGG11BN(channel=channel, num_classes=num_classes)
     elif model == 'ResNet18':
-        net = ResNet18(channel=channel, num_classes=, im_size=im_size)
+        net = ResNet18(channel=channel, num_classes=num_classes, im_size=im_size)
     elif model == 'ResNet18BN_AP':
         net = ResNet18BN_AP(channel=channel, num_classes=num_classes)
     elif model == 'ResNet18_AP':
