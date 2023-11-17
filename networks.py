@@ -211,7 +211,7 @@ class AlexNet(nn.Module):
     def __init__(self, channel, num_classes, im_size=(32,32)):
         super(AlexNet, self).__init__()
         self.features = nn.Sequential(
-            nn.Conv2d(channel, 128, kernel_size=5, stride=1, padding=4 if channel==1(im_size[0]==28) or (channel==1) else 2),
+            nn.Conv2d(channel, 128, kernel_size=5, stride=1, padding=4 if (im_size[0]==28) or (channel==1) else 2),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Conv2d(128, 192, kernel_size=5, padding=2),
