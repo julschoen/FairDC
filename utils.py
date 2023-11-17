@@ -265,6 +265,28 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         class_names = dst_train.classes
         class_map = {x: x for x in range(num_classes)}
 
+    elif dataset.startswith('CelebASmall'):
+        channel = 3
+        im_size = (64, 64)
+        num_classes = 1
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Resize(im_size, antialias=True),
+                                        transforms.CenterCrop(im_size)])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                            transforms.Normalize(mean=mean, std=std),
+                                            transforms.Resize(im_size, antialias=True),
+                                            transforms.CenterCrop(im_size)])
+        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
+        class_names = dst_train.classes
+        class_map = {x: x for x in range(num_classes)}
+
+
     elif dataset.startswith('CelebA'):
         channel = 3
         im_size = (64, 64)
@@ -426,6 +448,23 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
         dst_test = datasets.CIFAR100(data_path, train=False, download=True, transform=transform)
         class_names = dst_train.classes
         class_map = {x: x for x in range(num_classes)}
+
+    elif dataset.startswith('CelebASmall'):
+        channel = 3
+        im_size = (32, 32)
+        num_classes = 1
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+        
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
+                                        transforms.Resize(im_size, antialias=True),
+                                        transforms.CenterCrop(im_size)])
+        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
+        class_names = dst_train.classes
+        class_map = {x: x for x in range(num_classes)}
+
 
     elif dataset.startswith('CelebA'):
         channel = 3
