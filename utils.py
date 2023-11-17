@@ -890,7 +890,6 @@ def get_eval_pool(eval_mode, model, model_eval):
         model_eval_pool = [model_eval]
     return model_eval_pool
 
-
 class ParamDiffAug():
     def __init__(self):
         self.aug_mode = 'S' #'multiple or single'
@@ -904,14 +903,12 @@ class ParamDiffAug():
         self.saturation = 2.0
         self.contrast = 0.5
 
-
 def set_seed_DiffAug(param):
     if param.latestseed == -1:
         return
     else:
         torch.random.manual_seed(param.latestseed)
         param.latestseed += 1
-
 
 def DiffAugment(x, strategy='', seed = -1, param = None):
     if seed == -1:
@@ -940,7 +937,6 @@ def DiffAugment(x, strategy='', seed = -1, param = None):
         x = x.contiguous()
     return x
 
-
 # We implement the following differentiable augmentation strategies based on the code provided in https://github.com/mit-han-lab/data-efficient-gans.
 def rand_scale(x, param):
     # x>1, max scale
@@ -959,7 +955,6 @@ def rand_scale(x, param):
     x = F.grid_sample(x, grid, align_corners=True)
     return x
 
-
 def rand_rotate(x, param): # [-180, 180], 90: anticlockwise 90 degree
     ratio = param.ratio_rotate
     set_seed_DiffAug(param)
@@ -973,7 +968,6 @@ def rand_rotate(x, param): # [-180, 180], 90: anticlockwise 90 degree
     x = F.grid_sample(x, grid, align_corners=True)
     return x
 
-
 def rand_flip(x, param):
     prob = param.prob_flip
     set_seed_DiffAug(param)
@@ -981,7 +975,6 @@ def rand_flip(x, param):
     if param.batchmode: # batch-wise:
         randf[:] = randf[0]
     return torch.where(randf < prob, x.flip(3), x)
-
 
 def rand_brightness(x, param):
     ratio = param.brightness
@@ -991,7 +984,6 @@ def rand_brightness(x, param):
         randb[:] = randb[0]
     x = x + (randb - 0.5)*ratio
     return x
-
 
 def rand_saturation(x, param):
     ratio = param.saturation
@@ -1003,7 +995,6 @@ def rand_saturation(x, param):
     x = (x - x_mean) * (rands * ratio) + x_mean
     return x
 
-
 def rand_contrast(x, param):
     ratio = param.contrast
     x_mean = x.mean(dim=[1, 2, 3], keepdim=True)
@@ -1013,7 +1004,6 @@ def rand_contrast(x, param):
         randc[:] = randc[0]
     x = (x - x_mean) * (randc + ratio) + x_mean
     return x
-
 
 def rand_crop(x, param):
     # The image is padded on its surrounding and then cropped.
@@ -1037,7 +1027,6 @@ def rand_crop(x, param):
     x = x_pad.permute(0, 2, 3, 1).contiguous()[grid_batch, grid_x, grid_y].permute(0, 3, 1, 2)
     return x
 
-
 def rand_cutout(x, param):
     ratio = param.ratio_cutout
     cutout_size = int(x.size(2) * ratio + 0.5), int(x.size(3) * ratio + 0.5)
@@ -1059,7 +1048,6 @@ def rand_cutout(x, param):
     mask[grid_batch, grid_x, grid_y] = 0
     x = x * mask.unsqueeze(1)
     return x
-
 
 AUGMENT_FNS = {
     'color': [rand_brightness, rand_saturation, rand_contrast],
