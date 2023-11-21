@@ -49,6 +49,7 @@ def main():
     parser.add_argument('--save_path', type=str, default='result', help='path to save results')
     parser.add_argument('--dis_metric', type=str, default='ours', help='distance metric')
     parser.add_argument('--lam_mmd', type=float, default=0.01)
+    parser.add_argument('--attributes', type=str, default='Blond_Hair')
 
     args = parser.parse_args()
     args.method = 'DM'
@@ -65,7 +66,7 @@ def main():
 
     eval_it_pool = np.arange(0, args.Iteration+1, 2000).tolist() if args.eval_mode == 'S' or args.eval_mode == 'SS' else [args.Iteration] # The list of iterations when we evaluate models and record results.
     print('eval_it_pool: ', eval_it_pool)
-    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, args.data_path)
+    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, args.data_path, args=args)
     model_eval_pool = get_eval_pool(args.eval_mode, args.model, args.model)
 
 
