@@ -34,7 +34,8 @@ def main():
     labels_all = torch.tensor(labels_all, dtype=torch.long)
 
     def get_images(c, n): # get random n images from class c
-        idx_shuffle = np.random.permutation(indices_class[c])[:n]
+        indices = indices_class[c]
+        idx_shuffle = np.random.permutation(indices)[:n]
         return images_all[idx_shuffle]
 
     for exp in range(args.num_exp):
