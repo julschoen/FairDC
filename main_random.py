@@ -21,25 +21,25 @@ def main():
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", args=args)
     data_save = []
 
+    ''' organize the real dataset '''
+    images_all = []
+    labels_all = []
+    indices_class = [[] for c in range(num_classes)]
+
+    images_all = [torch.unsqueeze(dst_train[i][0], dim=0) for i in range(len(dst_train))]
+    labels_all = [dst_train[i][1] for i in range(len(dst_train))]
+    for i, lab in enumerate(labels_all):
+        indices_class[lab].append(i)
+    images_all = torch.cat(images_all, dim=0)
+    labels_all = torch.tensor(labels_all, dtype=torch.long)
+
+    def get_images(c, n): # get random n images from class c
+        idx_shuffle = np.random.permutation(indices_class[c])[:n]
+        return images_all[idx_shuffle]
+
     for exp in range(args.num_exp):
         print('\n================== Exp %d ==================\n '%exp)
         print('Hyper-parameters: \n', args.__dict__)
-
-        ''' organize the real dataset '''
-        images_all = []
-        labels_all = []
-        indices_class = [[] for c in range(num_classes)]
-
-        images_all = [torch.unsqueeze(dst_train[i][0], dim=0) for i in range(len(dst_train))]
-        labels_all = [dst_train[i][1] for i in range(len(dst_train))]
-        for i, lab in enumerate(labels_all):
-            indices_class[lab].append(i)
-        images_all = torch.cat(images_all, dim=0)
-        labels_all = torch.tensor(labels_all, dtype=torch.long)
-
-        def get_images(c, n): # get random n images from class c
-            idx_shuffle = np.random.permutation(indices_class[c])[:n]
-            return images_all[idx_shuffle]
 
         ''' initialize the synthetic data '''
         image_syn = torch.randn(size=(num_classes*args.ipc, channel, im_size[0], im_size[1]), dtype=torch.float, requires_grad=True)
