@@ -9,8 +9,34 @@ from torchvision import datasets, transforms
 from scipy.ndimage.interpolation import rotate as scipyrotate
 from networks import MLP, ConvNet, LeNet, AlexNet, AlexNetBN, VGG11, VGG11BN, ResNet18, ResNet18BN_AP, ResNet18BN
 
+class CelebA(Dataset):
+    """Face Landmarks dataset."""
+    def __init__(self, split='train', transform=None, attributes=['Blond_Hair']):
+        self.train_dataset = datasets.CelebA(
+            root="../../data",
+            split=split,
+            download=False,
+            transform=transform,
+        )
+
+        self.classes = attributes
+        self.target_inds = []
+        for attr in self.classes:
+            self.target_inds.append(self.train_dataset.attr_names.index(attr))
+
+    def __len__(self):
+        return self.train_dataset.__len__()
+
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+
+        x,y = self.train_dataset.__getitem__(idx)
+
+        return x, y[self.target_inds]
+
 class MNIST(Dataset):
-    def __init__(self, train=True, transform=None, majority=0.5):
+    def __init__(self, train=True, transform=None, majority=0.5, sf=False):
         self.train_dataset = datasets.MNIST(
             root="../../data",
             train=train,
@@ -35,6 +61,7 @@ class MNIST(Dataset):
 
         # Precompute the indices for the majority and minority splits
         self.index_color_map = self._precompute_indices()
+        self.return_sf = sf
 
     def _precompute_indices(self):
         # Determine the number of samples per class
@@ -63,13 +90,24 @@ class MNIST(Dataset):
 
     def convert(self, image, id):
         rgb_image = image.clone().repeat(3,1,1)
-        r,g,b = self.index_color_map[id]
-        r,g,b = r/255.0, g/255.0, b/255.0
+        c = self.index_color_map[id]
+        r,g,b = c[0]/255.0, c[1]/255.0, c[2]/255.0
         image = (image+1)/2
         rgb_image[0] = (image*r*2)-1
         rgb_image[1] = (image*g*2)-1
         rgb_image[2] = (image*b*2)-1
-        return rgb_image
+
+        sf = -1
+        if self.return_sf:
+            for label, color in self.color_map.items():
+                if c == color:
+                    sf = label
+                    break
+
+        if self.return_sf:
+            return rgb_image, sf
+        else:
+            return rgb_image
 
     def __len__(self):
         return self.train_dataset.__len__()
@@ -78,26 +116,53 @@ class MNIST(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
         x,y = self.train_dataset.__getitem__(idx)
-        return self.convert(x,idx),y
+        if self.return_sf:
+            im, sf = self.convert(x,idx)
+            return im, y, sf
+        else:
+            return self.convert(x,idx),y
 
+class Config:
+    imagenette = [0, 217, 482, 491, 497, 566, 569, 571, 574, 701]
 
-def get_train_loader(batch_size):
-    transform=transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize(
-            (0.5), 
-            (0.5))
-    ])
-    
-    train_dataset = MNIST(transform=transform)
+    # ["australian_terrier", "border_terrier", "samoyed", "beagle", "shih-tzu", "english_foxhound", "rhodesian_ridgeback", "dingo", "golden_retriever", "english_sheepdog"]
+    imagewoof = [193, 182, 258, 162, 155, 167, 159, 273, 207, 229]
 
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=batch_size, num_workers=4, pin_memory=True
-    )
-    return train_loader
+    # ["tabby_cat", "bengal_cat", "persian_cat", "siamese_cat", "egyptian_cat", "lion", "tiger", "jaguar", "snow_leopard", "lynx"]
+    imagemeow = [281, 282, 283, 284, 285, 291, 292, 290, 289, 287]
 
+    # ["peacock", "flamingo", "macaw", "pelican", "king_penguin", "bald_eagle", "toucan", "ostrich", "black_swan", "cockatoo"]
+    imagesquawk = [84, 130, 88, 144, 145, 22, 96, 9, 100, 89]
 
-def get_dataset(dataset, data_path):
+    # ["pineapple", "banana", "strawberry", "orange", "lemon", "pomegranate", "fig", "bell_pepper", "cucumber", "green_apple"]
+    imagefruit = [953, 954, 949, 950, 951, 957, 952, 945, 943, 948]
+
+    # ["bee", "ladys slipper", "banana", "lemon", "corn", "school_bus", "honeycomb", "lion", "garden_spider", "goldfinch"]
+    imageyellow = [309, 986, 954, 951, 987, 779, 599, 291, 72, 11]
+
+    dict = {
+        "imagenette" : imagenette,
+        "imagewoof" : imagewoof,
+        "imagefruit": imagefruit,
+        "imageyellow": imageyellow,
+        "imagemeow": imagemeow,
+        "imagesquawk": imagesquawk,
+    }
+
+config = Config()
+
+def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.5, mtt=False):
+    if mtt:
+        return get_dataset_mtt(dataset=dataset, data_path=data_path, batch_size=batch_size, subset=subset, args=args)
+    else:
+        return get_dataset_others(dataset=dataset, data_path=data_path, batch_size=batch_size, subset=subset, args=args, sf=sf, color_split=color_split)
+
+def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=None):
+
+    class_map = None
+    loader_train_dict = None
+    class_map_inv = None
+
     if dataset == 'MNIST':
         channel = 3
         im_size = (28, 28)
@@ -108,30 +173,9 @@ def get_dataset(dataset, data_path):
         dst_train = MNIST(train=True, transform=transform) # no augmentation
         dst_test = MNIST(train=False, transform=transform)
         class_names = [str(c) for c in range(num_classes)]
+        class_map = {x:x for x in range(num_classes)}
         mean = (0.5, 0.5, 0.5)
         std = (0.5, 0.5, 0.5)
-
-    elif dataset == 'FashionMNIST':
-        channel = 1
-        im_size = (28, 28)
-        num_classes = 10
-        mean = [0.2861]
-        std = [0.3530]
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
-        dst_train = datasets.FashionMNIST(data_path, train=True, download=True, transform=transform) # no augmentation
-        dst_test = datasets.FashionMNIST(data_path, train=False, download=True, transform=transform)
-        class_names = dst_train.classes
-
-    elif dataset == 'SVHN':
-        channel = 3
-        im_size = (32, 32)
-        num_classes = 10
-        mean = [0.4377, 0.4438, 0.4728]
-        std = [0.1980, 0.2010, 0.1970]
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
-        dst_train = datasets.SVHN(data_path, split='train', download=True, transform=transform)  # no augmentation
-        dst_test = datasets.SVHN(data_path, split='test', download=True, transform=transform)
-        class_names = [str(c) for c in range(num_classes)]
 
     elif dataset == 'CIFAR10':
         channel = 3
@@ -139,55 +183,308 @@ def get_dataset(dataset, data_path):
         num_classes = 10
         mean = [0.4914, 0.4822, 0.4465]
         std = [0.2023, 0.1994, 0.2010]
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor()])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
         dst_train = datasets.CIFAR10(data_path, train=True, download=True, transform=transform) # no augmentation
         dst_test = datasets.CIFAR10(data_path, train=False, download=True, transform=transform)
         class_names = dst_train.classes
+        class_map = {x:x for x in range(num_classes)}
 
-    elif dataset == 'CIFAR100':
-        channel = 3
-        im_size = (32, 32)
-        num_classes = 100
-        mean = [0.5071, 0.4866, 0.4409]
-        std = [0.2673, 0.2564, 0.2762]
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
-        dst_train = datasets.CIFAR100(data_path, train=True, download=True, transform=transform) # no augmentation
-        dst_test = datasets.CIFAR100(data_path, train=False, download=True, transform=transform)
-        class_names = dst_train.classes
 
-    elif dataset == 'TinyImageNet':
+    elif dataset == 'Tiny':
         channel = 3
         im_size = (64, 64)
         num_classes = 200
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
-        data = torch.load(os.path.join(data_path, 'tinyimagenet.pt'), map_location='cpu')
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor()])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        dst_train = datasets.ImageFolder(os.path.join(data_path, "train"), transform=transform) # no augmentation
+        dst_test = datasets.ImageFolder(os.path.join(data_path, "val", "images"), transform=transform)
+        class_names = dst_train.classes
+        class_map = {x:x for x in range(num_classes)}
 
-        class_names = data['classes']
 
-        images_train = data['images_train']
-        labels_train = data['labels_train']
-        images_train = images_train.detach().float() / 255.0
-        labels_train = labels_train.detach()
-        for c in range(channel):
-            images_train[:,c] = (images_train[:,c] - mean[c])/std[c]
-        dst_train = TensorDataset(images_train, labels_train)  # no augmentation
+    elif dataset == 'ImageNet':
+        channel = 3
+        im_size = (128, 128)
+        num_classes = 10
 
-        images_val = data['images_val']
-        labels_val = data['labels_val']
-        images_val = images_val.detach().float() / 255.0
-        labels_val = labels_val.detach()
+        config.img_net_classes = config.dict[subset]
 
-        for c in range(channel):
-            images_val[:, c] = (images_val[:, c] - mean[c]) / std[c]
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Resize(im_size),
+                                        transforms.CenterCrop(im_size)])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                            transforms.Normalize(mean=mean, std=std),
+                                            transforms.Resize(im_size),
+                                            transforms.CenterCrop(im_size)])
 
-        dst_test = TensorDataset(images_val, labels_val)  # no augmentation
+
+        dst_train = datasets.ImageNet(data_path, split="train", transform=transform) # no augmentation
+        dst_train_dict = {c : torch.utils.data.Subset(dst_train, np.squeeze(np.argwhere(np.equal(dst_train.targets, config.img_net_classes[c])))) for c in range(len(config.img_net_classes))}
+        dst_train = torch.utils.data.Subset(dst_train, np.squeeze(np.argwhere(np.isin(dst_train.targets, config.img_net_classes))))
+        loader_train_dict = {c : torch.utils.data.DataLoader(dst_train_dict[c], batch_size=batch_size, shuffle=True, num_workers=16) for c in range(len(config.img_net_classes))}
+        dst_test = datasets.ImageNet(data_path, split="val", transform=transform)
+        dst_test = torch.utils.data.Subset(dst_test, np.squeeze(np.argwhere(np.isin(dst_test.targets, config.img_net_classes))))
+        for c in range(len(config.img_net_classes)):
+            dst_test.dataset.targets[dst_test.dataset.targets == config.img_net_classes[c]] = c
+            dst_train.dataset.targets[dst_train.dataset.targets == config.img_net_classes[c]] = c
+        print(dst_test.dataset)
+        class_map = {x: i for i, x in enumerate(config.img_net_classes)}
+        class_map_inv = {i: x for i, x in enumerate(config.img_net_classes)}
+        class_names = None
+
+
+    elif dataset.startswith('CIFAR100'):
+        channel = 3
+        im_size = (32, 32)
+        num_classes = 100
+        mean = [0.4914, 0.4822, 0.4465]
+        std = [0.2023, 0.1994, 0.2010]
+
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor()])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        dst_train = datasets.CIFAR100(data_path, train=True, download=True, transform=transform)  # no augmentation
+        dst_test = datasets.CIFAR100(data_path, train=False, download=True, transform=transform)
+        class_names = dst_train.classes
+        class_map = {x: x for x in range(num_classes)}
+
+    elif dataset.startswith('CelebASmall'):
+        channel = 3
+        im_size = (64, 64)
+        num_classes = 2
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Resize(im_size, antialias=True),
+                                        transforms.CenterCrop(im_size)])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                            transforms.Normalize(mean=mean, std=std),
+                                            transforms.Resize(im_size, antialias=True),
+                                            transforms.CenterCrop(im_size)])
+        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
+        class_names = dst_train.classes
+        class_map = {x: x for x in range(num_classes)}
+
+
+    elif dataset.startswith('CelebA'):
+        channel = 3
+        im_size = (64, 64)
+        num_classes = 2
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Resize(im_size, antialias=True),
+                                        transforms.CenterCrop(im_size)])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                            transforms.Normalize(mean=mean, std=std),
+                                            transforms.Resize(im_size, antialias=True),
+                                            transforms.CenterCrop(im_size)])
+        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
+        class_names = dst_train.classes
+        class_map = {x: x for x in range(num_classes)}
+
+
+    else:
+        exit('unknown dataset: %s'%dataset)
+
+    if args.zca:
+        images = []
+        labels = []
+        print("Train ZCA")
+        for i in tqdm.tqdm(range(len(dst_train))):
+            im, lab = dst_train[i]
+            images.append(im)
+            labels.append(lab)
+        images = torch.stack(images, dim=0).to(args.device)
+        labels = torch.tensor(labels, dtype=torch.long, device="cpu")
+        zca = K.enhance.ZCAWhitening(eps=0.1, compute_inv=True)
+        zca.fit(images)
+        zca_images = zca(images).to("cpu")
+        dst_train = TensorDataset(zca_images, labels)
+
+        images = []
+        labels = []
+        print("Test ZCA")
+        for i in tqdm.tqdm(range(len(dst_test))):
+            im, lab = dst_test[i]
+            images.append(im)
+            labels.append(lab)
+        images = torch.stack(images, dim=0).to(args.device)
+        labels = torch.tensor(labels, dtype=torch.long, device="cpu")
+
+        zca_images = zca(images).to("cpu")
+        dst_test = TensorDataset(zca_images, labels)
+
+        args.zca_trans = zca
+
+
+    testloader = torch.utils.data.DataLoader(dst_test, batch_size=128, shuffle=False, num_workers=2)
+
+
+    return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv
+
+def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.5):
+    class_map = None
+    loader_train_dict = None
+    class_map_inv = None
+
+    if dataset == 'MNIST':
+        channel = 3
+        im_size = (28, 28)
+        num_classes = 10
+        mean = (0.5)
+        std = (0.5)
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        dst_train = MNIST(train=True, transform=transform, sf=sf, majority=color_split) # no augmentation
+        dst_test = MNIST(train=False, transform=transform, sf=sf, majority=color_split)
+        class_names = [str(c) for c in range(num_classes)]
+        class_map = {x:x for x in range(num_classes)}
+        mean = (0.5, 0.5, 0.5)
+        std = (0.5, 0.5, 0.5)
+
+    elif dataset == 'CIFAR10':
+        channel = 3
+        im_size = (32, 32)
+        num_classes = 10
+        mean = [0.4914, 0.4822, 0.4465]
+        std = [0.2023, 0.1994, 0.2010]
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor()])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        dst_train = datasets.CIFAR10(data_path, train=True, download=True, transform=transform) # no augmentation
+        dst_test = datasets.CIFAR10(data_path, train=False, download=True, transform=transform)
+        class_names = dst_train.classes
+        class_map = {x:x for x in range(num_classes)}
+
+
+    elif dataset == 'Tiny':
+        channel = 3
+        im_size = (64, 64)
+        num_classes = 200
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor()])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        dst_train = datasets.ImageFolder(os.path.join(data_path, "train"), transform=transform) # no augmentation
+        dst_test = datasets.ImageFolder(os.path.join(data_path, "val", "images"), transform=transform)
+        class_names = dst_train.classes
+        class_map = {x:x for x in range(num_classes)}
+
+
+    elif dataset == 'ImageNet':
+        channel = 3
+        im_size = (128, 128)
+        num_classes = 10
+
+        config.img_net_classes = config.dict[subset]
+
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Resize(im_size),
+                                        transforms.CenterCrop(im_size)])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(),
+                                            transforms.Normalize(mean=mean, std=std),
+                                            transforms.Resize(im_size),
+                                            transforms.CenterCrop(im_size)])
+
+        dst_train = datasets.ImageNet(data_path, split="train", transform=transform) # no augmentation
+        dst_train_dict = {c : torch.utils.data.Subset(dst_train, np.squeeze(np.argwhere(np.equal(dst_train.targets, config.img_net_classes[c])))) for c in range(len(config.img_net_classes))}
+        dst_train = torch.utils.data.Subset(dst_train, np.squeeze(np.argwhere(np.isin(dst_train.targets, config.img_net_classes))))
+        loader_train_dict = {c : torch.utils.data.DataLoader(dst_train_dict[c], batch_size=batch_size, shuffle=True, num_workers=16) for c in range(len(config.img_net_classes))}
+        dst_test = datasets.ImageNet(data_path, split="val", transform=transform)
+        dst_test = torch.utils.data.Subset(dst_test, np.squeeze(np.argwhere(np.isin(dst_test.targets, config.img_net_classes))))
+        for c in range(len(config.img_net_classes)):
+            dst_test.dataset.targets[dst_test.dataset.targets == config.img_net_classes[c]] = c
+            dst_train.dataset.targets[dst_train.dataset.targets == config.img_net_classes[c]] = c
+        print(dst_test.dataset)
+        class_map = {x: i for i, x in enumerate(config.img_net_classes)}
+        class_map_inv = {i: x for i, x in enumerate(config.img_net_classes)}
+        class_names = None
+
+
+    elif dataset.startswith('CIFAR100'):
+        channel = 3
+        im_size = (32, 32)
+        num_classes = 100
+        mean = [0.4914, 0.4822, 0.4465]
+        std = [0.2023, 0.1994, 0.2010]
+
+        if args.zca:
+            transform = transforms.Compose([transforms.ToTensor()])
+        else:
+            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        dst_train = datasets.CIFAR100(data_path, train=True, download=True, transform=transform)  # no augmentation
+        dst_test = datasets.CIFAR100(data_path, train=False, download=True, transform=transform)
+        class_names = dst_train.classes
+        class_map = {x: x for x in range(num_classes)}
+
+    elif dataset.startswith('CelebASmall'):
+        channel = 3
+        im_size = (32, 32)
+        num_classes = 2
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+        
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
+                                        transforms.Resize(im_size, antialias=True),
+                                        transforms.CenterCrop(im_size)])
+        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
+        class_names = dst_train.classes
+        class_map = {x: x for x in range(num_classes)}
+
+
+    elif dataset.startswith('CelebA'):
+        channel = 3
+        im_size = (64, 64)
+        num_classes = 2
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+        
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
+                                        transforms.Resize(im_size, antialias=True),
+                                        transforms.CenterCrop(im_size)])
+        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
+        class_names = dst_train.classes
+        class_map = {x: x for x in range(num_classes)}
+
 
     else:
         exit('unknown dataset: %s'%dataset)
 
 
-    testloader = torch.utils.data.DataLoader(dst_test, batch_size=256, shuffle=False, num_workers=0)
+    testloader = torch.utils.data.DataLoader(dst_test, batch_size=128, shuffle=False, num_workers=2)
+
+
     return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader
 
 
