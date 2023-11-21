@@ -18,7 +18,7 @@ def main():
     if not os.path.exists(args.save_path):
         os.mkdir(args.save_path)
 
-    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "")
+    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", args=args)
     data_save = []
 
     for exp in range(args.num_exp):
