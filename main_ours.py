@@ -176,6 +176,7 @@ def main():
 
                     kmeans = KMeans(n_clusters=args.ipc, max_iter = 100, tol = -1, mode='euclidean', verbose=0)
                     labels = kmeans.fit_predict(output_real)
+                    print(torch.unique(labels))
 
                     for l in range(args.ipc):
                         out_real = output_real[labels == l]
