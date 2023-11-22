@@ -174,7 +174,7 @@ def main():
                     output_real = embed(img_real).detach()
                     output_syn = embed(img_syn)
 
-                    kmeans = KMeans(n_clusters=args.ipc, mode='euclidean', verbose=0)
+                    kmeans = KMeans(n_clusters=args.ipc, max_iter = 100, tol = -1, mode='euclidean', verbose=0)
                     labels = kmeans.fit_predict(output_real)
 
                     for l in range(args.ipc):
