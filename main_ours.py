@@ -82,6 +82,12 @@ def main():
         images_all = torch.cat(images_all, dim=0).to(args.device)
         labels_all = torch.tensor(labels_all, dtype=torch.long, device=args.device)
 
+        kmeans_labels_all = []
+        kmeans = KMeans(n_clusters=args.ipc, max_iter = 1000, tol = -1, mode='euclidean', verbose=0)
+
+        for indices in indices_class:
+            labels = kmeans.fit_predict(images_all[indices].reshape(len(indices), -1))
+            kmeans_labels_all.append(labels)
 
 
         for c in range(num_classes):
@@ -89,7 +95,7 @@ def main():
 
         def get_images(c, n): # get random n images from class c
             idx_shuffle = np.random.permutation(indices_class[c])[:n]
-            return images_all[idx_shuffle]
+            return images_all[idx_shuffle], kmeans_labels_all[c][idx_shuffle]
 
         for ch in range(channel):
             print('real images channel %d, mean = %.4f, std = %.4f'%(ch, torch.mean(images_all[:, ch]), torch.std(images_all[:, ch])))
@@ -163,7 +169,7 @@ def main():
             if 'BN' not in args.model: # for ConvNet
                 loss = torch.tensor(0.0).to(args.device)
                 for c in range(num_classes):
-                    img_real = get_images(c, args.batch_real)
+                    img_real, labels = get_images(c, args.batch_real)
                     img_syn = image_syn[c*args.ipc:(c+1)*args.ipc].reshape((args.ipc, channel, im_size[0], im_size[1]))
 
                     if args.dsa:
@@ -173,9 +179,6 @@ def main():
 
                     output_real = embed(img_real).detach()
                     output_syn = embed(img_syn)
-
-                    kmeans = KMeans(n_clusters=args.ipc, max_iter = 1000, tol = -1, mode='euclidean', verbose=0)
-                    labels = kmeans.fit_predict(output_real)
 
                     for l in range(args.ipc):
                         out_real = output_real[labels == l]
