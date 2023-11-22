@@ -188,10 +188,9 @@ def main():
                         #    loss += kld
                         #else:
                         #    output_real = to_uniform(output_real)
-                        print(torch.mean(out_real, dim=0).shape)
-                        print(out_syn.shape)
                         mmd = torch.sum((torch.mean(out_real, dim=0) - out_syn)**2)
-                        print(mmd)
+                        if out_real.shape[0] == 0:
+                            print(mmd)
                         loss += mmd
 
             else: # for ConvNetBN
