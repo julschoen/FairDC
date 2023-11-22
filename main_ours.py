@@ -179,7 +179,7 @@ def main():
 
                     for l in range(args.ipc):
                         out_real = output_real[labels == l]
-                        out_synth = output_syn[l]
+                        out_syn = output_syn[l]
 
                         #if args.kld:
                         #    p = torch.distributions.normal.Normal(output_real.mean(), 100)
