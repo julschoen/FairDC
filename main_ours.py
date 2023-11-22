@@ -87,7 +87,8 @@ def main():
 
         for indices in indices_class:
             labels = kmeans.fit_predict(images_all[indices].reshape(len(indices), -1))
-            kmeans_labels_all.append(labels.detach().cpu())
+            res = {k: v for k, v in zip(indices, labels)}
+            kmeans_labels_all.append(res)
 
 
 
@@ -96,7 +97,10 @@ def main():
 
         def get_images(c, n): # get random n images from class c
             idx_shuffle = np.random.permutation(indices_class[c])[:n]
-            return images_all[idx_shuffle], kmeans_labels_all[c][idx_shuffle]
+            kmeans = []
+            for i in idx_shuffle:
+                kmeans.append(kmeans_labels_all[c].get(i))
+            return images_all[idx_shuffle], torch.tensor(kmeans)
 
         for ch in range(channel):
             print('real images channel %d, mean = %.4f, std = %.4f'%(ch, torch.mean(images_all[:, ch]), torch.std(images_all[:, ch])))
