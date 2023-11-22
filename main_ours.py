@@ -189,7 +189,7 @@ def main():
                         #else:
                         #    output_real = to_uniform(output_real)
                         
-                        mmd = torch.sum((torch.mean(out_real, dim=0) - torch.mean(out_syn, dim=0))**2)
+                        mmd = torch.sum((torch.mean(out_real, dim=0) - out_syn)**2)
                         loss += mmd
 
             else: # for ConvNetBN
