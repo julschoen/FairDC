@@ -89,6 +89,8 @@ def main():
             labels = kmeans.fit_predict(images_all[indices].reshape(len(indices), -1))
             kmeans_labels_all.append(labels)
 
+        print(len(kmeans_labels_all))
+
 
         for c in range(num_classes):
             print('class c = %d: %d real images'%(c, len(indices_class[c])))
