@@ -87,9 +87,9 @@ def main():
 
         for indices in indices_class:
             labels = kmeans.fit_predict(images_all[indices].reshape(len(indices), -1))
+            print(labels)
             kmeans_labels_all.append(labels)
 
-        print(len(kmeans_labels_all))
 
 
         for c in range(num_classes):
