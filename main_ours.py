@@ -108,7 +108,8 @@ def main():
         if args.init == 'real':
             print('initialize synthetic data from random real images')
             for c in range(num_classes):
-                image_syn.data[c*args.ipc:(c+1)*args.ipc] = get_images(c, args.ipc).detach().data
+                ims, _ = get_images(c, args.ipc)
+                image_syn.data[c*args.ipc:(c+1)*args.ipc] = ims.data
         else:
             print('initialize synthetic data from random noise')
 
