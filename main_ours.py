@@ -190,6 +190,7 @@ def main():
                         #    output_real = to_uniform(output_real)
                         
                         mmd = torch.sum((torch.mean(out_real, dim=0) - out_syn)**2)
+                        print(mmd)
                         loss += mmd
 
             else: # for ConvNetBN
