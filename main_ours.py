@@ -180,6 +180,8 @@ def main():
                     for l in range(args.ipc):
                         out_real = output_real[labels == l]
                         out_syn = output_syn[l]
+                        if out_real.shape[0] == 0:
+                            continue
 
                         #if args.kld:
                         #    p = torch.distributions.normal.Normal(output_real.mean(), 100)
@@ -189,8 +191,6 @@ def main():
                         #else:
                         #    output_real = to_uniform(output_real)
                         mmd = torch.sum((torch.mean(out_real, dim=0) - out_syn)**2)
-                        if out_real.shape[0] == 0:
-                            print(mmd)
                         loss += mmd
 
             else: # for ConvNetBN
