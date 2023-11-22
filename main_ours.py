@@ -8,6 +8,7 @@ import torch.nn as nn
 from torchvision.utils import save_image
 from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, match_loss, get_time, TensorDataset, epoch, DiffAugment, ParamDiffAug
 from carbontracker.tracker import CarbonTracker
+from fast_pytorch_kmeans import KMeans
 
 def to_uniform(features):
     flat_features = features.view(-1)
@@ -173,16 +174,23 @@ def main():
                     output_real = embed(img_real).detach()
                     output_syn = embed(img_syn)
 
-                    if args.kld:
-                        p = torch.distributions.normal.Normal(output_real.mean(), 100)
-                        q = torch.distributions.normal.Normal(output_syn.mean(), output_syn.std())
-                        kld = args.kld_coef*torch.distributions.kl_divergence(p, q)
-                        loss += kld
-                    else:
-                        output_real = to_uniform(output_real)
-                    
-                    mmd = torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
-                    loss += mmd
+                    kmeans = KMeans(n_clusters=args.ipc, mode='euclidean', verbose=0)
+                    labels = kmeans.fit_predict(output_real)
+
+                    for l in range(args.ipc):
+                        out_real = output_real[labels == l]
+                        out_synth = output_syn[l]
+
+                        #if args.kld:
+                        #    p = torch.distributions.normal.Normal(output_real.mean(), 100)
+                        #    q = torch.distributions.normal.Normal(output_syn.mean(), output_syn.std())
+                        #    kld = args.kld_coef*torch.distributions.kl_divergence(p, q)
+                        #    loss += kld
+                        #else:
+                        #    output_real = to_uniform(output_real)
+                        
+                        mmd = torch.sum((torch.mean(out_real, dim=0) - torch.mean(out_syn, dim=0))**2)
+                        loss += mmd
 
             else: # for ConvNetBN
                 images_real_all = []
