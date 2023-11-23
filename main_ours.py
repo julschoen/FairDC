@@ -38,6 +38,7 @@ def main():
     parser.add_argument('--dis_metric', type=str, default='ours', help='distance metric')
     parser.add_argument('--kld',type=bool,default=False)
     parser.add_argument('--kld_coef',type=float,default=0.0001)
+    parser.add_argument('--attributes', type=str, default='Blond_Hair')
 
     args = parser.parse_args()
     args.method = 'DM'
