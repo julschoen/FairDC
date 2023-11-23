@@ -27,7 +27,7 @@ def main():
     parser.add_argument('--num_eval', type=int, default=20, help='the number of evaluating randomly initialized models')
     parser.add_argument('--epoch_eval_train', type=int, default=1000, help='epochs to train a model with synthetic data') # it can be small for speeding up with little performance drop
     parser.add_argument('--Iteration', type=int, default=20000, help='training iterations')
-    parser.add_argument('--lr_img', type=float, default=1.0, help='learning rate for updating synthetic images')
+    parser.add_argument('--lr_img', type=float, default=0.001, help='learning rate for updating synthetic images')
     parser.add_argument('--lr_net', type=float, default=0.01, help='learning rate for updating network parameters')
     parser.add_argument('--batch_real', type=int, default=256, help='batch size for real data')
     parser.add_argument('--batch_train', type=int, default=256, help='batch size for training networks')
@@ -55,7 +55,7 @@ def main():
 
     eval_it_pool = np.arange(0, args.Iteration+1, 2000).tolist() if args.eval_mode == 'S' or args.eval_mode == 'SS' else [args.Iteration] # The list of iterations when we evaluate models and record results.
     print('eval_it_pool: ', eval_it_pool)
-    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, args.data_path)
+    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, args.data_path, args=args)
     model_eval_pool = get_eval_pool(args.eval_mode, args.model, args.model)
 
 
