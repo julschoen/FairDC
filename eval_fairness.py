@@ -88,9 +88,7 @@ def main():
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
 
-            if args.dataset.startswith('CelebA'):
-                sf = sf[dst_test.train_dataset.attr_names.index(args.sensitive_features)]
-            else:
+            if args.dataset.startswith('MNIST'):
                 sf = true == sf
             
             metric_frame = MetricFrame(

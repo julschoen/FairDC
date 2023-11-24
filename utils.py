@@ -16,7 +16,7 @@ from networks import MLP, ConvNet, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, Res
 
 class CelebA(Dataset):
     """Face Landmarks dataset."""
-    def __init__(self, split='train', transform=None, attributes=['Blond_Hair'], sf=False):
+    def __init__(self, split='train', transform=None, attributes=['Blond_Hair'], sf=False, s_att=['Male']):
         self.train_dataset = datasets.CelebA(
             root="../data",
             split=split,
@@ -31,6 +31,11 @@ class CelebA(Dataset):
         for attr in self.classes:
             self.target_inds.append(self.train_dataset.attr_names.index(attr))
 
+        self.s_att = s_att
+        self.sens_inds = []
+        for attr in self.s_att:
+            self.sens_inds.append(self.train_dataset.attr_names.index(attr))
+
     def __len__(self):
         return self.train_dataset.__len__()
 
@@ -41,7 +46,7 @@ class CelebA(Dataset):
         x,y = self.train_dataset.__getitem__(idx)
 
         if self.sf:
-            return x, y[self.target_inds], y
+            return x, y[self.target_inds], y[self.sens_inds]
         else:
             return x, y[self.target_inds]
 
@@ -465,8 +470,8 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
                                         transforms.Normalize(mean=mean, std=std),
                                         transforms.Resize(im_size, antialias=True),
                                         transforms.CenterCrop(im_size)])
-        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '), sf=sf)  # no augmentation
-        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '), sf=sf)
+        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature)  # no augmentation
+        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature)
         class_names = dst_train.classes
         class_map = {x: x for x in range(num_classes)}
 
@@ -788,7 +793,7 @@ def evaluate_model(net, testloader, args):
             p = torch.argmax(p, dim=1)
             pred = np.concatenate((pred, p.detach().squeeze().cpu().numpy()), axis=0)
             true = np.concatenate((true, y.detach().squeeze().cpu().numpy()), axis=0)
-            sf = np.concatenate((sf, s.detach().cpu().numpy()), axis=0)
+            sf = np.concatenate((sf, s.detach().squeeze().cpu().numpy()), axis=0)
 
     return pred, true, sf
 
