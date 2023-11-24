@@ -16,7 +16,7 @@ from networks import MLP, ConvNet, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, Res
 
 class CelebA(Dataset):
     """Face Landmarks dataset."""
-    def __init__(self, split='train', transform=None, attributes=['Blond_Hair'], sf=sf):
+    def __init__(self, split='train', transform=None, attributes=['Blond_Hair'], sf=False):
         self.train_dataset = datasets.CelebA(
             root="../data",
             split=split,
