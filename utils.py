@@ -788,7 +788,7 @@ def evaluate_model(net, testloader, args):
             p = torch.argmax(p, dim=1)
             pred = np.concatenate((pred, p.detach().squeeze().cpu().numpy()), axis=0)
             true = np.concatenate((true, y.detach().squeeze().cpu().numpy()), axis=0)
-            sf = np.concatenate((sf, s.detach().squeeze().cpu().numpy()), axis=0)
+            sf = np.concatenate((sf, s.detach().cpu().numpy()), axis=0)
 
     return pred, true, sf
 
