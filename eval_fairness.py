@@ -70,6 +70,7 @@ def main():
     results = dict()
     for model in model_eval_pool:
         for key in metrics.keys():
+            print(key)
             results[model] = { key : {
                     True: [],
                     False: []
