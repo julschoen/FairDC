@@ -41,6 +41,8 @@ def main():
     parser.add_argument('--batch_real', type=int, default=256, help='batch size for real data')
     parser.add_argument('--batch_train', type=int, default=256, help='batch size for training networks')
     parser.add_argument('--cond_path', type=str, default='result', help='path to save results')
+    parser.add_argument('--attributes', type=str, default='Blond_Hair')
+    parser.add_argument('--sensitive_feature', type=str, default='Male')
 
     args = parser.parse_args()
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -48,7 +50,7 @@ def main():
     args.dsa = True
     args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
     
-    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", sf=True)
+    channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", sf=True, args=args)
     model_eval_pool = get_eval_pool('M', None, None)
 
     accs_all_exps = dict() # record performances of all experiments
@@ -59,12 +61,12 @@ def main():
 
     metrics = {
         'accuracy': accuracy_score,
-        'precision_macro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='macro'),
-        'recall_macro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='macro'),
-        'f1_score_macro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='macro'),
-        'precision_micro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='micro'),
-        'recall_micro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='micro'),
-        'f1_score_micro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='micro')
+        #'precision_macro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='macro'),
+        #'recall_macro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='macro'),
+        #'f1_score_macro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='macro'),
+        #'precision_micro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='micro'),
+        #'recall_micro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='micro'),
+        #'f1_score_micro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='micro')
     }
 
     results = dict()
@@ -86,7 +88,10 @@ def main():
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
 
-            sf = true == sf
+            if args.dataset.startswith('CelebA'):
+                sf = sf[dst_test.train_dataset.attr_names.index(args.sensitive_features)]
+            else:
+                sf = true == sf
             
             metric_frame = MetricFrame(
                 metrics=metrics,

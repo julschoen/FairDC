@@ -16,13 +16,15 @@ from networks import MLP, ConvNet, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, Res
 
 class CelebA(Dataset):
     """Face Landmarks dataset."""
-    def __init__(self, split='train', transform=None, attributes=['Blond_Hair']):
+    def __init__(self, split='train', transform=None, attributes=['Blond_Hair'], sf=sf):
         self.train_dataset = datasets.CelebA(
             root="../data",
             split=split,
             download=False,
             transform=transform,
         )
+
+        self.sf = sf
 
         self.classes = attributes
         self.target_inds = []
@@ -38,7 +40,10 @@ class CelebA(Dataset):
 
         x,y = self.train_dataset.__getitem__(idx)
 
-        return x, y[self.target_inds]
+        if self.sf:
+            return x, y[self.target_inds], y
+        else:
+            return x, y[self.target_inds]
 
 class MNIST(Dataset):
     def __init__(self, train=True, transform=None, majority=0.5, sf=False):
@@ -460,8 +465,8 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
                                         transforms.Normalize(mean=mean, std=std),
                                         transforms.Resize(im_size, antialias=True),
                                         transforms.CenterCrop(im_size)])
-        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
-        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
+        dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '), sf=sf)  # no augmentation
+        dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '), sf=sf)
         class_names = dst_train.classes
         class_map = {x: x for x in range(num_classes)}
 
