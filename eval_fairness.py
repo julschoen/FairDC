@@ -97,7 +97,7 @@ def main():
                 y_pred=pred,
                 sensitive_features=sf
             )
-            print(metric_frame.by_group)
+
             # Print the results
             res_grouped = metric_frame.by_group
             for key in res_grouped.keys():
@@ -114,7 +114,7 @@ def main():
         print(model_eval)
         r = results[model_eval]
         for key in r.keys():
-            gap = np.array(r[key][True]) - np.array(r[key][False])
+            gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
 
 
