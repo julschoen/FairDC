@@ -368,10 +368,7 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
         num_classes = 10
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor()])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
         dst_train = datasets.CIFAR10(data_path, train=True, download=True, transform=transform) # no augmentation
         dst_test = datasets.CIFAR10(data_path, train=False, download=True, transform=transform)
         class_names = dst_train.classes
