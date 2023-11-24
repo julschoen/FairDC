@@ -97,7 +97,7 @@ def main():
                 y_pred=pred,
                 sensitive_features=sf
             )
-            print(metric_frame)
+            print(metric_frame.by_group)
             # Print the results
             res_grouped = metric_frame.by_group
             for key in res_grouped.keys():
