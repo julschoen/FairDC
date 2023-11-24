@@ -12,6 +12,24 @@ import torch
 import torch.nn as nn
 from torchvision.utils import save_image
 from utils import get_dataset, get_network, get_eval_pool, evaluate_model, get_daparam, DiffAugment, ParamDiffAug
+def false_positive_rate(y_true, y_pred, label):
+    # Confusion matrix: rows are true classes, columns are predicted classes
+    cm = confusion_matrix(y_true, y_pred, labels=np.unique(y_true))
+    # FP: Sum of column for 'label', excluding true positives (diagonal)
+    FP = cm[:, label].sum() - cm[label, label]
+    # True Negatives (TN): Sum of all cells excluding row and column for 'label'
+    TN = cm.sum() - cm[label, :].sum() - cm[:, label].sum() + cm[label, label]
+    return FP / (FP + TN) if (FP + TN) > 0 else 0
+
+def false_negative_rate(y_true, y_pred, label):
+    # Confusion matrix: rows are true classes, columns are predicted classes
+    cm = confusion_matrix(y_true, y_pred, labels=np.unique(y_true))
+    # FN: Sum of row for 'label', excluding true positives (diagonal)
+    FN = cm[label, :].sum() - cm[label, label]
+    # True Positives (TP)
+    TP = cm[label, label]
+    return FN / (FN + TP) if (FN + TP) > 0 else 0
+
 
 def main():
 
@@ -41,6 +59,10 @@ def main():
 
     metrics = {
     'accuracy': accuracy_score,
+    #Add micro and weighted averages if needed
+    # False Positive Rate and False Negative Rate for each class
+    **{f'fpr_class_{label}': lambda y_true, y_pred, label=label: false_positive_rate(y_true, y_pred, label) for label in np.unique(true_labels)},
+    **{f'fnr_class_{label}': lambda y_true, y_pred, label=label: false_negative_rate(y_true, y_pred, label) for label in np.unique(true_labels)}
     #'precision_macro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='macro'),
     #'recall_macro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='macro'),
     #'f1_score_macro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='macro'),
