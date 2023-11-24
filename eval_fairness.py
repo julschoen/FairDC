@@ -58,16 +58,13 @@ def main():
     model_weights = torch.load(os.path.join(args.cond_path, 'eval.pt'))['weights']
 
     metrics = {
-    'accuracy': accuracy_score,
-    #Add micro and weighted averages if needed
-    # False Positive Rate and False Negative Rate for each class
-    'precision_macro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='macro'),
-    'recall_macro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='macro'),
-    'f1_score_macro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='macro'),
-    'precision_micro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='micro'),
-    'recall_micro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='micro'),
-    'f1_score_micro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='micro'),
-    # Add 'weighted' or other averages as needed
+        'accuracy': accuracy_score,
+        'precision_macro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='macro'),
+        'recall_macro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='macro'),
+        'f1_score_macro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='macro'),
+        'precision_micro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='micro'),
+        'recall_micro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='micro'),
+        'f1_score_micro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='micro')
     }
 
     results = dict()
