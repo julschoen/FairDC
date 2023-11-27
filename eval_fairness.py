@@ -137,10 +137,10 @@ def main():
         eod = eods[i*args.num_eval:(i+1)*args.num_eval]
         dpr = dprs[i*args.num_eval:(i+1)*args.num_eval]
         dpd = dpds[i*args.num_eval:(i+1)*args.num_eval]
-        print('EOR %.2f\\pm%.2f'%(key, np.mean(eor), np.std(eor)))
-        print('EOD %.2f\\pm%.2f'%(key, np.mean(eod), np.std(eod)))
-        print('DPR %.2f\\pm%.2f'%(key, np.mean(dpr), np.std(dpr)))
-        print('DPD %.2f\\pm%.2f'%(key, np.mean(dpd), np.std(dpd)))
+        print('EOR %.2f\\pm%.2f'%(np.mean(eor), np.std(eor)))
+        print('EOD %.2f\\pm%.2f'%(np.mean(eod), np.std(eod)))
+        print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
+        print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
         for key in r.keys():
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
