@@ -1,5 +1,8 @@
 import numpy as np
 from fairlearn.metrics import MetricFrame
+from fairlearn.metrics import equalized_odds_difference, demographic_parity_difference
+from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio
+
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import os
 import time
@@ -81,6 +84,10 @@ def main():
             
         results[model] = d
 
+    eors = []
+    eods = []
+    dprs = []
+    dpds = []
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
@@ -97,6 +104,15 @@ def main():
                 y_pred=pred,
                 sensitive_features=sf
             )
+            eod = equalized_odds_difference(true, pred, sensitive_features=sf)
+            eods.append(eod)
+            eor = equalized_odds_ratio(true, pred, sensitive_features=sf)
+            eors.append(eors)
+
+            dpd = demographic_parity_difference(true, pred, sensitive_features=sf)
+            dpds.append(dpd)
+            dpr = demographic_parity_ratio(true, pred, sensitive_features=sf)
+            dprs.append(dprs)
 
             # Print the results
             res_grouped = metric_frame.by_group
@@ -110,9 +126,17 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
 
-    for model_eval in model_eval_pool:
+    for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
+        eor = eors[i*args.num_eval:(i+1)*args.num_eval]
+        eod = eods[i*args.num_eval:(i+1)*args.num_eval]
+        dpr = dprs[i*args.num_eval:(i+1)*args.num_eval]
+        dpd = dpds[i*args.num_eval:(i+1)*args.num_eval]
+        print('EOR %.2f\\pm%.2f'%(key, np.mean(eor), np.std(eor)))
+        print('EOD %.2f\\pm%.2f'%(key, np.mean(eod), np.std(eod)))
+        print('DPR %.2f\\pm%.2f'%(key, np.mean(dpr), np.std(dpr)))
+        print('DPD %.2f\\pm%.2f'%(key, np.mean(dpd), np.std(dpd)))
         for key in r.keys():
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
