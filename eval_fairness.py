@@ -46,6 +46,7 @@ def main():
     parser.add_argument('--cond_path', type=str, default='result', help='path to save results')
     parser.add_argument('--attributes', type=str, default='Blond_Hair')
     parser.add_argument('--sensitive_feature', type=str, default='Male')
+    parser.add_argument('--ipc', type=int, default=10)
 
     args = parser.parse_args()
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -60,7 +61,7 @@ def main():
     for key in model_eval_pool:
         accs_all_exps[key] = []
 
-    model_weights = torch.load(os.path.join(args.cond_path, 'eval.pt'))['weights']
+    model_weights = torch.load(os.path.join(args.cond_path, f'eval_{args.ipc}ipc.pt'))['weights']
 
     metrics = {
         'accuracy': accuracy_score,
@@ -104,15 +105,16 @@ def main():
                 y_pred=pred,
                 sensitive_features=sf
             )
-            eod = equalized_odds_difference(true, pred, sensitive_features=sf)
-            eods.append(eod)
-            eor = equalized_odds_ratio(true, pred, sensitive_features=sf)
-            eors.append(eor)
+            if args.dataset.startswith('CelebA'):
+                eod = equalized_odds_difference(true, pred, sensitive_features=sf)
+                eods.append(eod)
+                eor = equalized_odds_ratio(true, pred, sensitive_features=sf)
+                eors.append(eor)
 
-            dpd = demographic_parity_difference(true, pred, sensitive_features=sf)
-            dpds.append(dpd)
-            dpr = demographic_parity_ratio(true, pred, sensitive_features=sf)
-            dprs.append(dpr)
+                dpd = demographic_parity_difference(true, pred, sensitive_features=sf)
+                dpds.append(dpd)
+                dpr = demographic_parity_ratio(true, pred, sensitive_features=sf)
+                dprs.append(dpr)
 
             # Print the results
             res_grouped = metric_frame.by_group
@@ -129,14 +131,15 @@ def main():
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
-        eor = np.array(eors[i*args.num_eval:(i+1)*args.num_eval])
-        eod = np.array(eods[i*args.num_eval:(i+1)*args.num_eval])
-        dpr = np.array(dprs[i*args.num_eval:(i+1)*args.num_eval])
-        dpd = np.array(dpds[i*args.num_eval:(i+1)*args.num_eval])
-        print('EOR %.2f\\pm%.2f'%(np.mean(eor), np.std(eor)))
-        print('EOD %.2f\\pm%.2f'%(np.mean(eod), np.std(eod)))
-        print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
-        print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
+        if args.dataset.startswith('CelebA'):
+            eor = np.array(eors[i*args.num_eval:(i+1)*args.num_eval])
+            eod = np.array(eods[i*args.num_eval:(i+1)*args.num_eval])
+            dpr = np.array(dprs[i*args.num_eval:(i+1)*args.num_eval])
+            dpd = np.array(dpds[i*args.num_eval:(i+1)*args.num_eval])
+            print('EOR %.2f\\pm%.2f'%(np.mean(eor), np.std(eor)))
+            print('EOD %.2f\\pm%.2f'%(np.mean(eod), np.std(eod)))
+            print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
+            print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
         for key in r.keys():
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
