@@ -126,7 +126,6 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
 
-    print(eors)
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
