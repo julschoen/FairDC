@@ -105,6 +105,7 @@ def main():
                 sensitive_features=sf
             )
             eod = equalized_odds_difference(true, pred, sensitive_features=sf)
+            print(eod)
             eods.append(eod)
             eor = equalized_odds_ratio(true, pred, sensitive_features=sf)
             eors.append(eors)
