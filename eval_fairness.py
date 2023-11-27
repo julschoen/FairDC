@@ -105,17 +105,13 @@ def main():
                 sensitive_features=sf
             )
             eod = equalized_odds_difference(true, pred, sensitive_features=sf)
-            print(eod)
             eods.append(eod)
             eor = equalized_odds_ratio(true, pred, sensitive_features=sf)
-            print(eor)
             eors.append(eors)
 
             dpd = demographic_parity_difference(true, pred, sensitive_features=sf)
-            print(dpd)
             dpds.append(dpd)
             dpr = demographic_parity_ratio(true, pred, sensitive_features=sf)
-            print(dpr)
             dprs.append(dprs)
 
             # Print the results
@@ -130,6 +126,7 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
 
+    print(eors)
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
