@@ -130,10 +130,10 @@ def main():
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
-        eor = eors[i*args.num_eval:(i+1)*args.num_eval]
-        eod = eods[i*args.num_eval:(i+1)*args.num_eval]
-        dpr = dprs[i*args.num_eval:(i+1)*args.num_eval]
-        dpd = dpds[i*args.num_eval:(i+1)*args.num_eval]
+        eor = np.array(eors[i*args.num_eval:(i+1)*args.num_eval])
+        eod = np.array(eods[i*args.num_eval:(i+1)*args.num_eval])
+        dpr = np.array(dprs[i*args.num_eval:(i+1)*args.num_eval])
+        dpd = np.array(dpds[i*args.num_eval:(i+1)*args.num_eval])
         print('EOR %.2f\\pm%.2f'%(np.mean(eor), np.std(eor)))
         print('EOD %.2f\\pm%.2f'%(np.mean(eod), np.std(eod)))
         print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
