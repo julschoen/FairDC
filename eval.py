@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--batch_train', type=int, default=256, help='batch size for training networks')
     parser.add_argument('--cond_path', type=str, default='result', help='path to save results')
     parser.add_argument('--attributes', type=str, default='Blond_Hair')
+    parser.add_argument('--ipc', type=int, default=10)
 
     args = parser.parse_args()
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -39,7 +40,7 @@ def main():
     for key in model_eval_pool:
         model_weights[key] = []
 
-    file = glob.glob(os.path.join(args.cond_path, '*.pt'))[-1]
+    file = glob.glob(os.path.join(args.cond_path, f'*{args.ipc}ipc.pt'))[-1]
 
     data = torch.load(file)['data']
 
