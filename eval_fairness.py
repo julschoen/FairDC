@@ -108,11 +108,14 @@ def main():
             print(eod)
             eods.append(eod)
             eor = equalized_odds_ratio(true, pred, sensitive_features=sf)
+            print(eor)
             eors.append(eors)
 
             dpd = demographic_parity_difference(true, pred, sensitive_features=sf)
+            print(dpd)
             dpds.append(dpd)
             dpr = demographic_parity_ratio(true, pred, sensitive_features=sf)
+            print(dpr)
             dprs.append(dprs)
 
             # Print the results
