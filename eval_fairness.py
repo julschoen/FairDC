@@ -107,12 +107,12 @@ def main():
             eod = equalized_odds_difference(true, pred, sensitive_features=sf)
             eods.append(eod)
             eor = equalized_odds_ratio(true, pred, sensitive_features=sf)
-            eors.append(eors)
+            eors.append(eor)
 
             dpd = demographic_parity_difference(true, pred, sensitive_features=sf)
             dpds.append(dpd)
             dpr = demographic_parity_ratio(true, pred, sensitive_features=sf)
-            dprs.append(dprs)
+            dprs.append(dpr)
 
             # Print the results
             res_grouped = metric_frame.by_group
