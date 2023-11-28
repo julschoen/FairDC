@@ -92,7 +92,7 @@ class MNIST(Dataset):
 
         index_color_map = {}
         for class_label, class_color in self.color_map.items():
-            targets = min(targets//3,2)
+            targets = np.minimum(targets//3,2)
             class_indices = indices[targets == class_label]
             np.random.shuffle(class_indices)
 
