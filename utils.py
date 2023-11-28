@@ -72,6 +72,12 @@ class MNIST(Dataset):
             9: (255., 255., 255.), # White
         }
 
+        self.color_map = {
+            0: (255., 0., 0.),   # Red
+            1: (0, 255, 0),   # Green
+            2: (0, 0, 255)   # Blue
+        }
+
         self.majority_percentage = majority
 
         # Precompute the indices for the majority and minority splits
@@ -86,6 +92,7 @@ class MNIST(Dataset):
 
         index_color_map = {}
         for class_label, class_color in self.color_map.items():
+            targets = min(targets//3,2)
             class_indices = indices[targets == class_label]
             np.random.shuffle(class_indices)
 
