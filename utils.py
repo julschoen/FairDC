@@ -87,13 +87,12 @@ class MNIST(Dataset):
     def _precompute_indices(self):
         # Determine the number of samples per class
         targets = self.train_dataset.targets.numpy()
+        targets = np.minimum(targets//3,2)
         num_samples = len(targets)
         indices = np.arange(num_samples)
 
         index_color_map = {}
         for class_label, class_color in self.color_map.items():
-            targets = np.minimum(targets//3,2)
-            print(targets, class_label)
             class_indices = indices[targets == class_label]
             np.random.shuffle(class_indices)
 
