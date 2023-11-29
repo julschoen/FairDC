@@ -383,7 +383,7 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
 
     return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv
 
-def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.5):
+def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.2):
     class_map = None
     loader_train_dict = None
     class_map_inv = None
