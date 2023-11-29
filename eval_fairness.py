@@ -97,7 +97,7 @@ def main():
             pred, true, sf = evaluate_model(net_eval, testloader, args)
 
             if args.dataset.startswith('MNIST'):
-                sf = true == sf
+                sf = torch.minimum(true//3,torch.tensor(2)) == sf
             
             metric_frame = MetricFrame(
                 metrics=metrics,
