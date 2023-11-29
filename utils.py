@@ -191,7 +191,7 @@ class Config:
 
 config = Config()
 
-def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.5, mtt=False):
+def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.2, mtt=False):
     if mtt:
         return get_dataset_mtt(dataset=dataset, data_path=data_path, batch_size=batch_size, subset=subset, args=args)
     else:
