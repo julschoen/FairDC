@@ -96,8 +96,8 @@ def main():
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
 
-            if args.dataset.startswith('MNIST'):
-                sf = np.minimum(true//3,2) == sf
+            #if args.dataset.startswith('MNIST'):
+            #    sf = np.minimum(true//3,2) == sf
             
             metric_frame = MetricFrame(
                 metrics=metrics,
