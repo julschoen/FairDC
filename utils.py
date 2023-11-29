@@ -100,12 +100,12 @@ class MNIST(Dataset):
             split_idx = int(len(class_indices) * self.majority_percentage)
 
             # Assign the majority color
-            for idx in class_indices[:split_idx]:
+            for idx in class_indices[split_idx:]:
                 index_color_map[idx] = class_color
 
             # Assign the minority colors uniformly from other classes
             other_colors = [color for label, color in self.color_map.items() if label != class_label]
-            for idx in class_indices[split_idx:]:
+            for idx in class_indices[:split_idx]:
                 index_color_map[idx] = other_colors[np.random.randint(len(other_colors))]
 
         return index_color_map
@@ -121,10 +121,10 @@ class MNIST(Dataset):
         split_idx = int(len(indices) * self.majority_percentage)
 
         for idx in indices[:split_idx]:
-            index_color_map[idx] = self.color_map[0]
+            index_color_map[idx] = self.color_map[1]
 
         for idx in indices[split_idx:]:
-            index_color_map[idx] = self.color_map[1]
+            index_color_map[idx] = self.color_map[0]
 
         return index_color_map
 
