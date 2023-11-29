@@ -124,7 +124,7 @@ class MNIST(Dataset):
             index_color_map[idx] = self.color_map[0]
 
         for idx in indices[split_idx:]:
-            index_color_map[idx] = self.color_map[1+np.random.randint(2)]
+            index_color_map[idx] = self.color_map[1]
 
         return index_color_map
 
