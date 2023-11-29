@@ -84,7 +84,7 @@ class MNIST(Dataset):
         self.index_color_map = self._precompute_indices()
         self.return_sf = sf
 
-    def _precompute_indices(self):
+    def _precompute_indices_old(self):
         # Determine the number of samples per class
         targets = self.train_dataset.targets.numpy()
         targets = np.minimum(targets//3,2)
@@ -107,6 +107,24 @@ class MNIST(Dataset):
             other_colors = [color for label, color in self.color_map.items() if label != class_label]
             for idx in class_indices[split_idx:]:
                 index_color_map[idx] = other_colors[np.random.randint(len(other_colors))]
+
+        return index_color_map
+
+    def _precompute_indices(self):
+        # Determine the number of samples per class
+        targets = self.train_dataset.targets.numpy()
+        num_samples = len(targets)
+        indices = np.arange(num_samples)
+
+        index_color_map = {}
+        np.random.shuffle(indices)
+        split_idx = int(len(indices) * self.majority_percentage)
+
+        for idx in indices[:split_idx]:
+            index_color_map[idx] = self.color_map[0]
+
+        for idx in indices[split_idx:]:
+            index_color_map[idx] = self.color_map[1+np.random.randint(2)]
 
         return index_color_map
 
