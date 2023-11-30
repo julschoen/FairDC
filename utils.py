@@ -12,7 +12,7 @@ import tqdm
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 from scipy.ndimage.interpolation import rotate as scipyrotate
-from networks import MLP, ConvNet, ConvNetEven LeNet, AlexNet, VGG11BN, VGG11, ResNet18, ResNet18BN_AP, ResNet18_AP, ViT
+from networks import MLP, ConvNet, ConvNetEven, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, ResNet18BN_AP, ResNet18_AP, ViT
 
 class CelebA(Dataset):
     """Face Landmarks dataset."""
