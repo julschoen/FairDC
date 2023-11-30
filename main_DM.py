@@ -48,7 +48,7 @@ def main():
     eval_it_pool = np.arange(0, args.Iteration+1, 2000).tolist() if args.eval_mode == 'S' or args.eval_mode == 'SS' else [args.Iteration] # The list of iterations when we evaluate models and record results.
     print('eval_it_pool: ', eval_it_pool)
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, args.data_path, args=args)
-    model_eval_pool = get_eval_pool(args.eval_mode, args.model, args.model)
+    model_eval_pool = get_eval_pool(args.eval_mode, 'ConvNet', 'ConvNet')
 
 
     accs_all_exps = dict() # record performances of all experiments
@@ -210,7 +210,7 @@ def main():
             if it == args.Iteration: # only record the final results
                 data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
                 torch.save({'data': data_save, 'accs_all_exps': accs_all_exps, }, os.path.join(args.save_path, 'res_%s_%s_%s_%dipc.pt'%(args.method, args.dataset, args.model, args.ipc)))
-                
+
         tracker.stop()
 
     print('\n==================== Final Results ====================\n')
