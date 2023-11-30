@@ -223,10 +223,7 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         num_classes = 10
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor()])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
         dst_train = datasets.CIFAR10(data_path, train=True, download=True, transform=transform) # no augmentation
         dst_test = datasets.CIFAR10(data_path, train=False, download=True, transform=transform)
         class_names = dst_train.classes
@@ -239,10 +236,7 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         num_classes = 200
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor()])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
         dst_train = datasets.ImageFolder(os.path.join(data_path, "train"), transform=transform) # no augmentation
         dst_test = datasets.ImageFolder(os.path.join(data_path, "val", "images"), transform=transform)
         class_names = dst_train.classes
@@ -258,15 +252,10 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
 
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor(),
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
                                         transforms.Resize(im_size),
                                         transforms.CenterCrop(im_size)])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(),
-                                            transforms.Normalize(mean=mean, std=std),
-                                            transforms.Resize(im_size),
-                                            transforms.CenterCrop(im_size)])
 
 
         dst_train = datasets.ImageNet(data_path, split="train", transform=transform) # no augmentation
@@ -290,11 +279,7 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         num_classes = 100
         mean = [0.4914, 0.4822, 0.4465]
         std = [0.2023, 0.1994, 0.2010]
-
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor()])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
         dst_train = datasets.CIFAR100(data_path, train=True, download=True, transform=transform)  # no augmentation
         dst_test = datasets.CIFAR100(data_path, train=False, download=True, transform=transform)
         class_names = dst_train.classes
@@ -307,15 +292,10 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
 
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor(),
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
                                         transforms.Resize(im_size, antialias=True),
                                         transforms.CenterCrop(im_size)])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(),
-                                            transforms.Normalize(mean=mean, std=std),
-                                            transforms.Resize(im_size, antialias=True),
-                                            transforms.CenterCrop(im_size)])
         dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
         dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
         class_names = dst_train.classes
@@ -329,15 +309,10 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
 
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor(),
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
                                         transforms.Resize(im_size, antialias=True),
                                         transforms.CenterCrop(im_size)])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(),
-                                            transforms.Normalize(mean=mean, std=std),
-                                            transforms.Resize(im_size, antialias=True),
-                                            transforms.CenterCrop(im_size)])
         dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
         dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
         class_names = dst_train.classes
@@ -346,37 +321,6 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
 
     else:
         exit('unknown dataset: %s'%dataset)
-
-    if args.zca:
-        images = []
-        labels = []
-        print("Train ZCA")
-        for i in tqdm.tqdm(range(len(dst_train))):
-            im, lab = dst_train[i]
-            images.append(im)
-            labels.append(lab)
-        images = torch.stack(images, dim=0).to(args.device)
-        labels = torch.tensor(labels, dtype=torch.long, device="cpu")
-        zca = K.enhance.ZCAWhitening(eps=0.1, compute_inv=True)
-        zca.fit(images)
-        zca_images = zca(images).to("cpu")
-        dst_train = TensorDataset(zca_images, labels)
-
-        images = []
-        labels = []
-        print("Test ZCA")
-        for i in tqdm.tqdm(range(len(dst_test))):
-            im, lab = dst_test[i]
-            images.append(im)
-            labels.append(lab)
-        images = torch.stack(images, dim=0).to(args.device)
-        labels = torch.tensor(labels, dtype=torch.long, device="cpu")
-
-        zca_images = zca(images).to("cpu")
-        dst_test = TensorDataset(zca_images, labels)
-
-        args.zca_trans = zca
-
 
     testloader = torch.utils.data.DataLoader(dst_test, batch_size=128, shuffle=False, num_workers=2)
 
@@ -408,10 +352,7 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
         num_classes = 10
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor()])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
         dst_train = datasets.CIFAR10(data_path, train=True, download=True, transform=transform) # no augmentation
         dst_test = datasets.CIFAR10(data_path, train=False, download=True, transform=transform)
         class_names = dst_train.classes
@@ -424,10 +365,7 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
         num_classes = 200
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor()])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
         dst_train = datasets.ImageFolder(os.path.join(data_path, "train"), transform=transform) # no augmentation
         dst_test = datasets.ImageFolder(os.path.join(data_path, "val", "images"), transform=transform)
         class_names = dst_train.classes
@@ -443,15 +381,10 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
 
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor(),
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
                                         transforms.Resize(im_size),
                                         transforms.CenterCrop(im_size)])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(),
-                                            transforms.Normalize(mean=mean, std=std),
-                                            transforms.Resize(im_size),
-                                            transforms.CenterCrop(im_size)])
 
         dst_train = datasets.ImageNet(data_path, split="train", transform=transform) # no augmentation
         dst_train_dict = {c : torch.utils.data.Subset(dst_train, np.squeeze(np.argwhere(np.equal(dst_train.targets, config.img_net_classes[c])))) for c in range(len(config.img_net_classes))}
@@ -474,11 +407,7 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
         num_classes = 100
         mean = [0.4914, 0.4822, 0.4465]
         std = [0.2023, 0.1994, 0.2010]
-
-        if args.zca:
-            transform = transforms.Compose([transforms.ToTensor()])
-        else:
-            transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
         dst_train = datasets.CIFAR100(data_path, train=True, download=True, transform=transform)  # no augmentation
         dst_test = datasets.CIFAR100(data_path, train=False, download=True, transform=transform)
         class_names = dst_train.classes
