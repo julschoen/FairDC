@@ -221,8 +221,8 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         channel = 3
         im_size = (32, 32)
         num_classes = 10
-        mean = [0.4914, 0.4822, 0.4465]
-        std = [0.2023, 0.1994, 0.2010]
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
         if args.zca:
             transform = transforms.Compose([transforms.ToTensor()])
         else:
@@ -406,8 +406,8 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
         channel = 3
         im_size = (32, 32)
         num_classes = 10
-        mean = [0.4914, 0.4822, 0.4465]
-        std = [0.2023, 0.1994, 0.2010]
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
         if args.zca:
             transform = transforms.Compose([transforms.ToTensor()])
         else:
