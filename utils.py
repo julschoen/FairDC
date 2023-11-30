@@ -12,7 +12,7 @@ import tqdm
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 from scipy.ndimage.interpolation import rotate as scipyrotate
-from networks import MLP, ConvNet, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, ResNet18BN_AP, ResNet18_AP, ViT
+from networks import MLP, ConvNet, ConvNetEven LeNet, AlexNet, VGG11BN, VGG11, ResNet18, ResNet18BN_AP, ResNet18_AP, ViT
 
 class CelebA(Dataset):
     """Face Landmarks dataset."""
@@ -481,6 +481,8 @@ def get_network(model, channel, num_classes, im_size=(32, 32), dist=True):
         net = MLP(channel=channel, num_classes=num_classes)
     elif model == 'ConvNet':
         net = ConvNet(channel=channel, num_classes=num_classes, net_width=net_width, net_depth=net_depth, net_act=net_act, net_norm=net_norm, net_pooling=net_pooling, im_size=im_size)
+    elif model == 'ConvNetEven':
+        net = ConvNetEven(channel=channel, num_classes=num_classes, net_width=net_width, net_depth=net_depth, net_act=net_act, net_norm=net_norm, net_pooling=net_pooling, im_size=im_size)
     elif model == 'LeNet':
         net = LeNet(channel=channel, num_classes=num_classes, im_size=im_size)
     elif model == 'AlexNet':
