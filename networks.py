@@ -285,7 +285,10 @@ class LeNet(nn.Module):
         super(LeNet, self).__init__()
         
         # Calculate the number of pooling layers needed based on image size
-        num_pooling_layers = int(im_size[0] // 2)
+        if im_size[0] == 28:
+
+        else:
+            num_pooling_layers = np.log2(im_size[0])-3
         print(num_pooling_layers)
         
         self.features = nn.Sequential()
