@@ -292,7 +292,7 @@ class LeNet(nn.Module):
         # Add convolutional layers with appropriate padding
         for i in range(num_pooling_layers):
             in_channels = channel if i == 0 else 6
-            padding = 2 if i == 0 or channel == 1 else 0
+            padding = 2 if (im_size[0]==28) or (channel == 1) else 0
             self.features.add_module(f'conv{i + 1}', nn.Conv2d(in_channels, 6, kernel_size=5, padding=padding))
             self.features.add_module(f'relu{i + 1}', nn.ReLU(inplace=True))
             self.features.add_module(f'pool{i + 1}', nn.MaxPool2d(kernel_size=2, stride=2))
