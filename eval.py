@@ -40,7 +40,7 @@ def main():
     for key in model_eval_pool:
         model_weights[key] = []
 
-    file = glob.glob(os.path.join(args.cond_path, f'*{args.ipc}ipc.pt'))[-1]
+    file = glob.glob(os.path.join(args.cond_path, f'res_*{args.ipc}ipc.pt'))[-1]
 
     data = torch.load(file)['data']
 
