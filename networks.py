@@ -321,7 +321,7 @@ class VGG(nn.Module):
         super(VGG, self).__init__()
         self.channel = channel
         self.features = self._make_layers(cfg_vgg[vgg_name], norm)
-        self.classifier = nn.Linear(512 if vgg_name != 'VGGS' else 128, num_classes)
+        self.classifier = nn.Linear(2048 if vgg_name != 'VGGS' else 128, num_classes)
 
     def forward(self, x):
         x = self.features(x)
