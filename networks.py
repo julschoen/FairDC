@@ -257,7 +257,7 @@ class ConvNetGAP(nn.Module):
 
 
 ''' LeNet '''
-class LeNet(nn.Module):
+class LeNet_Old(nn.Module):
     def __init__(self, channel, num_classes, im_size=(32,32)):
         super(LeNet, self).__init__()
         self.features = nn.Sequential(
@@ -280,10 +280,42 @@ class LeNet(nn.Module):
         x = self.fc_3(x)
         return x
 
+class LeNet(nn.Module):
+    def __init__(self, num_channels, num_classes, im_size=(32, 32)):
+        super(LeNet, self).__init__()
+        
+        # Calculate the number of pooling layers needed based on image size
+        num_pooling_layers = int(im_size[0] // 2)
+        
+        self.features = nn.Sequential()
+        
+        # Add convolutional layers with appropriate padding
+        for i in range(num_pooling_layers):
+            in_channels = num_channels if i == 0 else 6
+            padding = 2 if i == 0 or num_channels == 1 else 0
+            self.features.add_module(f'conv{i + 1}', nn.Conv2d(in_channels, 6, kernel_size=5, padding=padding))
+            self.features.add_module(f'relu{i + 1}', nn.ReLU(inplace=True))
+            self.features.add_module(f'pool{i + 1}', nn.MaxPool2d(kernel_size=2, stride=2))
+        
+        # Calculate the size of the fully connected layers based on image size
+        fc1_input_size = 6 * (im_size[0] // 4) * (im_size[1] // 4)
+        
+        self.fc_1 = nn.Linear(fc1_input_size, 120)
+        self.fc_2 = nn.Linear(120, 84)
+        self.fc_3 = nn.Linear(84, num_classes)
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = F.relu(self.fc_1(x))
+        x = F.relu(self.fc_2(x))
+        x = self.fc_3(x)
+        return x
+
 
 
 ''' AlexNet '''
-class AlexNet(nn.Module):
+class AlexNet_Old(nn.Module):
     def __init__(self, channel, num_classes, im_size=(32,32)):
         super(AlexNet, self).__init__()
         self.features = nn.Sequential(
@@ -302,6 +334,37 @@ class AlexNet(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
         self.fc = nn.Linear(192 * 4 * 4, num_classes)
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc(x)
+        return x
+
+class AlexNet(nn.Module):
+    def __init__(self, num_channels, num_classes, im_size=(32, 32)):
+        super(AlexNet, self).__init__()
+        
+        # Calculate the number of pooling layers needed based on image size
+        num_pooling_layers = int(im_size[0] // 2)
+        
+        self.features = nn.Sequential()
+        
+        # Add convolutional layers with appropriate padding
+        for i in range(num_pooling_layers):
+            in_channels = num_channels if i == 0 else 128
+            padding = 4 if i == 0 or num_channels == 1 else 2
+            self.features.add_module(f'conv{i + 1}', nn.Conv2d(in_channels, 128, kernel_size=5, stride=1, padding=padding))
+            self.features.add_module(f'relu{i + 1}', nn.ReLU(inplace=True))
+            self.features.add_module(f'pool{i + 1}', nn.MaxPool2d(kernel_size=2, stride=2))
+        
+        # Calculate the size of the fully connected layer based on image size
+        if im_size[0] == 28:
+            fc_input_size = 128 * 1 * 1  # For 28x28 images
+        else:
+            fc_input_size = 128 * num_pooling_layers * num_pooling_layers
+        
+        self.fc = nn.Linear(fc_input_size, num_classes)
 
     def forward(self, x):
         x = self.features(x)
