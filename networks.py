@@ -281,7 +281,7 @@ class LeNet_Old(nn.Module):
         return x
 
 class LeNet(nn.Module):
-    def __init__(self, num_channels, num_classes, im_size=(32, 32)):
+    def __init__(self, channel, num_classes, im_size=(32, 32)):
         super(LeNet, self).__init__()
         
         # Calculate the number of pooling layers needed based on image size
@@ -291,8 +291,8 @@ class LeNet(nn.Module):
         
         # Add convolutional layers with appropriate padding
         for i in range(num_pooling_layers):
-            in_channels = num_channels if i == 0 else 6
-            padding = 2 if i == 0 or num_channels == 1 else 0
+            in_channels = channel if i == 0 else 6
+            padding = 2 if i == 0 or channel == 1 else 0
             self.features.add_module(f'conv{i + 1}', nn.Conv2d(in_channels, 6, kernel_size=5, padding=padding))
             self.features.add_module(f'relu{i + 1}', nn.ReLU(inplace=True))
             self.features.add_module(f'pool{i + 1}', nn.MaxPool2d(kernel_size=2, stride=2))
@@ -342,7 +342,7 @@ class AlexNet_Old(nn.Module):
         return x
 
 class AlexNet(nn.Module):
-    def __init__(self, num_channels, num_classes, im_size=(32, 32)):
+    def __init__(self, channel, num_classes, im_size=(32, 32)):
         super(AlexNet, self).__init__()
         
         # Calculate the number of pooling layers needed based on image size
@@ -352,7 +352,7 @@ class AlexNet(nn.Module):
         
         # Add convolutional layers with appropriate padding
         for i in range(num_pooling_layers):
-            in_channels = num_channels if i == 0 else 128
+            in_channels = channel if i == 0 else 128
             padding = 4 if i == 0 or num_channels == 1 else 2
             self.features.add_module(f'conv{i + 1}', nn.Conv2d(in_channels, 128, kernel_size=5, stride=1, padding=padding))
             self.features.add_module(f'relu{i + 1}', nn.ReLU(inplace=True))
