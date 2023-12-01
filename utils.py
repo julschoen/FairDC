@@ -841,7 +841,7 @@ def get_eval_pool(eval_mode, model, model_eval, im_size=(32,32)):
     if eval_mode == 'M': # multiple architectures
         # model_eval_pool = ['MLP', 'ConvNet', 'AlexNet', 'VGG11', 'ResNet18', 'LeNet']
         if im_size[0] > 32:
-            model_eval_pool = ['ConvNet', 'VGG11', 'ResNet18', 'ViT']
+            model_eval_pool = ['ConvNet', 'VGG11', 'ResNet18ImageNet', 'ViT']
         else:
             model_eval_pool = ['ConvNet', 'LeNet', 'AlexNet', 'ResNet18', 'ViT']
         # model_eval_pool = ['MLP', 'ConvNet', 'AlexNet', 'VGG11', 'ResNet18']

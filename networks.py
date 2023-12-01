@@ -348,19 +348,6 @@ class VGG(nn.Module):
         layers += [nn.AvgPool2d(kernel_size=1, stride=1)]
         return nn.Sequential(*layers)
 
-
-def VGG11(channel, num_classes):
-    return VGG('VGG11', channel, num_classes)
-def VGG11BN(channel, num_classes):
-    return VGG('VGG11', channel, num_classes, norm='batchnorm')
-def VGG13(channel, num_classes):
-    return VGG('VGG13', channel, num_classes)
-def VGG16(channel, num_classes):
-    return VGG('VGG16', channel, num_classes)
-def VGG19(channel, num_classes):
-    return VGG('VGG19', channel, num_classes)
-
-
 def VGG11(channel, num_classes):
     return VGG('VGG11', channel, num_classes)
 def VGG11BN(channel, num_classes):
@@ -628,7 +615,7 @@ def ResNet101(channel, num_classes):
 def ResNet152(channel, num_classes):
     return ResNet(Bottleneck, [3,8,36,3], channel=channel, num_classes=num_classes)
 
-def ResNet18ImageNet(channel, num_classes):
+def ResNet18ImageNet(channel, num_classes, im_size=(32,32)):
     return ResNetImageNet(BasicBlock, [2,2,2,2], channel=channel, num_classes=num_classes)
 
 def ResNet6ImageNet(channel, num_classes):
