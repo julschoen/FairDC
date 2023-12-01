@@ -258,7 +258,7 @@ class ConvNetGAP(nn.Module):
 
 
 ''' LeNet '''
-class LeNet_Old(nn.Module):
+class LeNet(nn.Module):
     def __init__(self, channel, num_classes, im_size=(32,32)):
         super(LeNet, self).__init__()
         self.features = nn.Sequential(
@@ -280,43 +280,6 @@ class LeNet_Old(nn.Module):
         x = F.relu(self.fc_2(x))
         x = self.fc_3(x)
         return x
-
-class LeNet(nn.Module):
-    def __init__(self, channel, num_classes, im_size=(32, 32)):
-        super(LeNet, self).__init__()
-        
-        # Calculate the number of pooling layers needed based on image size
-        if im_size[0] == 28:
-            num_pooling_layers = 2
-        else:
-            num_pooling_layers = int(np.log2(im_size[0])-3)
-        
-        self.features = nn.Sequential()
-        
-        # Add convolutional layers with appropriate padding
-        for i in range(num_pooling_layers):
-            in_channels = channel if i == 0 else 6
-            padding = 2 if (im_size[0]==28) or (channel == 1) else 0
-            self.features.add_module(f'conv{i + 1}', nn.Conv2d(in_channels, 6, kernel_size=5, padding=padding))
-            self.features.add_module(f'relu{i + 1}', nn.ReLU(inplace=True))
-            self.features.add_module(f'pool{i + 1}', nn.MaxPool2d(kernel_size=2, stride=2))
-        
-        # Calculate the size of the fully connected layers based on image size
-        fc1_input_size = 6 * (im_size[0] // 4) * (im_size[1] // 4)
-        
-        self.fc_1 = nn.Linear(fc1_input_size, 120)
-        self.fc_2 = nn.Linear(120, 84)
-        self.fc_3 = nn.Linear(84, num_classes)
-
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.size(0), -1)
-        x = F.relu(self.fc_1(x))
-        x = F.relu(self.fc_2(x))
-        x = self.fc_3(x)
-        return x
-
-
 
 ''' AlexNet '''
 class AlexNet(nn.Module):
