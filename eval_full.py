@@ -39,6 +39,8 @@ def main():
         model_weights[key] = []
 
     for model_eval in model_eval_pool:
+        if model_eval=='ConvNet':
+            continue
         accs = []
         weights = []
         for it_eval in range(args.num_eval):
