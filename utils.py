@@ -658,7 +658,7 @@ def match_loss(gw_syn, gw_real, args):
 
     return dis
 
-def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False, full=False):
+def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False, full=False, celeba=False):
     loss_avg, acc_avg, num_exp = 0, 0, 0
     net = net.to(args.device)
 
@@ -699,6 +699,9 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False,
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+
+        if celeba and i_batch==200:
+            break
 
     loss_avg /= num_exp
     acc_avg /= num_exp
