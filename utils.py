@@ -7,7 +7,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import os
-import kornia as K
 import tqdm
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
