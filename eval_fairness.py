@@ -55,7 +55,7 @@ def main():
     args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
     
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", sf=True, args=args)
-    model_eval_pool = get_eval_pool('M', None, None)
+    model_eval_pool = get_eval_pool('M', None, None, im_size=im_size)
 
     accs_all_exps = dict() # record performances of all experiments
     for key in model_eval_pool:
