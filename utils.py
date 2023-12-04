@@ -736,6 +736,8 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
             lr *= 0.1
             optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
 
+        print('Epoch %d, Loss %.4f, Acc %.4f'%(ep, loss_test, acc_test))
+
     if return_loss:
         return net, acc_train_list, acc_test, loss_train_list, loss_test
     else:
