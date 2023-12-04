@@ -22,6 +22,7 @@ def main():
     parser.add_argument('--cond_path', type=str, default='result', help='path to save results')
     parser.add_argument('--attributes', type=str, default='Blond_Hair')
     parser.add_argument('--ipc', type=int, default=10)
+    parser.add_argument('--auto_lr', type=bool, default=False)
 
     args = parser.parse_args()
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -52,7 +53,7 @@ def main():
             for it_eval in range(args.num_eval):
                 net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device) # get a random model
                 image_syn_eval, label_syn_eval = copy.deepcopy(image_syn.detach()), copy.deepcopy(label_syn.detach()) # avoid any unaware modification
-                _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args)
+                _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args, auto_lr=args.auto_lr)
                 accs.append(acc_test)
                 weights.append(net_eval.state_dict())
                 net_eval=None

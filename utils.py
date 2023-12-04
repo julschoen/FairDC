@@ -12,6 +12,7 @@ from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 from scipy.ndimage.interpolation import rotate as scipyrotate
 from networks import MLP, ConvNet, ConvNetEven, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, ResNet18ImageNet, ResNet18BN_AP, ResNet18_AP, ViT
+from auto_lr_wrapper import ActiveOptimizerWrapper as AutoLR
 
 class CelebA(Dataset):
     """Face Landmarks dataset."""
@@ -712,12 +713,17 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False,
 
     return loss_avg, acc_avg
 
-def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, return_loss=False, texture=False, full=False):
+def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, return_loss=False, texture=False, full=False, auto_lr=False):
     net = net.to(args.device)
     lr = float(args.lr_net)
     Epoch = int(args.epoch_eval_train)
     lr_schedule = [Epoch//2+1]
-    optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
+    if auto_lr:
+        base_opt = torch.optim.Adam(net.parameters(),lr=lr, betas=(0.9, 0.999))
+        optimizer = AutoLR(base_opt)
+    else:
+        optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
+
 
     criterion = nn.CrossEntropyLoss().to(args.device)
 
@@ -739,9 +745,13 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
         if (ep%5) == 0 or ep == Epoch:
             with torch.no_grad():
                 loss_test, acc_test = epoch('test', testloader, net, optimizer, criterion, args, aug=False)
-        if ep in lr_schedule:
-            lr *= 0.1
-            optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
+
+        if auto_lr:
+            optimizer.end_epoch_adjustment()
+        else:
+            if ep in lr_schedule:
+                lr *= 0.1
+                optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
 
     if return_loss:
         return net, acc_train_list, acc_test, loss_train_list, loss_test
