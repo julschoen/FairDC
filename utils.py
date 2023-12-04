@@ -700,7 +700,7 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False,
             loss.backward()
             optimizer.step()
 
-        if celeba and i_batch==200:
+        if celeba and i_batch==100:
             break
 
     loss_avg /= num_exp
