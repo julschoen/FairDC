@@ -29,6 +29,12 @@ def main():
     args.dsa_param = ParamDiffAug()
     args.dsa = True
     args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
+
+    wandb.init(sync_tensorboard=False,
+               project="EvalDC",
+               name=args.cond_path, 
+               config=args,
+    )
     
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", args=args)
     model_eval_pool = get_eval_pool('M', None, None, im_size=im_size)
@@ -57,6 +63,7 @@ def main():
                 _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args, auto_lr=args.auto_lr)
                 accs.append(acc_test)
                 weights.append(net_eval.state_dict())
+                wandb.log({f"{model_eval}_{i}_acc_train":acc_train , f"{model_eval}_{i}_acc_test":acc_test})
                 net_eval=None
                 gc.collect()
                 torch.cuda.empty_cache()
@@ -68,12 +75,13 @@ def main():
     for key in model_eval_pool:
         accs = accs_all_exps[key]
         print('Evaluate %d random %s on %d SynSets, %.2f\\pm%.2f'%(len(accs)/len(data), key, len(data), np.mean(accs)*100, np.std(accs)*100))
+        wandb.log({f"{key}_mean":np.mean(accs)*100 , f"{key}_std":np.std(accs)*100)
 
     torch.save({
             'weights': model_weights,
             'accs': accs_all_exps
         }, os.path.join(args.cond_path, f'eval_{args.ipc}ipc.pt'))
-
+    wandb.finish()
 
 
 if __name__ == '__main__':
