@@ -19,7 +19,7 @@ blond = 0
 not_blond = 0
 
 for _, y in dst_train:
-blond += y.sum()
-not_blond += (len(y)-y.sum())
+	blond += y.sum()
+	not_blond += (len(y)-y.sum())
 
 print(blond, not_blond)
