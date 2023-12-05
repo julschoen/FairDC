@@ -150,7 +150,7 @@ class ActiveOptimizerWrapper(BaseOptimizerWrapper):
         optimizer,
         alpha_high=0.1,
         alpha_low=0.9,
-        initial_stochastic_ratio=0.01,
+        initial_stochastic_ratio=0.5,
         dampening_rate=0.01,
         apply_dampening=True,
     ):
