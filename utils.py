@@ -719,7 +719,7 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
     Epoch = int(args.epoch_eval_train)
     lr_schedule = [Epoch//2+1]
     if auto_lr:
-        base_opt = torch.optim.Adam(net.parameters(),lr=lr, betas=(0.9, 0.999))
+        base_opt = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
         optimizer = AutoLR(base_opt)
     else:
         optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
