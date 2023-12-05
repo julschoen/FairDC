@@ -14,8 +14,6 @@ parser.add_argument('--attributes', type=str, default='Blond_Hair')
 args = parser.parse_args()
 
 channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", args=args)
-model_eval_pool = get_eval_pool(args.eval_mode, args.model, args.model)
-
 blond = 0
 not_blond = 0
 
