@@ -150,9 +150,9 @@ class ActiveOptimizerWrapper(BaseOptimizerWrapper):
         optimizer,
         alpha_high=0.1,
         alpha_low=0.9,
-        initial_stochastic_ratio=0.,
+        initial_stochastic_ratio=0.01,
         dampening_rate=0.01,
-        apply_dampening=False,
+        apply_dampening=True,
     ):
         super().__init__(optimizer, alpha_high, alpha_low)
         self.stochastic_ratio = initial_stochastic_ratio
