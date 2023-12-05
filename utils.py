@@ -742,7 +742,7 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, 
         loss_train, acc_train = epoch('train', trainloader, net, optimizer, criterion, args, aug=True, texture=texture)
         acc_train_list.append(acc_train)
         loss_train_list.append(loss_train)
-        if (ep%5) == 0 or ep == Epoch:
+        if ep == Epoch:
             with torch.no_grad():
                 loss_test, acc_test = epoch('test', testloader, net, optimizer, criterion, args, aug=False)
 
