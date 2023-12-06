@@ -64,7 +64,7 @@ def main():
                 _, acc_train, acc_test = evaluate_synset(it_eval, net_eval, image_syn_eval, label_syn_eval, testloader, args, auto_lr=args.auto_lr)
                 accs.append(acc_test)
                 weights.append(net_eval.state_dict())
-                wandb.log({f"{model_eval}_{i}_acc_train":acc_train , f"{model_eval}_{i}_acc_test":acc_test})
+                wandb.log({f"{model_eval}_{i}_acc_test":acc_test})
                 net_eval=None
                 gc.collect()
                 torch.cuda.empty_cache()
