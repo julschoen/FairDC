@@ -74,7 +74,7 @@ def main(args):
         for e in range(args.train_epochs):
 
             train_loss, train_acc = epoch("train", dataloader=trainloader, net=teacher_net, optimizer=teacher_optim,
-                                        criterion=criterion, args=args, aug=True, celeba=args.dataset.startswith('CelebA'))
+                                        criterion=criterion, args=args, aug=True, dataset=args.dataset)
 
             test_loss, test_acc = epoch("test", dataloader=testloader, net=teacher_net, optimizer=None,
                                         criterion=criterion, args=args, aug=False)
