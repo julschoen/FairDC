@@ -60,8 +60,8 @@ class MNIST(Dataset):
         )
 
         self.color_map = {
-            0: (255., 0., 0.),   # Red
-            1: (0, 0, 255)   # Blue
+            1: (255., 0., 0.),   # Red
+            0: (0., 0., 255.)   # Blue
         }
 
         self.majority_percentage = majority
