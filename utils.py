@@ -61,21 +61,7 @@ class MNIST(Dataset):
 
         self.color_map = {
             0: (255., 0., 0.),   # Red
-            1: (0, 255, 0),   # Green
-            2: (0, 0, 255),   # Blue
-            3: (255, 255, 0), # Yellow
-            4: (255, 0, 255), # Magenta
-            5: (0, 255, 255), # Cyan
-            6: (192, 192, 192), # Silver
-            7: (194, 125, 25), # Orange
-            8: (190., 217., 190.), # Bright Olive
-            9: (255., 255., 255.), # White
-        }
-
-        self.color_map = {
-            0: (255., 0., 0.),   # Red
-            1: (0, 255, 0),   # Green
-            2: (0, 0, 255)   # Blue
+            1: (0, 0, 255)   # Blue
         }
 
         self.majority_percentage = majority
@@ -83,32 +69,6 @@ class MNIST(Dataset):
         # Precompute the indices for the majority and minority splits
         self.index_color_map = self._precompute_indices()
         self.return_sf = sf
-
-    def _precompute_indices_old(self):
-        # Determine the number of samples per class
-        targets = self.train_dataset.targets.numpy()
-        targets = np.minimum(targets//3,2)
-        num_samples = len(targets)
-        indices = np.arange(num_samples)
-
-        index_color_map = {}
-        for class_label, class_color in self.color_map.items():
-            class_indices = indices[targets == class_label]
-            np.random.shuffle(class_indices)
-
-            # Compute the split index for majority/minority
-            split_idx = int(len(class_indices) * self.majority_percentage)
-
-            # Assign the majority color
-            for idx in class_indices[split_idx:]:
-                index_color_map[idx] = class_color
-
-            # Assign the minority colors uniformly from other classes
-            other_colors = [color for label, color in self.color_map.items() if label != class_label]
-            for idx in class_indices[:split_idx]:
-                index_color_map[idx] = other_colors[np.random.randint(len(other_colors))]
-
-        return index_color_map
 
     def _precompute_indices(self):
         # Determine the number of samples per class
@@ -120,10 +80,10 @@ class MNIST(Dataset):
         np.random.shuffle(indices)
         split_idx = int(len(indices) * self.majority_percentage)
 
-        for idx in indices[:split_idx]:
+        for idx in indices[split_idx:]:
             index_color_map[idx] = self.color_map[0]
 
-        for idx in indices[split_idx:]:
+        for idx in indices[:split_idx]:
             index_color_map[idx] = self.color_map[1]
 
         return index_color_map
