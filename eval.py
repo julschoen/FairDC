@@ -75,7 +75,7 @@ def main():
     print('\n==================== Final Results ====================\n')
     for key in model_eval_pool:
         accs = accs_all_exps[key]
-        print('Evaluate %d random %s on %d SynSets, %.2f\\pm%.2f'%(len(accs)/len(data), key, len(data), np.mean(accs)*100, np.std(accs)*100))
+        print('Evaluate %d random %s on %d SynSets, %.2f\\pm%.2f'%(len(accs)/len(data), key, len(data), np.mean(accs)*100, np.std(accs)*100), flush=True)
         wandb.log({f"{key}_mean":np.mean(accs)*100 , f"{key}_std":np.std(accs)*100})
 
     torch.save({
