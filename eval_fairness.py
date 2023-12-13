@@ -52,6 +52,13 @@ def main():
         'accuracy': accuracy_score,
     }
 
+    if args.dataset.startswith('MNIST'):
+        sens_names = ['Blue', 'Red']
+    else:
+        sens_names = ['Not '+args.sensitive_feature, args.sensitive_feature]
+
+    sens_names = np.array(sens_names)
+
     cols = ['Model', 'Sensitive'] + list(metrics.keys())
 
     df = pd.DataFrame(columns=cols)
@@ -81,7 +88,7 @@ def main():
 
             #if args.dataset.startswith('MNIST'):
             #    sf = np.minimum(true//3,2) == sf
-            
+            sf = sens_names[sf]
             metric_frame = MetricFrame(
                 metrics=metrics,
                 y_true=true,
