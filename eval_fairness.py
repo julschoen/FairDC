@@ -119,12 +119,13 @@ def main():
             print('EOD %.2f\\pm%.2f'%(np.mean(eod), np.std(eod)))
             print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
             print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
+        df = pd.DataFrame.from_dict(r)
+        print(df)
+        sns.violinplot(data=df, x='metrics')
+        plt.savefig('sns.png')
+        plt.close()
         for key in r.keys():
-            df = pd.DataFrame.from_dict(r[key])
-            print(df)
-            sns.violinplot(data=df)
-            plt.savefig('sns.png')
-            plt.close()
+            
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
 
