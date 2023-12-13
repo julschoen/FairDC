@@ -3,6 +3,7 @@ from fairlearn.metrics import MetricFrame
 from fairlearn.metrics import equalized_odds_difference, demographic_parity_difference
 from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio
 import seaborn as sns
+import pandas as pd
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import os
@@ -105,7 +106,8 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
 
-    print(results)
+    df = pd.DataFrame.from_dict(results)
+    print(df)
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
