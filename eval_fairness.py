@@ -52,7 +52,7 @@ def main():
         'accuracy': accuracy_score,
     }
 
-    cols = ['Model', 'Sensitive'] + metrics.keys()
+    cols = ['Model', 'Sensitive'] + list(metrics.keys())
 
     df = pd.DataFrame(columns=cols)
 
