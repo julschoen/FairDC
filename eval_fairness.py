@@ -122,9 +122,7 @@ def main():
         for key in r.keys():
             df = pd.DataFrame.from_dict(r[key])
             print(df)
-            sns.violinplot(hue="True",
-                    data=df, palette="Set2", split=True,
-                    scale="count")
+            sns.violinplot(data=df)
             plt.savefig('sns.png')
             plt.close()
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
