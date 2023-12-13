@@ -52,7 +52,11 @@ def main():
         'accuracy': accuracy_score,
     }
 
-    results = dict()
+    cols = ['Model', 'Sensitive'] + metrics.keys()
+
+    df = pd.DataFrame(columns=cols)
+
+    results= dict()
     for model in model_eval_pool:
         d = {}
         for key in metrics.keys():
@@ -97,12 +101,14 @@ def main():
 
             # Print the results
             res_grouped = metric_frame.by_group
+            print(res_grouped)
             for key in res_grouped.keys():
                 minor, major = res_grouped[key]
                 results[model_eval][key][True].append(major)
                 results[model_eval][key][False].append(minor)
 
-
+            df.loc[len(df.index)] = [model_eval, True, major]
+            df.loc[len(df.index)] = [model_eval, False, minor]
             net_eval=None
             gc.collect()
             torch.cuda.empty_cache()
@@ -121,7 +127,7 @@ def main():
             print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
         df = pd.DataFrame.from_dict(r)
         print(df)
-        sns.violinplot(data=df, x='metrics')
+        sns.violinplot(data=df, x='Model', y='accuracy', hue='Sensitive')
         plt.savefig('sns.png')
         plt.close()
         for key in r.keys():
