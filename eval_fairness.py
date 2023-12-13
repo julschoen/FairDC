@@ -109,8 +109,6 @@ def main():
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
-        df = pd.DataFrame.from_dict(r)
-        print(df)
         if args.dataset.startswith('CelebA'):
             eor = np.array(eors[i*args.num_eval:(i+1)*args.num_eval])
             eod = np.array(eods[i*args.num_eval:(i+1)*args.num_eval])
@@ -121,6 +119,8 @@ def main():
             print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
             print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
         for key in r.keys():
+            df = pd.DataFrame.from_dict(r[key])
+            print(df)
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
 
