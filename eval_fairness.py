@@ -121,6 +121,9 @@ def main():
         for key in r.keys():
             df = pd.DataFrame.from_dict(r[key])
             print(df)
+            sns.violinplot(hue="True",
+                    data=df, palette="Set2", split=True,
+                    scale="count")
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
 
