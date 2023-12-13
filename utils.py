@@ -153,11 +153,11 @@ config = Config()
 
 def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.2, mtt=False):
     if mtt:
-        return get_dataset_mtt(dataset=dataset, data_path=data_path, batch_size=batch_size, subset=subset, args=args)
+        return get_dataset_mtt(dataset=dataset, data_path=data_path, batch_size=batch_size, subset=subset, args=args, color_split=color_split)
     else:
         return get_dataset_others(dataset=dataset, data_path=data_path, batch_size=batch_size, subset=subset, args=args, sf=sf, color_split=color_split)
 
-def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=None):
+def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=None, color_split=0.2):
 
     class_map = None
     loader_train_dict = None
@@ -170,8 +170,8 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         mean = (0.5)
         std = (0.5)
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
-        dst_train = MNIST(train=True, transform=transform) # no augmentation
-        dst_test = MNIST(train=False, transform=transform)
+        dst_train = MNIST(train=True, transform=transform, majority=color_split) # no augmentation
+        dst_test = MNIST(train=False, transform=transform, majority=color_split)
         class_names = [str(c) for c in range(num_classes)]
         class_map = {x:x for x in range(num_classes)}
         mean = (0.5, 0.5, 0.5)
