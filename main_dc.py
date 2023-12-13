@@ -38,7 +38,10 @@ def main():
     args.dsa_param = ParamDiffAug()
     args.dsa = True if args.method == 'DSA' else False
     if args.dsa:
-        args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
+        if args.dataset.startswith('MNIST'):
+            args.dsa_strategy ='color_crop_cutout_scale_rotate'
+        else:
+            args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
     else:
         args.dsa_strategy=None
 

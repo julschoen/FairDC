@@ -2,6 +2,7 @@ import numpy as np
 from fairlearn.metrics import MetricFrame
 from fairlearn.metrics import equalized_odds_difference, demographic_parity_difference
 from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio
+import seaborn as sns
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import os
@@ -15,23 +16,6 @@ import torch
 import torch.nn as nn
 from torchvision.utils import save_image
 from utils import get_dataset, get_network, get_eval_pool, evaluate_model, get_daparam, DiffAugment, ParamDiffAug
-def false_positive_rate(y_true, y_pred, label):
-    # Confusion matrix: rows are true classes, columns are predicted classes
-    cm = confusion_matrix(y_true, y_pred, labels=np.unique(y_true))
-    # FP: Sum of column for 'label', excluding true positives (diagonal)
-    FP = cm[:, label].sum() - cm[label, label]
-    # True Negatives (TN): Sum of all cells excluding row and column for 'label'
-    TN = cm.sum() - cm[label, :].sum() - cm[:, label].sum() + cm[label, label]
-    return FP / (FP + TN) if (FP + TN) > 0 else 0
-
-def false_negative_rate(y_true, y_pred, label):
-    # Confusion matrix: rows are true classes, columns are predicted classes
-    cm = confusion_matrix(y_true, y_pred, labels=np.unique(y_true))
-    # FN: Sum of row for 'label', excluding true positives (diagonal)
-    FN = cm[label, :].sum() - cm[label, label]
-    # True Positives (TP)
-    TP = cm[label, label]
-    return FN / (FN + TP) if (FN + TP) > 0 else 0
 
 
 def main():
@@ -39,7 +23,6 @@ def main():
     parser = argparse.ArgumentParser(description='Parameter Processing')
     parser.add_argument('--dataset', type=str, default='MNIST', help='dataset')
     parser.add_argument('--num_eval', type=int, default=5, help='the number of evaluating randomly initialized models')
-    parser.add_argument('--epoch_eval_train', type=int, default=1000, help='epochs to train a model with synthetic data')
     parser.add_argument('--lr_net', type=float, default=0.01, help='learning rate for updating network parameters')
     parser.add_argument('--batch_real', type=int, default=256, help='batch size for real data')
     parser.add_argument('--batch_train', type=int, default=256, help='batch size for training networks')
@@ -65,12 +48,6 @@ def main():
 
     metrics = {
         'accuracy': accuracy_score,
-        #'precision_macro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='macro'),
-        #'recall_macro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='macro'),
-        #'f1_score_macro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='macro'),
-        #'precision_micro': lambda y_true, y_pred: precision_score(y_true, y_pred, average='micro'),
-        #'recall_micro': lambda y_true, y_pred: recall_score(y_true, y_pred, average='micro'),
-        #'f1_score_micro': lambda y_true, y_pred: f1_score(y_true, y_pred, average='micro')
     }
 
     results = dict()
@@ -128,6 +105,7 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
 
+    print(results)
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
