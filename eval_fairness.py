@@ -103,7 +103,7 @@ def main():
             res_grouped = metric_frame.by_group
             print(res_grouped)
             for key in res_grouped.keys():
-                minor, major = res_grouped[key]
+                major, minor = res_grouped[key]
                 results[model_eval][key][True].append(major)
                 results[model_eval][key][False].append(minor)
 
@@ -112,6 +112,12 @@ def main():
             net_eval=None
             gc.collect()
             torch.cuda.empty_cache()
+
+
+     print(df)
+    sns.violinplot(data=df, x='Model', y='accuracy', hue='Sensitive')
+    plt.savefig('sns.png')
+    plt.close()
 
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
@@ -125,11 +131,7 @@ def main():
             print('EOD %.2f\\pm%.2f'%(np.mean(eod), np.std(eod)))
             print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
             print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
-        df = pd.DataFrame.from_dict(r)
-        print(df)
-        sns.violinplot(data=df, x='Model', y='accuracy', hue='Sensitive')
-        plt.savefig('sns.png')
-        plt.close()
+       
         for key in r.keys():
             
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
