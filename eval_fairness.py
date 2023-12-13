@@ -4,6 +4,7 @@ from fairlearn.metrics import equalized_odds_difference, demographic_parity_diff
 from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio
 import seaborn as sns
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import os
@@ -124,6 +125,8 @@ def main():
             sns.violinplot(hue="True",
                     data=df, palette="Set2", split=True,
                     scale="count")
+            plt.savefig('sns.png')
+            plt.close()
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
 
