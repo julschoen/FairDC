@@ -114,7 +114,7 @@ def main():
             torch.cuda.empty_cache()
 
 
-     print(df)
+    print(df)
     sns.violinplot(data=df, x='Model', y='accuracy', hue='Sensitive')
     plt.savefig('sns.png')
     plt.close()
