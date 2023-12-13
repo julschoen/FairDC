@@ -108,21 +108,18 @@ def main():
 
             # Print the results
             res_grouped = metric_frame.by_group
-            print(res_grouped)
             for key in res_grouped.keys():
                 major, minor = res_grouped[key]
                 results[model_eval][key][True].append(major)
                 results[model_eval][key][False].append(minor)
 
-            df.loc[len(df.index)] = [model_eval, True, major]
-            df.loc[len(df.index)] = [model_eval, False, minor]
+            df.loc[len(df.index)] = [model_eval, 'Blue', major]
+            df.loc[len(df.index)] = [model_eval, 'Red', minor]
             net_eval=None
             gc.collect()
             torch.cuda.empty_cache()
 
-
-    print(df)
-    sns.violinplot(data=df, x='Model', y='accuracy', hue='Sensitive')
+    sns.violinplot(data=df, x='Model', y='accuracy', hue='Sensitive', split=True, inner="quart")
     plt.savefig('sns.png')
     plt.close()
 
