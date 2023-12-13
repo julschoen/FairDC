@@ -125,7 +125,7 @@ def main():
             torch.cuda.empty_cache()
 
     sns.violinplot(data=df, x='Model', y='accuracy', hue='Sensitive', split=True, inner="quart")
-    plt.savefig(f'{args.cond_path.split('/')[-1]}.pdf', bbox_inches='tight')
+    plt.savefig(args.cond_path.split('/')[-1]+'.pdf', bbox_inches='tight')
     plt.close()
 
     for i, model_eval in enumerate(model_eval_pool):
