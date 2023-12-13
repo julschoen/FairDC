@@ -88,7 +88,7 @@ def main():
 
             #if args.dataset.startswith('MNIST'):
             #    sf = np.minimum(true//3,2) == sf
-            sf = sens_names[sf.int()]
+            sf = sens_names[sf.dtype('int')]
             metric_frame = MetricFrame(
                 metrics=metrics,
                 y_true=true,
