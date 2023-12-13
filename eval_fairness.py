@@ -108,13 +108,18 @@ def main():
 
             # Print the results
             res_grouped = metric_frame.by_group
+            row_major = [model_eval, sens_names[0]]
+            row_minor = [model_eval, sens_names[1]]
+
             for key in res_grouped.keys():
                 major, minor = res_grouped[key]
                 results[model_eval][key][True].append(major)
                 results[model_eval][key][False].append(minor)
+                row_major.append(major)
+                row_minor.append(minor)
 
-            df.loc[len(df.index)] = [model_eval, 'Blue', major]
-            df.loc[len(df.index)] = [model_eval, 'Red', minor]
+            df.loc[len(df.index)] = row_major
+            df.loc[len(df.index)] = row_minor
             net_eval=None
             gc.collect()
             torch.cuda.empty_cache()
