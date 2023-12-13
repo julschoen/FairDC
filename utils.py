@@ -60,8 +60,8 @@ class MNIST(Dataset):
         )
 
         self.color_map = {
-            'Red': (255., 0., 0.),
-            'Blue': (0., 0., 255.)   # Blue
+            0: (0., 0., 255.),   # Blue
+            1: (255., 0., 0.) # Red
         }
 
         self.majority_percentage = majority
@@ -81,10 +81,10 @@ class MNIST(Dataset):
         split_idx = int(len(indices) * self.majority_percentage)
 
         for idx in indices[split_idx:]:
-            index_color_map[idx] = self.color_map['Red']
+            index_color_map[idx] = self.color_map[1]
 
         for idx in indices[:split_idx]:
-            index_color_map[idx] = self.color_map['Blue']
+            index_color_map[idx] = self.color_map[0]
 
         return index_color_map
 
