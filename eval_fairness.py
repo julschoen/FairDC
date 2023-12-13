@@ -106,11 +106,11 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
 
-    df = pd.DataFrame.from_dict(results)
-    print(df)
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
+        df = pd.DataFrame.from_dict(r)
+        print(df)
         if args.dataset.startswith('CelebA'):
             eor = np.array(eors[i*args.num_eval:(i+1)*args.num_eval])
             eod = np.array(eods[i*args.num_eval:(i+1)*args.num_eval])
