@@ -667,7 +667,7 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False,
 
         if dataset.startswith('CelebA') and i_batch==100:
             break
-        elif dataset.startswith('MNIST') and i_batch==20:
+        elif dataset.startswith('MNIST') and i_batch==50:
             break
 
     loss_avg /= num_exp
