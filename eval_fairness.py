@@ -124,6 +124,10 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
 
+    title= args.cond_path.split('/')[-1].split('_')[0].upper()
+    if title.startswith('DC'):
+        title='GM'
+    plt.title(title)
     sns.violinplot(data=df, x='Model', y='accuracy', hue='Sensitive', split=True, inner="quart")
     plt.savefig(args.cond_path.split('/')[-1]+'.pdf', bbox_inches='tight')
     plt.close()
