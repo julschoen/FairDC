@@ -112,10 +112,9 @@ def main():
             res_grouped = metric_frame.by_group
             row_major = [model_eval, sens_names[0]]
             row_minor = [model_eval, sens_names[1]]
-            print(res_grouped)
+
             for key in res_grouped.keys():
                 minor, major = res_grouped[key]
-                print(minor, major)
                 results[model_eval][key][True].append(major)
                 results[model_eval][key][False].append(minor)
                 row_major.append(major)
