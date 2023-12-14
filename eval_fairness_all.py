@@ -159,6 +159,11 @@ def main():
 
     # Set the y-limits based on your transformed data
     plt.ylim(bottom=sqrt_transform(0.6), top=sqrt_transform(df['accuracy'].max()))
+
+    tick_values = np.arange(sqrt_transform(0.6), sqrt_transform(df['accuracy'].max()), 0.1)
+    plt.yticks(tick_values, [f"{inv_sqrt_transform(v):.2f}" for v in tick_values])
+
+
     plt.savefig(args.dataset.lower()+'_all.png', bbox_inches='tight')
     plt.close()
 
