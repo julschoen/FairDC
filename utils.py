@@ -79,7 +79,6 @@ class MNIST(Dataset):
         index_color_map = {}
         np.random.shuffle(indices)
         split_idx = int(len(indices) * self.majority_percentage)
-        print(split_idx, len(indices))
         for idx in indices[split_idx:]:
             index_color_map[idx] = self.color_map[0]
 

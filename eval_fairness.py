@@ -114,7 +114,8 @@ def main():
             row_minor = [model_eval, sens_names[1]]
             print(res_grouped)
             for key in res_grouped.keys():
-                major, minor = res_grouped[key]
+                minor, major = res_grouped[key]
+                print(minor, major)
                 results[model_eval][key][True].append(major)
                 results[model_eval][key][False].append(minor)
                 row_major.append(major)
