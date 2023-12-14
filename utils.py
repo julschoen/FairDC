@@ -623,7 +623,7 @@ def match_loss(gw_syn, gw_real, args):
 
     return dis
 
-def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False, full=False, dataset=""):
+def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False, full=False, dataset="", timestamps=None):
     loss_avg, acc_avg, num_exp = 0, 0, 0
     net = net.to(args.device)
 
@@ -665,15 +665,18 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False,
             loss.backward()
             optimizer.step()
 
-        if dataset.startswith('CelebA') and i_batch==100:
-            break
+        if dataset.startswith('CelebA') and i_batch==100 and timestamps is not None:
+            timestamps.append([p.detach().clone().cpu() for p in teacher_net.parameters()])
         elif dataset.startswith('MNIST') and i_batch==50:
-            break
+            timestamps.append([p.detach().clone().cpu() for p in teacher_net.parameters()])
 
     loss_avg /= num_exp
     acc_avg /= num_exp
 
-    return loss_avg, acc_avg
+    if timestamps is not None:
+        return loss_avg, acc_avg, timestamps
+    else:
+        return loss_avg, acc_avg
 
 def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args, return_loss=False, texture=False, full=False, auto_lr=False):
     net = net.to(args.device)
