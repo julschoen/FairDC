@@ -57,7 +57,7 @@ def main():
     }
 
     if args.dataset.startswith('MNIST'):
-        sens_names = ['Blue', 'Red']
+        sens_names = ['Red', 'Blue']
     else:
         sens_names = ['Not '+args.sensitive_feature, args.sensitive_feature]
 
