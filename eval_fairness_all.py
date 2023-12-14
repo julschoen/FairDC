@@ -150,7 +150,7 @@ def main():
         title='GM'
     plt.title(title)
     sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart", log_scale=True)
-    plt.savefig(args.dataset.lower()+'_all.pdf', bbox_inches='tight')
+    plt.savefig(args.dataset.lower()+'_all.png', bbox_inches='tight')
     plt.close()
 
     for i, model_eval in enumerate(model_eval_pool):
