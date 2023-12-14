@@ -102,7 +102,6 @@ class MNIST(Dataset):
             for label, color in self.color_map.items():
                 if c == color:
                     sf = label
-                    print(color, c, label)
                     break
 
         if self.return_sf:
