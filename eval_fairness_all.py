@@ -42,7 +42,7 @@ def main():
         args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
 
     methods = [
-        'coreset/random_'+args.dataset.lower(),
+        #'coreset/random_'+args.dataset.lower(),
         'dsa_dm/dm_'+args.dataset.lower(),
         'dsa_dm/dc_'+args.dataset.lower(),
         'dsa_dm/dsa_'+args.dataset.lower(),
