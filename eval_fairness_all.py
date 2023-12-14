@@ -42,7 +42,7 @@ def main():
         args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
 
     methods = [
-        #'coreset/random_'+args.dataset.lower(),
+        'coreset/random_'+args.dataset.lower(),
         'dsa_dm/dm_'+args.dataset.lower(),
         'dsa_dm/dc_'+args.dataset.lower(),
         'dsa_dm/dsa_'+args.dataset.lower(),
@@ -149,7 +149,7 @@ def main():
     if title.startswith('DC'):
         title='GM'
     plt.title(title)
-    sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
+    sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart", log_scale=True)
     plt.savefig(args.dataset.lower()+'_all.pdf', bbox_inches='tight')
     plt.close()
 
