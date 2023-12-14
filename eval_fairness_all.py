@@ -42,12 +42,12 @@ def main():
         args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
 
     methods = [
-        'coreset/random_'+dataset.lower(),
-        'dsa_dm/dm_'+dataset.lower(),
-        'dsa_dm/dc_'+dataset.lower(),
-        'dsa_dm/dsa_'+dataset.lower(),
-        'mtt/mtt_'+dataset.lower(),
-        dataset.lower()+'full'
+        'coreset/random_'+args.dataset.lower(),
+        'dsa_dm/dm_'+args.dataset.lower(),
+        'dsa_dm/dc_'+args.dataset.lower(),
+        'dsa_dm/dsa_'+args.dataset.lower(),
+        'mtt/mtt_'+args.dataset.lower(),
+        args.dataset.lower()+'full'
     ]
     
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", sf=True, args=args)
