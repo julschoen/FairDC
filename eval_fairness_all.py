@@ -149,7 +149,16 @@ def main():
     if title.startswith('DC'):
         title='GM'
     plt.title(title)
-    sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart", log_scale=True)
+    sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
+    def sqrt_transform(data, factor=10):
+        return np.sign(data) * (np.sqrt(abs(data)) * factor)
+
+    # Apply the inverse transformation for the tick labels
+    def inv_sqrt_transform(ticks, factor=10):
+        return (ticks / factor)**2
+
+    # Set the y-limits based on your transformed data
+    plt.ylim(bottom=sqrt_transform(0.6), top=sqrt_transform(df['accuracy'].max()))
     plt.savefig(args.dataset.lower()+'_all.png', bbox_inches='tight')
     plt.close()
 
