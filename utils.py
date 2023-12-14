@@ -666,9 +666,9 @@ def epoch(mode, dataloader, net, optimizer, criterion, args, aug, texture=False,
             optimizer.step()
 
         if dataset.startswith('CelebA') and i_batch==100 and timestamps is not None:
-            timestamps.append([p.detach().clone().cpu() for p in teacher_net.parameters()])
+            timestamps.append([p.detach().clone().cpu() for p in net.parameters()])
         elif dataset.startswith('MNIST') and i_batch==50:
-            timestamps.append([p.detach().clone().cpu() for p in teacher_net.parameters()])
+            timestamps.append([p.detach().clone().cpu() for p in net.parameters()])
 
     loss_avg /= num_exp
     acc_avg /= num_exp
