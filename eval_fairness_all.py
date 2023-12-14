@@ -47,7 +47,7 @@ def main():
         'dsa_dm/dc_'+args.dataset.lower(),
         'dsa_dm/dsa_'+args.dataset.lower(),
         'mtt/mtt_'+args.dataset.lower(),
-        args.dataset.lower()+'full'
+        args.dataset.lower()+'_full'
     ]
     
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", sf=True, args=args)
