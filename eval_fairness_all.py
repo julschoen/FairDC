@@ -144,7 +144,7 @@ def main():
                 gc.collect()
                 torch.cuda.empty_cache()
 
-    title= 'Accuracy Gap of Different Models'
+    title= 'Accuracy Gap of Different Methods'
     if title.startswith('DC'):
         title='GM'
 
