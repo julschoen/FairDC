@@ -150,18 +150,22 @@ def main():
         title='GM'
     plt.title(title)
     g = sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
-    def sqrt_transform(data, factor=10):
-        return np.sign(data) * (np.sqrt(abs(data)) * factor)
+    
+    data_min = 0.6 # replace with your actual data minimum if needed
+    data_max = df['accuracy'].max()
 
-    # Apply the inverse transformation for the tick labels
-    def inv_sqrt_transform(ticks, factor=10):
-        return (ticks / factor)**2
+    # Set the y-axis limits
+    g.set_ylim(bottom=data_min, top=data_max)
 
-    # Set the y-limits based on your transformed data
-    g.set_ylim(bottom=sqrt_transform(0.6), top=sqrt_transform(df['accuracy'].max()))
+    # Generate custom tick labels with finer granularity in the region of interest
+    # For example, more ticks between 0.6 and 0.7
+    fine_grain_ticks = np.arange(data_min, 0.7, 0.02)
+    coarse_grain_ticks = np.arange(0.7, data_max, 0.1)
+    all_ticks = np.concatenate((fine_grain_ticks, coarse_grain_ticks))
 
-    tick_values = np.arange(sqrt_transform(0.6), sqrt_transform(df['accuracy'].max()), 0.1)
-    g.set_yticks(tick_values, [f"{inv_sqrt_transform(v):.2f}" for v in tick_values])
+    # Set the ticks on the y-axis
+    g.set_yticks(all_ticks)
+    g.set_yticklabels([f"{tick:.2f}" for tick in all_ticks])
 
 
     plt.savefig(args.dataset.lower()+'_all.png', bbox_inches='tight')
