@@ -1,11 +1,9 @@
 import torch
 
-model_weights = torch.load('celeba_full/eval_50ipc.pt')
-print(model_weights)
 
 model_weights = torch.load('celeba_full/eval.pt')['weights']
 conv_weights = torch.load('celeba_full/eval_conv.pt')['weights']
-print(model_weights)
+print(model_weights.keys())
 accs_all_exps = torch.load('celeba_full/eval.pt')['accs']
 conv_accs = torch.load('celeba_full/eval_conv.pt')['accs']
 
