@@ -106,7 +106,7 @@ def main():
             net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
-
+            sf_nums = sf
             sf = sens_names[sf.astype('int')]
             metric_frame = MetricFrame(
                 metrics=metrics,
@@ -115,14 +115,14 @@ def main():
                 sensitive_features=sf
             )
             
-            eod = equalized_odds_difference(true, pred, sensitive_features=sf)
+            eod = equalized_odds_difference(true, pred, sensitive_features=sf_nums)
             eods.append(eod)
-            eor = equalized_odds_ratio(true, pred, sensitive_features=sf)
+            eor = equalized_odds_ratio(true, pred, sensitive_features=sf_nums)
             eors.append(eor)
 
-            dpd = demographic_parity_difference(true, pred, sensitive_features=sf)
+            dpd = demographic_parity_difference(true, pred, sensitive_features=sf_nums)
             dpds.append(dpd)
-            dpr = demographic_parity_ratio(true, pred, sensitive_features=sf)
+            dpr = demographic_parity_ratio(true, pred, sensitive_features=sf_nums)
             dprs.append(dpr)
 
             # Print the results
