@@ -5,6 +5,7 @@ from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import os
@@ -21,6 +22,24 @@ from utils import get_dataset, get_network, get_eval_pool, evaluate_model, get_d
 
 
 def main():
+    class SquareRootScale(matplotlib.scale.ScaleBase):
+        name = 'sqrt'
+
+        def __init__(self, axis, **kwargs):
+            mscale.ScaleBase.__init__(self)
+            self.axis = axis
+
+        def get_transform(self):
+            ax = self.axis
+            return matplotlib.transforms.ScaleTransform(ax.xaxis.get_transform(),
+                                                      lambda x: x**0.5,
+                                                      lambda x: x**2)
+
+        def limit_range_for_scale(self, vmin, vmax, minpos):
+            return max(0., vmin), vmax
+
+    # Register the custom scale with Matplotlib
+    matplotlib.scale.register_scale(SquareRootScale)
 
     parser = argparse.ArgumentParser(description='Parameter Processing')
     parser.add_argument('--dataset', type=str, default='MNIST', help='dataset')
@@ -150,7 +169,7 @@ def main():
         title='GM'
 
     plt.title(title)
-    sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
+    sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart", scale_y='sqrt')
 
     # Set the y-axis limits
     plt.ylim(bottom=0.9, top=1.)
