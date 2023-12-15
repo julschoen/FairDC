@@ -152,7 +152,7 @@ def main():
     sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
 
     # Set the y-axis limits
-    plt.ylim(bottom=0.93, top=1.)
+    #plt.ylim(bottom=0., top=1.)
 
     plt.savefig(args.dataset.lower()+'_all.pdf', bbox_inches='tight')
     plt.close()
