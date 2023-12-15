@@ -148,18 +148,14 @@ def main():
     title= 'Accuracy Gap of Different Models'
     if title.startswith('DC'):
         title='GM'
-    y_sqrt = np.sqrt(df['accuracy'])
 
     plt.title(title)
-    sns.violinplot(data=df, x='Method', y=y_sqrt, hue='Sensitive', split=True, inner="quart")
-
-    data_min = y_sqrt.min() # replace with your actual data minimum if needed
-    data_max = y_sqrt.max()
+    sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
 
     # Set the y-axis limits
-    plt.ylim(bottom=data_min, top=data_max)
+    plt.ylim(bottom=0.9, top=1.)
 
-    plt.savefig(args.dataset.lower()+'_all.png', bbox_inches='tight')
+    plt.savefig(args.dataset.lower()+'_all.pdf', bbox_inches='tight')
     plt.close()
 
     for i, model_eval in enumerate(model_eval_pool):
