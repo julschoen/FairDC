@@ -109,8 +109,6 @@ def main():
             dpr = demographic_parity_ratio(true, pred, sensitive_features=sf)
             dprs.append(dpr)
 
-            tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
-
             # Print the results
             res_grouped = metric_frame.by_group
             row_major = [model_eval, sens_names[0]]
