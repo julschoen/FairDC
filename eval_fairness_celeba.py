@@ -1,7 +1,7 @@
 import numpy as np
 from fairlearn.metrics import MetricFrame
 from fairlearn.metrics import equalized_odds_difference, demographic_parity_difference
-from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio
+from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate 
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -137,20 +137,26 @@ def main():
                 row_major.append(major)
                 row_minor.append(minor)
 
+            tpr2 = true_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            tpr3 = true_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+
             pred = np.array(list(map(int, pred)))
             true = np.array(list(map(int, true)))
 
             tn, fp, fn, tp = confusion_matrix(pred[sf==sens_names[0]], true[sf==sens_names[0]]).ravel()
 
-            tpr = tp / (tp + fn)
+            tpr1 = tp / (tp + fn)
             tnr = tn / (tn + fp)
             fpr = fp / (fp + tn)
             fnr = fn / (fn + tp)
+
+
+
             row_major.append(tpr)
             row_major.append(tnr)
             row_major.append(fpr)
             row_major.append(fnr)
-            results[model_eval]['TPR'][True].append(tpr)
+            results[model_eval]['TPR'][True].append(tpr1)
             results[model_eval]['TNR'][True].append(tnr)
             results[model_eval]['FPR'][True].append(fpr)
             results[model_eval]['FNR'][True].append(fnr)
@@ -168,6 +174,9 @@ def main():
             results[model_eval]['TNR'][False].append(tnr)
             results[model_eval]['FPR'][False].append(fpr)
             results[model_eval]['FNR'][False].append(fnr)
+
+            print(tpr1, tpr2)
+            print(tpr,tpr3)
 
             df.loc[len(df.index)] = row_major
             df.loc[len(df.index)] = row_minor
