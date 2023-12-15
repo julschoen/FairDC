@@ -159,16 +159,6 @@ def main():
     # Set the y-axis limits
     plt.ylim(bottom=data_min, top=data_max)
 
-    # Generate custom tick labels with finer granularity in the region of interest
-    # For example, more ticks between 0.6 and 0.7
-    fine_grain_ticks = np.arange(data_min, 0.8, 0.2)
-    coarse_grain_ticks = np.arange(0.8, data_max, 0.01)
-    all_ticks = np.concatenate((fine_grain_ticks, coarse_grain_ticks))
-
-    # Set the ticks on the y-axis
-    plt.yticks(all_ticks)
-    plt.yticklabels([f"{tick:.2f}" for tick in all_ticks])
-
     plt.savefig(args.dataset.lower()+'_all.png', bbox_inches='tight')
     plt.close()
 
