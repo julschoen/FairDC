@@ -137,35 +137,24 @@ def main():
                 row_major.append(major)
                 row_minor.append(minor)
 
-            tpr2 = true_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
-            tpr3 = true_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            tpr = true_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            tnr = true_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            fpr = false_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            fnr = false_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
 
-            pred = np.array(list(map(int, pred)))
-            true = np.array(list(map(int, true)))
-
-            tn, fp, fn, tp = confusion_matrix(true[sf==sens_names[0]], pred[sf==sens_names[0]]).ravel()
-
-            tpr1 = tp / (tp + fn)
-            tnr = tn / (tn + fp)
-            fpr = fp / (fp + tn)
-            fnr = fn / (fn + tp)
-
-
-
-            row_major.append(tpr1)
+            row_major.append(tpr)
             row_major.append(tnr)
             row_major.append(fpr)
             row_major.append(fnr)
-            results[model_eval]['TPR'][True].append(tpr1)
+            results[model_eval]['TPR'][True].append(tpr)
             results[model_eval]['TNR'][True].append(tnr)
             results[model_eval]['FPR'][True].append(fpr)
             results[model_eval]['FNR'][True].append(fnr)
 
-            tn, fp, fn, tp = confusion_matrix(true[sf==sens_names[1]], pred[sf==sens_names[1]]).ravel()
-            tpr = tp / (tp + fn)
-            tnr = tn / (tn + fp)
-            fpr = fp / (fp + tn)
-            fnr = fn / (fn + tp)
+            tpr = true_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            tnr = true_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            fpr = false_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            fnr = false_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
             row_minor.append(tpr)
             row_minor.append(tnr)
             row_minor.append(fpr)
