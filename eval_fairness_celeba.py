@@ -45,7 +45,7 @@ def main():
         args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
     
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", sf=True, args=args, train=False)
-    model_eval_pool = get_eval_pool('M', None, None, im_size=im_size)
+    model_eval_pool = ['ConvNet']
 
     accs_all_exps = dict() # record performances of all experiments
     for key in model_eval_pool:
@@ -128,12 +128,22 @@ def main():
             row_major.append(tn)
             row_major.append(fp)
             row_major.append(fn)
+            results[model_eval]['TPR'][True].append(tp)
+            results[model_eval]['TNR'][True].append(tn)
+            results[model_eval]['FPR'][True].append(fp)
+            results[model_eval]['FNR'][True].append(fn)
+
+            results[model_eval][key][False].append(minor)
 
             tn, fp, fn, tp = confusion_matrix(pred[sf==1], true[sf==1]).ravel()
             row_minor.append(tp)
             row_minor.append(tn)
             row_minor.append(fp)
             row_minor.append(fn)
+            results[model_eval]['TPR'][False].append(tp)
+            results[model_eval]['TNR'][False].append(tn)
+            results[model_eval]['FPR'][False].append(fp)
+            results[model_eval]['FNR'][False].append(fn)
 
             df.loc[len(df.index)] = row_major
             df.loc[len(df.index)] = row_minor
@@ -150,23 +160,21 @@ def main():
         plt.savefig(args.cond_path.split('/')[-1]+'_'+m+'.pdf', bbox_inches='tight')
         plt.close()
 
-    for i, model_eval in enumerate(model_eval_pool):
-        print(model_eval)
+    for model_eval in model_eval_pool:
         r = results[model_eval]
-        if args.dataset.startswith('CelebA'):
-            eor = np.array(eors[i*args.num_eval:(i+1)*args.num_eval])
-            eod = np.array(eods[i*args.num_eval:(i+1)*args.num_eval])
-            dpr = np.array(dprs[i*args.num_eval:(i+1)*args.num_eval])
-            dpd = np.array(dpds[i*args.num_eval:(i+1)*args.num_eval])
-            print('EOR %.2f\\pm%.2f'%(np.mean(eor), np.std(eor)))
-            print('EOD %.2f\\pm%.2f'%(np.mean(eod), np.std(eod)))
-            print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
-            print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
-       
+        eor = np.array(eors[i*args.num_eval:(i+1)*args.num_eval])
+        eod = np.array(eods[i*args.num_eval:(i+1)*args.num_eval])
+        dpr = np.array(dprs[i*args.num_eval:(i+1)*args.num_eval])
+        dpd = np.array(dpds[i*args.num_eval:(i+1)*args.num_eval])
+        print('EOR %.2f\\pm%.2f'%(np.mean(eor), np.std(eor)))
+        print('EOD %.2f\\pm%.2f'%(np.mean(eod), np.std(eod)))
+        print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
+        print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
+           
         for key in r.keys():
-            
-            gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
-            print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
+            minor = np.array(r[key][False])
+            major = np.array(r[key][True])
+            print('%s Sensitive %.2f\\pm%.2f Not %.2f\\pm%.2f'%(key, np.mean(minor), np.std(minor), np.mean(major), np.std(major)))
 
 
 
