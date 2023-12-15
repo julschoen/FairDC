@@ -149,7 +149,7 @@ def main():
     if title.startswith('DC'):
         title='GM'
     plt.title(title)
-    sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
+    g = sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
     def sqrt_transform(data, factor=10):
         return np.sign(data) * (np.sqrt(abs(data)) * factor)
 
@@ -158,10 +158,10 @@ def main():
         return (ticks / factor)**2
 
     # Set the y-limits based on your transformed data
-    plt.ylim(bottom=sqrt_transform(0.6), top=sqrt_transform(df['accuracy'].max()))
+    g.set_ylim(bottom=sqrt_transform(0.6), top=sqrt_transform(df['accuracy'].max()))
 
     tick_values = np.arange(sqrt_transform(0.6), sqrt_transform(df['accuracy'].max()), 0.1)
-    plt.yticks(tick_values, [f"{inv_sqrt_transform(v):.2f}" for v in tick_values])
+    g.set_yticks(tick_values, [f"{inv_sqrt_transform(v):.2f}" for v in tick_values])
 
 
     plt.savefig(args.dataset.lower()+'_all.png', bbox_inches='tight')
