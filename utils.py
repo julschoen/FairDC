@@ -150,11 +150,11 @@ class Config:
 
 config = Config()
 
-def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.2, mtt=False):
+def get_dataset(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.2, mtt=False, train=True):
     if mtt:
         return get_dataset_mtt(dataset=dataset, data_path=data_path, batch_size=batch_size, subset=subset, args=args, color_split=color_split)
     else:
-        return get_dataset_others(dataset=dataset, data_path=data_path, batch_size=batch_size, subset=subset, args=args, sf=sf, color_split=color_split)
+        return get_dataset_others(dataset=dataset, data_path=data_path, batch_size=batch_size, subset=subset, args=args, sf=sf, color_split=color_split, train=train)
 
 def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=None, color_split=0.2):
 
@@ -286,7 +286,7 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
 
     return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader, loader_train_dict, class_map, class_map_inv
 
-def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.2):
+def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", args=None, sf=False, color_split=0.2, train=True):
     class_map = None
     loader_train_dict = None
     class_map_inv = None
@@ -298,7 +298,10 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
         mean = (0.5)
         std = (0.5)
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
-        dst_train = MNIST(train=True, transform=transform, sf=sf, majority=color_split) # no augmentation
+        if train:
+            dst_train = MNIST(train=True, transform=transform, sf=sf, majority=color_split) # no augmentation
+        else:
+            dst_train = None
         dst_test = MNIST(train=False, transform=transform, sf=sf, majority=color_split)
         class_names = [str(c) for c in range(num_classes)]
         class_map = {x:x for x in range(num_classes)}
@@ -384,10 +387,16 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
                                         transforms.Resize(im_size, antialias=True),
                                         transforms.CenterCrop(im_size)])
         if sf:
-            dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))  # no augmentation
+            if train:
+                dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))  # no augmentation
+            else:
+                dst_train=None
             dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))
         else:
-            dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+            if train:
+                dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+            else:
+                dst_train=None
             dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
         class_names = dst_train.classes
         class_map = {x: x for x in range(num_classes)}
@@ -405,10 +414,16 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
                                         transforms.Resize(im_size, antialias=True),
                                         transforms.CenterCrop(im_size)])
         if sf:
-            dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))  # no augmentation
+            if train:
+                dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))  # no augmentation
+            else:
+                dst_train=None
             dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))
         else:
-            dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+            if train:
+                dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+            else:
+                dst_train=None
             dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
         class_names = dst_train.classes
         class_map = {x: x for x in range(num_classes)}
