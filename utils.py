@@ -425,7 +425,8 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
             else:
                 dst_train=None
             dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
-        class_names = dst_train.classes
+
+        class_names = dst_test.classes
         class_map = {x: x for x in range(num_classes)}
 
 
