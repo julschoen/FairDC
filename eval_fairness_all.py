@@ -104,17 +104,7 @@ def main():
                     y_pred=pred,
                     sensitive_features=sf
                 )
-                if args.dataset.startswith('CelebA'):
-                    eod = equalized_odds_difference(true, pred, sensitive_features=sf)
-                    eods.append(eod)
-                    eor = equalized_odds_ratio(true, pred, sensitive_features=sf)
-                    eors.append(eor)
-
-                    dpd = demographic_parity_difference(true, pred, sensitive_features=sf)
-                    dpds.append(dpd)
-                    dpr = demographic_parity_ratio(true, pred, sensitive_features=sf)
-                    dprs.append(dpr)
-
+                
                 # Print the results
 
                 res_grouped = metric_frame.by_group
@@ -149,6 +139,7 @@ def main():
         title='GM'
 
     plt.title(title)
+    plt.figure(figsize=(12,24))
     sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
 
     # Set the y-axis limits
@@ -160,15 +151,7 @@ def main():
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
-        if args.dataset.startswith('CelebA'):
-            eor = np.array(eors[i*args.num_eval:(i+1)*args.num_eval])
-            eod = np.array(eods[i*args.num_eval:(i+1)*args.num_eval])
-            dpr = np.array(dprs[i*args.num_eval:(i+1)*args.num_eval])
-            dpd = np.array(dpds[i*args.num_eval:(i+1)*args.num_eval])
-            print('EOR %.2f\\pm%.2f'%(np.mean(eor), np.std(eor)))
-            print('EOD %.2f\\pm%.2f'%(np.mean(eod), np.std(eod)))
-            print('DPR %.2f\\pm%.2f'%(np.mean(dpr), np.std(dpr)))
-            print('DPD %.2f\\pm%.2f'%(np.mean(dpd), np.std(dpd)))
+        
        
         for key in r.keys():
             
