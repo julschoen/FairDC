@@ -1,5 +1,7 @@
 import torch
 
+model_weights = torch.load('celeba_full/eval_50ipc.pt')
+
 model_weights = torch.load('celeba_full/eval.pt')['weights']
 conv_weights = torch.load('celeba_full/eval_conv.pt')['weights']
 
