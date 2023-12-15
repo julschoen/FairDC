@@ -123,7 +123,7 @@ def main():
 
             pred = list(map(int, pred))
             true = list(map(int, true))
-            print(pred,true)
+            print(pred[sf==0],true[sf==0])
             tn, fp, fn, tp = confusion_matrix(pred[sf==0], true[sf==0]).ravel()
             row_major.append(tp)
             row_major.append(tn)
@@ -133,8 +133,6 @@ def main():
             results[model_eval]['TNR'][True].append(tn)
             results[model_eval]['FPR'][True].append(fp)
             results[model_eval]['FNR'][True].append(fn)
-
-            results[model_eval][key][False].append(minor)
 
             tn, fp, fn, tp = confusion_matrix(pred[sf==1], true[sf==1]).ravel()
             row_minor.append(tp)
