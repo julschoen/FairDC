@@ -164,9 +164,6 @@ def main():
             results[model_eval]['FPR'][False].append(fpr)
             results[model_eval]['FNR'][False].append(fnr)
 
-            print(tpr1, tpr2)
-            print(tpr,tpr3)
-
             df.loc[len(df.index)] = row_major
             df.loc[len(df.index)] = row_minor
             net_eval=None
