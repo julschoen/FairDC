@@ -123,9 +123,8 @@ def main():
 
             pred = np.array(list(map(int, pred)))
             true = np.array(list(map(int, true)))
-            print(sf)
-            print(sf==0.,true[np.where(sf==0.)])
-            tn, fp, fn, tp = confusion_matrix(pred[sf==0], true[sf==0]).ravel()
+
+            tn, fp, fn, tp = confusion_matrix(pred[sf==sens_names[0]], true[sf==sens_names[0]]).ravel()
             row_major.append(tp)
             row_major.append(tn)
             row_major.append(fp)
@@ -135,7 +134,7 @@ def main():
             results[model_eval]['FPR'][True].append(fp)
             results[model_eval]['FNR'][True].append(fn)
 
-            tn, fp, fn, tp = confusion_matrix(pred[sf==1], true[sf==1]).ravel()
+            tn, fp, fn, tp = confusion_matrix(pred[sf==sens_names[1]], true[sf==sens_names[1]]).ravel()
             row_minor.append(tp)
             row_minor.append(tn)
             row_minor.append(fp)
