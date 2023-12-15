@@ -78,6 +78,22 @@ def main():
                     False: []
                 }
             
+        d['TPR'] = {
+                    True: [],
+                    False: []
+                }
+        d['TNR'] = {
+                    True: [],
+                    False: []
+                }
+        d['FPR'] = {
+                    True: [],
+                    False: []
+                } 
+        d['FNR'] = {
+                    True: [],
+                    False: []
+                }    
         results[model] = d
 
     eors = []
