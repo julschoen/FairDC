@@ -151,22 +151,13 @@ def main():
     plt.title(title)
     g = sns.violinplot(data=df, x='Method', y='accuracy', hue='Sensitive', split=True, inner="quart")
 
+    g.set_yscale('sqrt')
+
     data_min = 0.6 # replace with your actual data minimum if needed
     data_max = df['accuracy'].max()
 
     # Set the y-axis limits
     g.set_ylim(bottom=data_min, top=data_max)
-
-    # Generate custom tick labels with finer granularity in the region of interest
-    # For example, more ticks between 0.6 and 0.7
-    fine_grain_ticks = np.arange(data_min, 0.8, 0.2)
-    coarse_grain_ticks = np.arange(0.8, data_max, 0.01)
-    all_ticks = np.concatenate((fine_grain_ticks, coarse_grain_ticks))
-
-    # Set the ticks on the y-axis
-    g.set_yticks(all_ticks)
-    g.set_yticklabels([f"{tick:.2f}" for tick in all_ticks])
-
 
     plt.savefig(args.dataset.lower()+'_all.png', bbox_inches='tight')
     plt.close()
