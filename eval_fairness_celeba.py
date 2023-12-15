@@ -152,7 +152,7 @@ def main():
 
 
 
-            row_major.append(tpr)
+            row_major.append(tpr1)
             row_major.append(tnr)
             row_major.append(fpr)
             row_major.append(fnr)
