@@ -198,7 +198,7 @@ def main():
         for key in r.keys():
             minor = np.array(r[key][False])
             major = np.array(r[key][True])
-            print('%s Sensitive %.2f\\pm%.2f Not %.2f\\pm%.2f'%(key, np.mean(minor), np.std(minor), np.mean(major), np.std(major)))
+            print('%s Sensitive %.2f\\pm%.2f Not %.2f\\pm%.2f'%(key, np.mean(minor)*100, np.std(minor)*100, np.mean(major)*100, np.std(major)*100))
 
 
 
