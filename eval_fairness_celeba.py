@@ -129,7 +129,7 @@ def main():
             res_grouped = metric_frame.by_group
             row_major = [model_eval, sens_names[0]]
             row_minor = [model_eval, sens_names[1]]
-            print(res_grouped)
+
             for key in res_grouped.keys():
                 minor, major = res_grouped[key]
                 results[model_eval][key][True].append(major)
@@ -175,7 +175,7 @@ def main():
         plt.savefig(args.cond_path.split('/')[-1]+'_'+m+'.pdf', bbox_inches='tight')
         plt.close()
 
-    for model_eval in model_eval_pool:
+    for i, model_eval in enumerate(model_eval_pool):
         r = results[model_eval]
         eor = np.array(eors[i*args.num_eval:(i+1)*args.num_eval])
         eod = np.array(eods[i*args.num_eval:(i+1)*args.num_eval])
