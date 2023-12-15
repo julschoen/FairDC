@@ -121,8 +121,8 @@ def main():
                 row_major.append(major)
                 row_minor.append(minor)
 
-            print(pred)
-            print(true)
+            pred = list(map(int, pred))
+            true = list(map(int, true))
             tn, fp, fn, tp = confusion_matrix(pred[sf==0], true[sf==0]).ravel()
             row_major.append(tp)
             row_major.append(tn)
