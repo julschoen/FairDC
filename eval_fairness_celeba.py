@@ -64,7 +64,7 @@ def main():
 
     sens_names = np.array(sens_names)
 
-    cols = ['Model', 'Sensitive'] + list(metrics.keys() + ['TPR', 'TNR', 'FPR', 'FNR'])
+    cols = ['Model', 'Sensitive'] + list(metrics.keys()) + ['TPR', 'TNR', 'FPR', 'FNR']
 
     df = pd.DataFrame(columns=cols)
 
