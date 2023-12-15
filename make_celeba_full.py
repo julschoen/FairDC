@@ -3,8 +3,8 @@ import torch
 
 model_weights = torch.load('celeba_full/eval.pt')['weights']
 conv_weights = torch.load('celeba_full/eval_conv.pt')['weights']
-print(model_weights['ConvNet'])
-print(model_weights['VGG11'])
+print(len(model_weights['ConvNet']))
+print(len(model_weights['VGG11']))
 accs_all_exps = torch.load('celeba_full/eval.pt')['accs']
 conv_accs = torch.load('celeba_full/eval_conv.pt')['accs']
 
