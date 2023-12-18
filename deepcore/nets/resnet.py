@@ -192,7 +192,7 @@ def ResNet(arch: str, channel: int, num_classes: int, im_size, record_embedding:
                                  record_embedding=record_embedding, no_grad=no_grad)
         else:
             raise ValueError("Model architecture not found.")
-    elif (channel == 1 and im_size[0] == 28 and im_size[1] == 28) or (
+    elif (im_size[0] == 28 and im_size[1] == 28) or (
             channel == 3 and im_size[0] == 32 and im_size[1] == 32):
         if arch == "resnet18":
             net = ResNet_32x32(BasicBlock, [2, 2, 2, 2], channel=channel, num_classes=num_classes,
