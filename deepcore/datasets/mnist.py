@@ -11,7 +11,9 @@ class MNIST_Dataset(Dataset):
             download=True,
             transform=transform,
         )
-        self.classes = [0,1,2,3,4,5,6,7,8,9]
+        self.classes = self.train_dataset.classes
+        self.targets = self.train_dataset.targets
+
         self.color_map = {
             1: (0., 0., 255.),   # Blue
             0: (255., 0., 0.) # Red
