@@ -1,5 +1,6 @@
 from torchvision import datasets, transforms
 import numpy as np
+from torch.utils.data import Dataset
 
 class MNIST(Dataset):
     def __init__(self, train=True, transform=None, majority=0.5, sf=False):
