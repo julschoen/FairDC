@@ -5,7 +5,7 @@ from torch.utils.data import Dataset
 class MNIST_Dataset(Dataset):
     def __init__(self, train=True, transform=None, majority=0.5, sf=False):
         self.train_dataset = datasets.MNIST(
-            root="../../../data",
+            root="../data",
             train=train,
             download=True,
             transform=transform,
