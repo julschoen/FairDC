@@ -2,7 +2,7 @@ from torchvision import datasets, transforms
 import numpy as np
 from torch.utils.data import Dataset
 
-class MNIST(Dataset):
+class MNIST_Dataset(Dataset):
     def __init__(self, train=True, transform=None, majority=0.5, sf=False):
         self.train_dataset = datasets.MNIST(
             root="../../../data",
@@ -87,8 +87,8 @@ def MNIST(data_path, permuted=False, permutation_seed=None):
         transform = transforms.Compose(
             [transform, transforms.Lambda(lambda x: x.view(-1, 1)[pixel_permutation].view(1, 28, 28))])
 
-    dst_train = MNIST(train=True, transform=transform, majority=0.2) # no augmentation
-    dst_test = MNIST(train=False, transform=transform, majority=0.2)
+    dst_train = MNIST_Dataset(train=True, transform=transform, majority=0.2) # no augmentation
+    dst_test = MNIST_Dataset(train=False, transform=transform, majority=0.2)
 
     class_names = [str(c) for c in range(num_classes)]
     return channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test
