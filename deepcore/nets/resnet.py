@@ -3,6 +3,7 @@ import torch.nn.functional as F
 from torch import set_grad_enabled, flatten, Tensor
 from .nets_utils import EmbeddingRecorder
 from torchvision.models import resnet
+import torchvision
 
 
 # Acknowledgement to
@@ -165,9 +166,9 @@ def ResNet(arch: str, channel: int, num_classes: int, im_size, record_embedding:
                                  record_embedding=record_embedding, no_grad=no_grad)
         else:
             raise ValueError("Model architecture not found.")
-        from torch.hub import load_state_dict_from_url
-        state_dict = load_state_dict_from_url(resnet.model_urls[arch], progress=True)
-        net.load_state_dict(state_dict)
+        #from torch.hub import load_state_dict_from_url
+        #state_dict = load_state_dict_from_url(resnet.model_urls[arch], progress=True)
+        net = torchvision.models.resnet18()
 
         if channel != 3:
             net.conv1 = nn.Conv2d(channel, 64, kernel_size=7, stride=2, padding=3, bias=False)
