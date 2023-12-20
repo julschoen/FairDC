@@ -6,10 +6,10 @@ from ..nets.nets_utils import MyDataParallel
 
 
 class Herding(EarlyTrain):
-    def __init__(self, dst_train, args, fraction=0.5, random_seed=None, epochs=200,
+    def __init__(self, dst_train, args, ipc=10, fraction=0.5, random_seed=None, epochs=200,
                  specific_model="ResNet18", balance: bool = False, metric="euclidean", **kwargs):
         super().__init__(dst_train, args, fraction, random_seed, epochs=epochs, specific_model=specific_model, **kwargs)
-
+        self.ipc=ipc
         if metric == "euclidean":
             self.metric = euclidean_dist
         elif callable(metric):
@@ -96,7 +96,7 @@ class Herding(EarlyTrain):
                 class_index = np.arange(self.n_train)[self.dst_train.targets == c]
 
                 selection_result = np.append(selection_result, self.herding(self.construct_matrix(class_index),
-                        budget=round(self.fraction * len(class_index)), index=class_index))
+                        budget=self.ipc, index=class_index))
         else:
             selection_result = self.herding(self.construct_matrix(), budget=self.coreset_size)
         return {"indices": selection_result}

@@ -66,7 +66,7 @@ def k_center_greedy(matrix, budget: int, metric, device, random_seed=None, index
 
 
 class kCenterGreedy(EarlyTrain):
-    def __init__(self, dst_train, args, fraction=0.5, random_seed=None, epochs=0,
+    def __init__(self, dst_train, args, ipc, fraction=0.5, random_seed=None, epochs=0,
                  specific_model="ResNet18", balance: bool = False, already_selected=[], metric="euclidean",
                  torchvision_pretrain: bool = True, **kwargs):
         super().__init__(dst_train, args, fraction, random_seed, epochs=epochs, specific_model=specific_model,
@@ -76,7 +76,7 @@ class kCenterGreedy(EarlyTrain):
             if min(already_selected) < 0 or max(already_selected) >= self.n_train:
                 raise ValueError("List of already selected points out of the boundary.")
         self.already_selected = np.array(already_selected)
-
+        self.ipc
         self.min_distances = None
 
         if metric == "euclidean":
@@ -161,8 +161,7 @@ class kCenterGreedy(EarlyTrain):
                 class_index = np.arange(self.n_train)[self.dst_train.targets == c]
 
                 selection_result = np.append(selection_result, k_center_greedy(self.construct_matrix(class_index),
-                                                                               budget=round(
-                                                                                   self.fraction * len(class_index)),
+                                                                               budget=self.ipc,
                                                                                metric=self.metric,
                                                                                device=self.args.device,
                                                                                random_seed=self.random_seed,

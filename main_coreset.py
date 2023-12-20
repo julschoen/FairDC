@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--data_path', type=str, default='data', help='dataset path')
     parser.add_argument('--gpu', default=None, nargs="+", type=int, help='GPU id to use')
     parser.add_argument('--print_freq', '-p', default=20, type=int, help='print frequency (default: 20)')
-    parser.add_argument('--fraction', default=0.02, type=float, help='fraction of data to be selected (default: 0.1)')
+    parser.add_argument('--ipc', type=int, default=10, help='Images per Class')
     parser.add_argument('--seed', default=int(time.time() * 1000) % 100000, type=int, help="random seed")
     parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                         help='number of data loading workers (default: 4)')
@@ -134,11 +134,11 @@ def main():
                                                                                          dat=datetime.now(),
                                                                                          exp=start_exp,
                                                                                          epc=args.epochs,
-                                                                                         fr=args.fraction)
+                                                                                         fr=args.ipc)
 
         print('\n================== Exp %d ==================\n' % exp)
         print("dataset: ", args.dataset, ", model: ", args.model, ", selection: ", args.selection, ", num_ex: ",
-              args.num_exp, ", epochs: ", args.epochs, ", fraction: ", args.fraction, ", seed: ", args.seed,
+              args.num_exp, ", epochs: ", args.epochs, ", IPC: ", args.ipc, ", seed: ", args.seed,
               ", lr: ", args.lr, ", save_path: ", args.save_path, ", resume: ", args.resume, ", device: ", args.device,
               ", checkpoint_name: " + checkpoint_name if args.save_path != "" else "", "\n", sep="")
 
@@ -158,7 +158,7 @@ def main():
                                   greedy=args.submodular_greedy,
                                   function=args.submodular
                                   )
-            method = methods.__dict__[args.selection](dst_train, args, args.fraction, args.seed, **selection_args)
+            method = methods.__dict__[args.selection](dst_train, args, args.ipc, random_seed=args.seed, **selection_args)
             subset = method.select()
         print(len(subset["indices"]))
 
