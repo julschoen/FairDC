@@ -14,6 +14,44 @@ from scipy.ndimage.interpolation import rotate as scipyrotate
 from networks import MLP, ConvNet, ConvNetEven, LeNet, AlexNet, VGG11BN, VGG11, ResNet18, ResNet18ImageNet, ResNet18BN_AP, ResNet18_AP, ViT
 from auto_lr_wrapper import ActiveOptimizerWrapper as AutoLR
 
+class HAM10000(Dataset):
+    def __init__(self, train=True, transform=None, sf=False, s_att=['sex']):
+        self.data_path = '../data/HAM10000'
+        self.meta = pd.read_csv(os.path.join(data_path,'HAM10000_metadata.csv'))
+        if train:
+            id_path = os.path.join(self.data_path, 'train_ids.npy')
+        else:
+            id_path = os.path.join(self.data_path, 'test_ids.npy')
+        self.ids = np.load(id_path)
+        self.sf = sf
+
+        self.classes = df['dx'].unique().sort()
+
+        self.class_num = dict()
+        i = 0
+        for c in classes:
+            self.class_num[c] = i
+            i += 1
+
+        self.s_att = s_att
+      
+
+    def __len__(self):
+        return self.ids.shape[0]
+
+    def __getitem__(self, idx):
+        im = io.imread(os.path.join(self.data_path, 'images', self.meta.loc[self.ids[idx]]['image_id']+'.jpg'))
+        im = im.transpose((2, 0, 1))/255.
+        im = (im*2)-1
+        im = torch.from_numpy(im)
+        im = transforms.Resize((64,64), antialias=True)(im)
+        target = self.class_num[self.meta.loc[self.ids[idx]]['dx']]
+        
+        if self.sf:
+            return im, target, self.meta.loc[self.ids[idx]][self.s_att]
+        else:
+            return im, target
+
 class CelebA(Dataset):
     """Face Landmarks dataset."""
     def __init__(self, split='train', transform=None, attributes=['Blond_Hair'], sf=False, s_att=['Male']):
@@ -403,6 +441,33 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
 
 
     elif dataset.startswith('CelebA'):
+        channel = 3
+        im_size = (64, 64)
+        num_classes = 2
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+        
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
+                                        transforms.Resize(im_size, antialias=True),
+                                        transforms.CenterCrop(im_size)])
+        if sf:
+            if train:
+                dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))  # no augmentation
+            else:
+                dst_train=None
+            dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))
+        else:
+            if train:
+                dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
+            else:
+                dst_train=None
+            dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
+
+        class_names = dst_test.classes
+        class_map = {x: x for x in range(num_classes)}
+
+    elif dataset.startswith('HAM10000'):
         channel = 3
         im_size = (64, 64)
         num_classes = 2

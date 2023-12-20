@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
 import os
+from skimage import io
 
-meta_path = '../data/HAM10000/'
+meta_path = '../../Downloads/'
 df = pd.read_csv(os.path.join(meta_path,'HAM10000_metadata.csv'))
 ids = df['lesion_id'].unique()
 np.random.shuffle(ids)
