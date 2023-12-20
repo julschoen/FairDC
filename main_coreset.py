@@ -186,9 +186,9 @@ def main():
         targets = torch.tensor([])
         for x,y in dst_subset:
             ims = torch.concat((ims, x.unsqueeze(0)))
-            targets = torch.concat((targets, y))
+            targets = torch.concat((targets, torch.tensor(y)))
             print(ims.shape)
-            print(y)
+            print(targets)
 
         # BackgroundGenerator for ImageNet to speed up dataloaders
         if args.dataset == "ImageNet":
