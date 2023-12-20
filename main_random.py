@@ -4,6 +4,7 @@ import argparse
 import numpy as np
 import torch
 from utils import get_dataset
+import torchvision.utils as vutils
 
 def main():
 
@@ -47,6 +48,10 @@ def main():
 
         for c in range(num_classes):
             image_syn.data[c*args.ipc:(c+1)*args.ipc] = get_images(c, args.ipc).detach().data
+
+        vutils.save_image(
+            vutils.make_grid(image_syn.detach(), nrow=args.ipc, padding=2, normalize=True)
+            , os.path.join(args.save_path,'ims_%s_%dipc_%dexp.png'%(args.dataset, args.ipc, exp)))
         
         data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
         torch.save({'data': data_save}, os.path.join(args.save_path, 'res_%s_%dipc.pt'%(args.dataset, args.ipc)))
