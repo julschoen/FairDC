@@ -7,6 +7,7 @@ import deepcore.nets as nets
 import deepcore.datasets as datasets
 import deepcore.methods as methods
 from torchvision import transforms
+import torchvision.utils as vutils
 from utils_core import *
 from datetime import datetime
 from time import sleep
@@ -192,6 +193,10 @@ def main():
         for i, (x,y) in enumerate(dst_subset):
             image_syn.data[i] = x
             label_syn[i] = y
+
+        vutils.save_image(
+            vutils.make_grid(image_syn.detach(), nrow=args.ipc, padding=2, normalize=True)
+            , os.path.join(args.save_path,'ims_%s_%dipc_%dexp.png'%(args.dataset, args.ipc, exp)))
         
         data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
         torch.save({'data': data_save}, os.path.join(args.save_path, 'res_%s_%dipc.pt'%(args.dataset, args.ipc)))
