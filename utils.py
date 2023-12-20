@@ -470,26 +470,12 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
     elif dataset.startswith('HAM10000'):
         channel = 3
         im_size = (64, 64)
-        num_classes = 2
+        num_classes = 7
         mean = [0.5, 0.5, 0.5]
         std = [0.5, 0.5, 0.5]
         
-        transform = transforms.Compose([transforms.ToTensor(),
-                                        transforms.Normalize(mean=mean, std=std),
-                                        transforms.Resize(im_size, antialias=True),
-                                        transforms.CenterCrop(im_size)])
-        if sf:
-            if train:
-                dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))  # no augmentation
-            else:
-                dst_train=None
-            dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '), sf=sf, s_att=args.sensitive_feature.split(' '))
-        else:
-            if train:
-                dst_train = CelebA(split='train', transform=transform, attributes=args.attributes.split(' '))  # no augmentation
-            else:
-                dst_train=None
-            dst_test = CelebA(split='test', transform=transform, attributes=args.attributes.split(' '))
+        dst_train = HAM10000(train=True, sf=sf)
+        dst_test = HAM10000(train=False, sf=sf)
 
         class_names = dst_test.classes
         class_map = {x: x for x in range(num_classes)}
