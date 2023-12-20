@@ -45,7 +45,7 @@ class HAM10000(Dataset):
         im = io.imread(os.path.join(self.data_path, 'images', self.meta.loc[self.ids[idx]]['image_id']+'.jpg'))
         im = im.transpose((2, 0, 1))/255.
         im = (im*2)-1
-        im = torch.from_numpy(im)
+        im = torch.from_numpy(im).float()
         im = transforms.Resize((64,64), antialias=True)(im)
         target = self.class_num[self.meta.loc[self.ids[idx]]['dx']]
         
