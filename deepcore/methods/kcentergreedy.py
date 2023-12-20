@@ -31,7 +31,6 @@ def k_center_greedy(matrix, budget: int, metric, device, random_seed=None, index
     already_selected = np.array(already_selected)
 
     with torch.no_grad():
-        np.random.seed(random_seed)
         if already_selected.__len__() == 0:
             select_result = np.zeros(sample_num, dtype=bool)
             # Randomly select one initial point.
@@ -175,6 +174,5 @@ class kCenterGreedy(EarlyTrain):
             del self.model
             selection_result = k_center_greedy(matrix, budget=self.coreset_size,
                                                metric=self.metric, device=self.args.device,
-                                               random_seed=self.random_seed,
                                                already_selected=self.already_selected, print_freq=self.args.print_freq)
         return {"indices": selection_result}
