@@ -168,7 +168,7 @@ def ResNet(arch: str, channel: int, num_classes: int, im_size, record_embedding:
             raise ValueError("Model architecture not found.")
         #from torch.hub import load_state_dict_from_url
         state_dict = torchvision.models.ResNet18_Weights.IMAGENET1K_V1
-        net.load_state_dict(state_dict)
+        net.load_state_dict(torchvision.models.resnet18().state_dict())
 
         if channel != 3:
             net.conv1 = nn.Conv2d(channel, 64, kernel_size=7, stride=2, padding=3, bias=False)
