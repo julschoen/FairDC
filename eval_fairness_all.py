@@ -35,11 +35,14 @@ def main():
     args.dsa_param = ParamDiffAug()
     args.dsa = True
     
-    if args.dataset.startswith('MNIST'):
-        args.dsa_strategy ='color_crop_cutout_scale_rotate'
-    else:
-        args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
-
+    if args.dsa:
+        if args.dataset.startswith('MNIST'):
+            args.dsa_strategy ='color_crop_cutout_scale_rotate'
+        elif args.dataset.startswith('HAM'):
+            args.dsa_strategy ='crop_cutout_flip_scale_rotate'
+        else:
+            args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
+            
     methods = [
         'coreset/random_'+args.dataset.lower(),
         'dsa_dm/dm_'+args.dataset.lower(),

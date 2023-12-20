@@ -47,6 +47,14 @@ def main():
     args.dsa_param = ParamDiffAug()
     args.dsa = False if args.dsa_strategy in ['none', 'None'] else True
 
+    if args.dsa:
+        if args.dataset.startswith('MNIST'):
+            args.dsa_strategy ='color_crop_cutout_scale_rotate'
+        elif args.dataset.startswith('HAM'):
+            args.dsa_strategy ='crop_cutout_flip_scale_rotate'
+        else:
+            args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
+
     if not os.path.exists(args.data_path):
         os.mkdir(args.data_path)
 

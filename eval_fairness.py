@@ -39,11 +39,14 @@ def main():
 
     print('eval fairness')
     
-    if args.dataset.startswith('MNIST'):
-        args.dsa_strategy ='color_crop_cutout_scale_rotate'
-    else:
-        args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
-    
+    if args.dsa:
+        if args.dataset.startswith('MNIST'):
+            args.dsa_strategy ='color_crop_cutout_scale_rotate'
+        elif args.dataset.startswith('HAM'):
+            args.dsa_strategy ='crop_cutout_flip_scale_rotate'
+        else:
+            args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
+            
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", sf=True, args=args, train=False)
     model_eval_pool = get_eval_pool('M', None, None, im_size=im_size)
 

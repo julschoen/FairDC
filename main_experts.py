@@ -17,9 +17,11 @@ def main(args):
     if args.dsa:
         if args.dataset.startswith('MNIST'):
             args.dsa_strategy ='color_crop_cutout_scale_rotate'
+        elif args.dataset.startswith('HAM'):
+            args.dsa_strategy ='crop_cutout_flip_scale_rotate'
         else:
             args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
-
+            
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
     args.dsa_param = ParamDiffAug()
 

@@ -34,9 +34,11 @@ def main(args):
     if args.dsa:
         if args.dataset.startswith('MNIST'):
             args.dsa_strategy ='color_crop_cutout_scale_rotate'
+        elif args.dataset.startswith('HAM'):
+            args.dsa_strategy ='crop_cutout_flip_scale_rotate'
         else:
             args.dsa_strategy ='color_crop_cutout_flip_scale_rotate'
-
+            
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     eval_it_pool = np.arange(0, args.Iteration + 1, args.eval_it).tolist()
