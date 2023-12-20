@@ -26,7 +26,7 @@ class HAM10000(Dataset):
         self.ids = np.load(id_path)
         self.sf = sf
 
-        self.classes = df['dx'].unique().sort()
+        self.classes = self.df['dx'].unique().sort()
 
         self.class_num = dict()
         i = 0
