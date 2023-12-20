@@ -5,14 +5,16 @@ from torch.utils.data import Dataset
 
 class MNIST_Dataset(Dataset):
     def __init__(self, train=True, transform=None, majority=0.5, sf=False):
+        self.transform=transform
         self.train_dataset = datasets.MNIST(
             root="../data",
             train=train,
             download=True,
-            transform=transform,
+            transform=self.transform,
         )
         self.classes = self.train_dataset.classes
         self.targets = self.train_dataset.targets
+
 
         self.color_map = {
             1: (0., 0., 255.),   # Blue
