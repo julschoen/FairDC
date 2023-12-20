@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import copy
 import torch.nn as nn
 import argparse
 import deepcore.nets as nets
@@ -189,7 +190,6 @@ def main():
         label_syn = torch.tensor([np.ones(args.ipc)*i for i in range(num_classes)], dtype=torch.long, requires_grad=False).view(-1) # [0,0,0, 1,1,1, ..., 9,9,9]
 
         for i, (x,y) in enumerate(dst_subset):
-            print(x.min(), x.max())
             image_syn.data[i] = x
             label_syn[i] = y
         
