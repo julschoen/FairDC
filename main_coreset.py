@@ -182,8 +182,12 @@ def main():
         else:
             dst_subset = torch.utils.data.Subset(dst_train, subset["indices"])
 
+        ims = torch.tensor([])
+        targets = torch.tensor([])
         for x,y in dst_subset:
-            print(x.shape)
+            ims = torch.concat((ims, x.unsqueeze(0)))
+            targets = torch.concat((targets, y))
+            print(ims.shape)
             print(y)
 
         # BackgroundGenerator for ImageNet to speed up dataloaders
