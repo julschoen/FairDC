@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import torch.nn as nn
 import argparse
 import deepcore.nets as nets
