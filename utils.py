@@ -18,7 +18,7 @@ from auto_lr_wrapper import ActiveOptimizerWrapper as AutoLR
 class HAM10000(Dataset):
     def __init__(self, train=True, transform=None, sf=False, s_att=['sex']):
         self.data_path = '../data/HAM10000'
-        self.meta = pd.read_csv(os.path.join(data_path,'HAM10000_metadata.csv'))
+        self.meta = pd.read_csv(os.path.join(self.data_path,'HAM10000_metadata.csv'))
         if train:
             id_path = os.path.join(self.data_path, 'train_ids.npy')
         else:
