@@ -30,7 +30,7 @@ class HAM10000(Dataset):
 
         self.class_num = dict()
         i = 0
-        for c in classes:
+        for c in self.classes:
             self.class_num[c] = i
             i += 1
 
