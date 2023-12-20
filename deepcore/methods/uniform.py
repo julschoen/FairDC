@@ -12,7 +12,6 @@ class Uniform(CoresetMethod):
 
     def select_balance(self):
         """The same sampling proportions were used in each class separately."""
-        np.random.seed(self.random_seed)
         self.index = np.array([], dtype=np.int64)
         all_index = np.arange(self.n_train)
         for c in range(self.num_classes):
@@ -23,7 +22,6 @@ class Uniform(CoresetMethod):
         return self.index
 
     def select_no_balance(self):
-        np.random.seed(self.random_seed)
         self.index = np.random.choice(np.arange(self.n_train), self.ipc,
                                       replace=self.replace)
 

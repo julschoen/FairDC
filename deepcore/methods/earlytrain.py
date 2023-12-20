@@ -94,8 +94,6 @@ class EarlyTrain(CoresetMethod):
         return self.finish_train()
 
     def run(self):
-        torch.manual_seed(self.random_seed)
-        np.random.seed(self.random_seed)
         self.train_indx = np.arange(self.n_train)
 
         # Setup model and loss
