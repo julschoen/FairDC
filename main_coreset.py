@@ -182,7 +182,9 @@ def main():
         else:
             dst_subset = torch.utils.data.Subset(dst_train, subset["indices"])
 
-        print(dst_subset.data)
+        for x,y in dst_subset:
+            print(x,y)
+
         print(dst_subset.targets)
 
         # BackgroundGenerator for ImageNet to speed up dataloaders
