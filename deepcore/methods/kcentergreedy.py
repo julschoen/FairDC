@@ -76,7 +76,7 @@ class kCenterGreedy(EarlyTrain):
             if min(already_selected) < 0 or max(already_selected) >= self.n_train:
                 raise ValueError("List of already selected points out of the boundary.")
         self.already_selected = np.array(already_selected)
-        self.ipc
+        self.ipc = ipc
         self.min_distances = None
 
         if metric == "euclidean":
