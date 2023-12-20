@@ -164,7 +164,6 @@ class kCenterGreedy(EarlyTrain):
                                                                                budget=self.ipc,
                                                                                metric=self.metric,
                                                                                device=self.args.device,
-                                                                               random_seed=self.random_seed,
                                                                                index=class_index,
                                                                                already_selected=self.already_selected[
                                                                                    np.in1d(self.already_selected,
