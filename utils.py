@@ -317,18 +317,18 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         class_names = dst_train.classes
         class_map = {x: x for x in range(num_classes)}
 
-        elif dataset.startswith('HAM10000'):
-            channel = 3
-            im_size = (64, 64)
-            num_classes = 7
-            mean = [0.5, 0.5, 0.5]
-            std = [0.5, 0.5, 0.5]
-            
-            dst_train = HAM10000(train=True)
-            dst_test = HAM10000(train=False)
+    elif dataset.startswith('HAM10000'):
+        channel = 3
+        im_size = (64, 64)
+        num_classes = 7
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+        
+        dst_train = HAM10000(train=True)
+        dst_test = HAM10000(train=False)
 
-            class_names = dst_test.classes
-            class_map = {x: x for x in range(num_classes)}
+        class_names = dst_test.classes
+        class_map = {x: x for x in range(num_classes)}
 
 
 
