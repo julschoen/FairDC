@@ -99,6 +99,8 @@ def main():
     if not os.path.exists(args.data_path):
         os.mkdir(args.data_path)
 
+    data_save = []
+
     if args.resume != "":
         # Load checkpoint
         try:
@@ -182,13 +184,17 @@ def main():
         else:
             dst_subset = torch.utils.data.Subset(dst_train, subset["indices"])
 
-        ims = torch.tensor([])
-        targets = torch.tensor([])
-        for x,y in dst_subset:
-            ims = torch.concat((ims, x.unsqueeze(0)))
-            targets = torch.concat((targets, torch.tensor(y)))
-            print(ims.shape)
-            print(targets)
+        image_syn = torch.randn(size=(num_classes*args.ipc, channel, im_size[0], im_size[1]), dtype=torch.float, requires_grad=True)
+        label_syn = torch.tensor([np.ones(args.ipc)*i for i in range(num_classes)], dtype=torch.long, requires_grad=False).view(-1) # [0,0,0, 1,1,1, ..., 9,9,9]
+
+        for i, (x,y) in enumerate(dst_subset):
+            print(x.min(), x.max())
+            image_syn.data[i] = x
+            label_syn[i] = y
+        
+        data_save.append([copy.deepcopy(image_syn.detach().cpu()), copy.deepcopy(label_syn.detach().cpu())])
+        torch.save({'data': data_save}, os.path.join(args.save_path, 'res_%s_%dipc.pt'%(args.dataset, args.ipc)))
+        
 
         # BackgroundGenerator for ImageNet to speed up dataloaders
         if args.dataset == "ImageNet":
