@@ -182,7 +182,7 @@ def main():
         else:
             dst_subset = torch.utils.data.Subset(dst_train, subset["indices"])
 
-        for x,y in dst_subset
+        for x,y in dst_subset:
             print(x.shape)
             print(y)
 
