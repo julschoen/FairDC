@@ -49,7 +49,7 @@ def CelebA(data_path, permuted=False, permutation_seed=None):
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
     
 
-    dst_train = CelebA(split='train', transform=transform) # no augmentation
+    dst_train = CelebA_Dataset(split='train', transform=transform) # no augmentation
     dst_test = CelebA_Dataset(split='test', transform=transform)
 
     class_names = [str(c) for c in range(num_classes)]
