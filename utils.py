@@ -1053,7 +1053,7 @@ def rand_scale(x, param):
             [0,  sy[i], 0],] for i in range(x.shape[0])]
     theta = torch.tensor(theta, dtype=torch.float)
     if param.batchmode: # batch-wise:
-        theta[:] = theta[0]
+        theta[:] = theta[0].clone()
     grid = F.affine_grid(theta, x.shape, align_corners=True).to(x.device)
     x = F.grid_sample(x, grid, align_corners=True)
     return x
@@ -1066,7 +1066,7 @@ def rand_rotate(x, param): # [-180, 180], 90: anticlockwise 90 degree
         [torch.sin(theta[i]), torch.cos(theta[i]),  0],]  for i in range(x.shape[0])]
     theta = torch.tensor(theta, dtype=torch.float)
     if param.batchmode: # batch-wise:
-        theta[:] = theta[0]
+        theta[:] = theta[0].clone()
     grid = F.affine_grid(theta, x.shape, align_corners=True).to(x.device)
     x = F.grid_sample(x, grid, align_corners=True)
     return x
@@ -1094,7 +1094,7 @@ def rand_saturation(x, param):
     set_seed_DiffAug(param)
     rands = torch.rand(x.size(0), 1, 1, 1, dtype=x.dtype, device=x.device)
     if param.batchmode:  # batch-wise:
-        rands[:] = rands[0]
+        rands[:] = rands[0].clone()
     x = (x - x_mean) * (rands * ratio) + x_mean
     return x
 
