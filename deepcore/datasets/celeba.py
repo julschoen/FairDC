@@ -23,7 +23,7 @@ class CelebA_Dataset(Dataset):
         for attr in self.classes:
             self.target_inds.append(self.train_dataset.attr_names.index(attr))
 
-        self.targets = self.train_dataset.attr[:,self.target_inds]
+        self.targets = self.train_dataset.attr[:,self.target_inds].squeeze()
 
         self.s_att = s_att
         self.sens_inds = []
