@@ -1076,7 +1076,7 @@ def rand_flip(x, param):
     set_seed_DiffAug(param)
     randf = torch.rand(x.size(0), 1, 1, 1, device=x.device)
     if param.batchmode: # batch-wise:
-        randf[:] = randf[0]
+        randf[:] = randf[0].clone()
     return torch.where(randf < prob, x.flip(3), x)
 
 def rand_brightness(x, param):
