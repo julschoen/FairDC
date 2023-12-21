@@ -86,7 +86,7 @@ class Athlets(Dataset):
             
         target = self.meta.loc[idx]['Target']
         if im.shape != (3,64,64):
-            print(im)
+            im = im[:3]
         if self.sf:
             return im, target, self.meta.loc[idx][self.s_att]
         else:
