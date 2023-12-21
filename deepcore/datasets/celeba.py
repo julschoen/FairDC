@@ -51,8 +51,10 @@ def CelebA(data_path, permuted=False, permutation_seed=None):
     num_classes = 2
     mean = [0.5,0.5,0.5]
     std = [0.5,0.5,0.5]
-    transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
-    
+    transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(mean=mean, std=std),
+                                        transforms.Resize(im_size, antialias=True),
+                                        transforms.CenterCrop(im_size)])
 
     dst_train = CelebA_Dataset(split='train', transform=transform) # no augmentation
     dst_test = CelebA_Dataset(split='test', transform=transform)
