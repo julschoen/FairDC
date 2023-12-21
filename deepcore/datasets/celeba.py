@@ -6,13 +6,13 @@ from torch.utils.data import Dataset
 class CelebA_Dataset(Dataset):
     """Face Landmarks dataset."""
     def __init__(self, split='train', transform=None, attributes=['Blond_Hair'], sf=False, s_att=['Male']):
+        self.transform = transform
         self.train_dataset = datasets.CelebA(
             root="../data",
             split=split,
             download=False,
-            transform=transform,
+            transform=self.transform,
         )
-
         self.sf = sf
 
         self.classes = attributes
