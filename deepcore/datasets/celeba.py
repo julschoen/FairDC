@@ -13,6 +13,9 @@ class CelebA_Dataset(Dataset):
             download=False,
             transform=self.transform,
         )
+
+        self.targets = self.train_dataset.targets
+
         self.sf = sf
 
         self.classes = attributes
