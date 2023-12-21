@@ -1084,7 +1084,7 @@ def rand_brightness(x, param):
     set_seed_DiffAug(param)
     randb = torch.rand(x.size(0), 1, 1, 1, dtype=x.dtype, device=x.device)
     if param.batchmode:  # batch-wise:
-        randb[:] = randb[0]
+        randb[:] = randb[0].clone()
     x = x + (randb - 0.5)*ratio
     return x
 
