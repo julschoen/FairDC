@@ -14,7 +14,7 @@ class CelebA_Dataset(Dataset):
             transform=self.transform,
         )
 
-        self.targets = self.train_dataset.targets
+
 
         self.sf = sf
 
@@ -22,6 +22,8 @@ class CelebA_Dataset(Dataset):
         self.target_inds = []
         for attr in self.classes:
             self.target_inds.append(self.train_dataset.attr_names.index(attr))
+
+        self.targets = self.train_dataset.attr[:,self.target_inds]
 
         self.s_att = s_att
         self.sens_inds = []
