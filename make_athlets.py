@@ -3,7 +3,7 @@ import numpy as np
 import os
 from skimage import io
 
-meta_path = '../../Downloads/Datasets-main/basket_volley/'
+meta_path = '../data/basket_volley/'
 classes = os.listdir(meta_path)
 paths = []
 for c in classes:
