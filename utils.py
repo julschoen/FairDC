@@ -54,6 +54,40 @@ class HAM10000(Dataset):
         else:
             return im, target
 
+class Athlets(Dataset):
+    def __init__(self, train=True, transform=None, sf=False, s_att=['Gender']):
+        self.data_path = '../data/basket_volley'
+        self.meta = pd.read_csv(os.path.join(self.data_path,'splits.csv')).drop(columns='Unnamed: 0')
+        self.meta = self.meta[self.meta['Train']==train].reset_index()
+        self.sf = sf
+
+        self.classes = ['basket', 'volley']
+
+        self.class_num = dict()
+        i = 0
+        for c in self.classes:
+            self.class_num[c] = i
+            i += 1
+
+        self.s_att = s_att
+      
+
+    def __len__(self):
+        return self.ids.shape[0]
+
+    def __getitem__(self, idx):
+        im = io.imread(self.meta.loc[idx]['Path'])
+        im = im.transpose((2, 0, 1))/255.
+        im = (im*2)-1
+        im = torch.from_numpy(im).float()
+        im = transforms.Resize((64,64), antialias=True)(im)
+        target = self.meta.loc[idx]['Target']
+        
+        if self.sf:
+            return im, target, self.meta.loc[idx][self.s_att]
+        else:
+            return im, target
+
 class CelebA(Dataset):
     """Face Landmarks dataset."""
     def __init__(self, split='train', transform=None, attributes=['Blond_Hair'], sf=False, s_att=['Male']):
@@ -330,6 +364,19 @@ def get_dataset_mtt(dataset, data_path, batch_size=1, subset="imagenette", args=
         class_names = dst_test.classes
         class_map = {x: x for x in range(num_classes)}
 
+    elif dataset.startswith('Athlets'):
+        channel = 3
+        im_size = (64, 64)
+        num_classes = 2
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+        
+        dst_train = Athlets(train=True)
+        dst_test = Athlets(train=False)
+
+        class_names = dst_test.classes
+        class_map = {x: x for x in range(num_classes)}
+
 
 
     else:
@@ -492,6 +539,19 @@ def get_dataset_others(dataset, data_path, batch_size=1, subset="imagenette", ar
         
         dst_train = HAM10000(train=True, sf=sf)
         dst_test = HAM10000(train=False, sf=sf)
+
+        class_names = dst_test.classes
+        class_map = {x: x for x in range(num_classes)}
+
+    elif dataset.startswith('Athlets'):
+        channel = 3
+        im_size = (64, 64)
+        num_classes = 2
+        mean = [0.5, 0.5, 0.5]
+        std = [0.5, 0.5, 0.5]
+        
+        dst_train = Athlets(train=True, sf=sf)
+        dst_test = Athlets(train=False, sf=sf)
 
         class_names = dst_test.classes
         class_map = {x: x for x in range(num_classes)}
