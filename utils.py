@@ -82,10 +82,11 @@ class Athlets(Dataset):
         im = torch.from_numpy(im).float()
         im = transforms.Resize((64,64), antialias=True)(im)
         
+
             
         target = self.meta.loc[idx]['Target']
         if im.shape != (3,64,64):
-            return self.__getitem__(idx-1)
+            print(im)
         if self.sf:
             return im, target, self.meta.loc[idx][self.s_att]
         else:
