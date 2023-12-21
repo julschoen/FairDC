@@ -73,7 +73,7 @@ class Athlets(Dataset):
       
 
     def __len__(self):
-        return self.ids.shape[0]
+        return self.meta.shape[0]
 
     def __getitem__(self, idx):
         im = io.imread(self.meta.loc[idx]['Path'])
