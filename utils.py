@@ -83,6 +83,7 @@ class Athlets(Dataset):
         im = transforms.Resize((64,64), antialias=True)(im)
         if im.shape != (3,64,64):
             print(im.shape)
+            print(idx)
         target = self.meta.loc[idx]['Target']
         
         if self.sf:
