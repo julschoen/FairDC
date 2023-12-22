@@ -4,6 +4,7 @@ from torch import set_grad_enabled, flatten, Tensor
 from .nets_utils import EmbeddingRecorder
 from torchvision.models import resnet
 import torchvision
+import torch
 
 
 # Acknowledgement to
