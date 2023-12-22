@@ -71,7 +71,6 @@ class ResNet_64x64(nn.Module):
     def __init__(self, block, num_blocks, channel=3, num_classes=10, record_embedding: bool = False, no_grad: bool = False):
         super().__init__()
         self.in_planes = 64
-        self.norm = norm
 
         self.conv1 = nn.Conv2d(channel, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
@@ -93,7 +92,7 @@ class ResNet_64x64(nn.Module):
         strides = [stride] + [1]*(num_blocks-1)
         layers = []
         for stride in strides:
-            layers.append(block(self.in_planes, planes, stride, self.norm))
+            layers.append(block(self.in_planes, planes, stride))
             self.in_planes = planes * block.expansion
         return nn.Sequential(*layers)
 
