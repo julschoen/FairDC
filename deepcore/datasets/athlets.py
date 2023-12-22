@@ -25,6 +25,12 @@ class Athlets_Dataset(Dataset):
             i += 1
 
         self.s_att = s_att
+
+        self.targets = []
+        for idx in range(self.meta.shape[0]):
+            self.targets.append(self.meta.loc[idx]['Target'])
+
+        self.targets = torch.tensor(self.targets)
       
 
     def __len__(self):
