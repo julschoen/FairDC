@@ -69,7 +69,7 @@ class Bottleneck(nn.Module):
 
 class ResNet_64x64(nn.Module):
     def __init__(self, block, num_blocks, channel=3, num_classes=10, record_embedding: bool = False, no_grad: bool = False):
-        super(ResNetImageNet, self).__init__()
+        super().__init__()
         self.in_planes = 64
         self.norm = norm
 
