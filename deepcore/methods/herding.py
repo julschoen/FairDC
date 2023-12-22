@@ -28,7 +28,6 @@ class Herding(EarlyTrain):
             self.construct_matrix = _construct_matrix
 
         self.balance = balance
-        print(args.num_classes)
 
     def num_classes_mismatch(self):
         raise ValueError("num_classes of pretrain dataset does not match that of the training dataset.")

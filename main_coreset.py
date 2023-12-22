@@ -119,7 +119,6 @@ def main():
 
         channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test = datasets.__dict__[args.dataset] \
             (args.data_path)
-        print(num_classes)
         args.channel, args.im_size, args.num_classes, args.class_names = channel, im_size, num_classes, class_names
 
 
