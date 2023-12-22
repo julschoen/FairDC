@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--num_exp', type=int, default=5, help='the number of experiments')
     parser.add_argument('--epochs', default=200, type=int, help='number of total epochs to run')
     parser.add_argument('--data_path', type=str, default='data', help='dataset path')
-    parser.add_argument('--gpu', default=[0], nargs="+", type=int, help='GPU id to use')
+    parser.add_argument('--gpu', default=None, nargs="+", type=int, help='GPU id to use')
     parser.add_argument('--print_freq', '-p', default=20, type=int, help='print frequency (default: 20)')
     parser.add_argument('--ipc', type=int, default=10, help='Images per Class')
     parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
