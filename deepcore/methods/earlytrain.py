@@ -80,7 +80,6 @@ class EarlyTrain(CoresetMethod):
             # Forward propagation, compute loss, get predictions
             self.model_optimizer.zero_grad()
             outputs = self.model(inputs)
-            print(outputs, targets)
             loss = self.criterion(outputs, targets.flatten())
 
             self.after_loss(outputs, loss, targets, trainset_permutation_inds[i], epoch)
