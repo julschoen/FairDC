@@ -27,6 +27,12 @@ class HAM10000_Dataset(Dataset):
             self.class_num[c] = i
             i += 1
 
+        self.targets = []
+        for idx in range(self.ids.shape[0]):
+            self.targets.append(self.class_num[self.meta.loc[self.ids[idx]]['dx']])
+
+        self.targets = torch.tensor(self.targets)
+
         self.s_att = s_att
       
 
