@@ -2,6 +2,7 @@ import torch
 from torchvision import datasets, transforms
 import numpy as np
 from torch.utils.data import Dataset
+import pandas as pd
 
 class HAM10000_Dataset(Dataset):
     def __init__(self, train=True, transform=None, sf=False, s_att=['sex']):
