@@ -7,3 +7,5 @@ from .qmnist import *
 from .svhn import *
 from .tinyimagenet import *
 from .celeba import *
+from .ham10000 import *
+from .athlets import *
