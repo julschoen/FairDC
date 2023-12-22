@@ -4,6 +4,7 @@ import numpy as np
 from torch.utils.data import Dataset
 import pandas as pd
 import os
+from skimage import io
 
 
 class Athlets_Dataset(Dataset):
