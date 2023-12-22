@@ -65,10 +65,8 @@ def main():
     args = parser.parse_args()
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    if args.train_batch is None:
-        args.train_batch = args.batch
-    if args.selection_batch is None:
-        args.selection_batch = args.batch
+    args.train_batch = args.batch
+    args.selection_batch = args.batch
     if args.save_path != "" and not os.path.exists(args.save_path):
         os.mkdir(args.save_path)
     if not os.path.exists(args.data_path):
