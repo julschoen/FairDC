@@ -48,9 +48,11 @@ class HAM10000(Dataset):
         im = torch.from_numpy(im).float()
         im = transforms.Resize((64,64), antialias=True)(im)
         target = self.class_num[self.meta.loc[self.ids[idx]]['dx']]
+        sf = self.meta.loc[self.ids[idx]][self.s_att]
+        print(sf)
         
         if self.sf:
-            return im, target, self.meta.loc[self.ids[idx]][self.s_att]
+            return im, target, 
         else:
             return im, target
 
