@@ -36,8 +36,6 @@ def main():
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
     args.dsa_param = ParamDiffAug()
     args.dsa = True
-
-    print('eval fairness')
     
     if args.dsa:
         if args.dataset.startswith('MNIST'):
@@ -66,6 +64,7 @@ def main():
             net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
+            print(sf)
             sf = sens_names[sf.astype('int')]
             for i, p in enumerate(pred):
                 t = true[i]
