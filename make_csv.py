@@ -54,10 +54,9 @@ def main():
 
     model_weights = torch.load(os.path.join(args.cond_path, f'eval_{args.ipc}ipc.pt'))['weights']
     sens_names = np.array(['Red', 'Blue'])
-    cols = ['Model', 'Pred', 'Target' 'Color']
+    cols = ['Model', 'Pred', 'Target', 'Color']
 
     df = pd.DataFrame(columns=cols)
-    print(df)
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
