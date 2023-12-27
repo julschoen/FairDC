@@ -57,7 +57,7 @@ def main():
     cols = ['Model', 'Pred', 'Target' 'Color']
 
     df = pd.DataFrame(columns=cols)
-
+    print(df)
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
