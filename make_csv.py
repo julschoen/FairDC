@@ -82,7 +82,7 @@ def main():
 
             row = [model_eval+f'_{it_eval}', blue, red]
             
-            df_accs.loc[len(df.index)] = row
+            df_accs.loc[len(df_accs.index)] = row
 
             combined_array = np.array([np.array([model_eval+f'_{it_eval}']*pred.shape[0]), pred, true, sf]).T
             new_rows = pd.DataFrame(combined_array, columns=df_all.columns)
