@@ -880,7 +880,7 @@ def evaluate_model(net, testloader, args):
     sf = np.array([])
 
     
-    with torch.no_grad():
+    with torch.inference_mode():
         for x,y,s in testloader:
             p = net(x.to(args.device))
             p = torch.argmax(p, dim=1)
