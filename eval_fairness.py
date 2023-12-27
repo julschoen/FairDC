@@ -95,7 +95,6 @@ def main():
             net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
-            print(f'Ratio {sum(sf)/len(sf)}')
             sf = sens_names[sf.astype('int')]
             metric_frame = MetricFrame(
                 metrics=metrics,
@@ -120,7 +119,7 @@ def main():
             row_minor = [model_eval, sens_names[1]]
             for key in res_grouped.keys():
                 print(res_grouped[key])
-                minor, major = res_grouped[key]
+                major, minor = res_grouped[key]
                 results[model_eval][key][True].append(major)
                 results[model_eval][key][False].append(minor)
                 row_major.append(major)
