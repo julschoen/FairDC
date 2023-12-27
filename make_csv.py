@@ -60,6 +60,7 @@ def main():
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
+            print(model_eval, it_eval)
             net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
