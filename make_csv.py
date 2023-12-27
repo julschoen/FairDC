@@ -67,7 +67,7 @@ def main():
             for i, p in enumerate(pred):
                 t = true[i]
                 c = sf[i]
-                row = [model_eval, p, t, c]
+                row = [model_eval+str(it_eval), p, t, c]
                 df.loc[len(df.index)] = row
 
     print(df)
