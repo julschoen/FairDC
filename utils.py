@@ -64,7 +64,7 @@ class Athlets(Dataset):
         self.meta = pd.read_csv(os.path.join(self.data_path,'splits.csv')).drop(columns='Unnamed: 0')
         self.meta = self.meta[self.meta['Train']==train].reset_index()
         self.sf = sf
-
+        print(self.meta)
         self.classes = ['basket', 'volley']
 
         self.class_num = dict()
