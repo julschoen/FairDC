@@ -60,7 +60,8 @@ def main():
     sens_names = np.array(['Red', 'Blue'])
     cols = ['Model', 'Acc Red', 'Acc Blue']
 
-    df = pd.DataFrame(columns=cols)
+    df_accs = pd.DataFrame(columns=cols)
+    df_all = pd.DataFrame(columns=['Model', 'Prediction', 'Target', 'Color'])
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
@@ -75,21 +76,28 @@ def main():
                 y_pred=pred,
                 sensitive_features=sf
             )
-            
+
             res_grouped = metric_frame.by_group
             blue, red = res_grouped['accuracy']
 
             row = [model_eval+f'_{it_eval}', blue, red]
             
-            df.loc[len(df.index)] = row
+            df_accs.loc[len(df.index)] = row
+
+            combined_array = np.array([np.array([model_eval+f'_{it_eval}']*pred.shape[0]), pred, true, sf]).T
+            new_rows = pd.DataFrame(combined_array, columns=df_all.columns)
+            df_all = df_all.append(new_rows, ignore_index=True)
+
             
             net_eval=None
             gc.collect()
             torch.cuda.empty_cache()
             
 
-    print(df)
-    df.to_csv(os.path.join('result_all'), args.cond_path.split('/')[-1]+'.csv')
+    print(df_all)
+    df_accs.to_csv(os.path.join('result_all'), args.cond_path.split('/')[-1]+'_accs.csv')
+    df_all.to_csv(os.path.join('result_all'), args.cond_path.split('/')[-1]+'_all.csv')
+    
             
 
 
