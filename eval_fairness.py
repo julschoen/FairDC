@@ -118,7 +118,6 @@ def main():
             row_major = [model_eval, sens_names[0]]
             row_minor = [model_eval, sens_names[1]]
             for key in res_grouped.keys():
-                print(res_grouped[key])
                 major, minor = res_grouped[key]
                 results[model_eval][key][True].append(major)
                 results[model_eval][key][False].append(minor)
@@ -155,6 +154,8 @@ def main():
         for key in r.keys():
             
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
+            print('Minor %.2f\\pm%.2f'%(key, np.mean(np.array(r[key][False]))*100, np.std(np.array(r[key][False]))*100))
+            print('Major %.2f\\pm%.2f'%(key, np.mean(np.array(r[key][True]))*100, np.std(np.array(r[key][True]))*100))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
 
 
