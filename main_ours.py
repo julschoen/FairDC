@@ -9,6 +9,7 @@ from torchvision.utils import save_image
 from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, match_loss, get_time, TensorDataset, epoch, DiffAugment, ParamDiffAug
 from carbontracker.tracker import CarbonTracker
 from fast_pytorch_kmeans import KMeans
+from torchvision.models import resnet50, ResNet50_Weights
 
 def to_uniform(features):
     flat_features = features.view(-1)
@@ -90,6 +91,11 @@ def main():
             indices_class[lab].append(i)
         images_all = torch.cat(images_all, dim=0).to(args.device)
         labels_all = torch.tensor(labels_all, dtype=torch.long, device=args.device)
+        embedding_all = []
+        embedding_net = resnet50(weights=ResNet50_Weights.DEFAULT)
+
+        for im in images_all:
+            embedding_all.append(embedding_net(im.unsqueeze(0)))
 
         kmeans_labels_all = []
         kmeans = KMeans(n_clusters=args.ipc, max_iter = 1000, tol = -1, mode='euclidean', verbose=0)
