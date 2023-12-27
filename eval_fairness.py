@@ -117,7 +117,6 @@ def main():
             res_grouped = metric_frame.by_group
             row_major = [model_eval, sens_names[0]]
             row_minor = [model_eval, sens_names[1]]
-            print(res_grouped)
             for key in res_grouped.keys():
                 minor, major = res_grouped[key]
                 results[model_eval][key][True].append(major)
@@ -138,7 +137,7 @@ def main():
     sns.violinplot(data=df, x='Model', y='accuracy', hue='Sensitive', split=True, inner="quart")
     plt.savefig(args.cond_path.split('/')[-1]+'.pdf', bbox_inches='tight')
     plt.close()
-
+    print(df)
     for i, model_eval in enumerate(model_eval_pool):
         print(model_eval)
         r = results[model_eval]
