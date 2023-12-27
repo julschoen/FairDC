@@ -154,8 +154,8 @@ def main():
         for key in r.keys():
             
             gap = np.abs(np.array(r[key][True]) - np.array(r[key][False]))
-            print('Minor %.2f\\pm%.2f'%(key, np.mean(np.array(r[key][False]))*100, np.std(np.array(r[key][False]))*100))
-            print('Major %.2f\\pm%.2f'%(key, np.mean(np.array(r[key][True]))*100, np.std(np.array(r[key][True]))*100))
+            print('Minor %.2f\\pm%.2f'%(np.mean(np.array(r[key][False]))*100, np.std(np.array(r[key][False]))*100))
+            print('Major %.2f\\pm%.2f'%(np.mean(np.array(r[key][True]))*100, np.std(np.array(r[key][True]))*100))
             print('%s gap of %.2f\\pm%.2f'%(key, np.mean(gap)*100, np.std(gap)*100))
 
 
