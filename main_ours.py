@@ -100,14 +100,16 @@ def main():
             for im in images_all:
                 im = resize(im)
                 em = embedding_net(im.unsqueeze(0))
-                print(em.shape)
                 embedding_all.append(em)
+
+        embedding_all = torch.cat(embedding_all, dim=0).to(args.device)
+        print(embedding_all.shape)
 
         kmeans_labels_all = []
         kmeans = KMeans(n_clusters=args.ipc, max_iter = 1000, tol = -1, mode='euclidean', verbose=0)
 
         for indices in indices_class:
-            labels = kmeans.fit_predict(images_all[indices].reshape(len(indices), -1))
+            labels = kmeans.fit_predict(embedding_all[indices].reshape(len(indices), -1))
             res = {k: v for k, v in zip(indices, labels)}
             kmeans_labels_all.append(res)
 
