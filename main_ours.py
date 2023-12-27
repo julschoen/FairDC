@@ -95,9 +95,12 @@ def main():
         embedding_all = []
         embedding_net = resnet50(weights=ResNet50_Weights.DEFAULT).to(args.device)
         resize = torchvision.transforms.Resize((224,224))
-        for im in images_all:
-            im = resize(im)
-            embedding_all.append(embedding_net(im.unsqueeze(0)))
+        with torch.no_grad():
+            for im in images_all:
+                im = resize(im)
+                em = embedding_net(im.unsqueeze(0))
+                print(em.shape)
+                embedding_all.append(em)
 
         kmeans_labels_all = []
         kmeans = KMeans(n_clusters=args.ipc, max_iter = 1000, tol = -1, mode='euclidean', verbose=0)
