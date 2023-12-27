@@ -48,13 +48,17 @@ def main():
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, "", sf=True, args=args, train=False)
     model_eval_pool = get_eval_pool('M', None, None, im_size=im_size)
 
+    metrics = {
+        'accuracy': accuracy_score,
+    }
+
     accs_all_exps = dict() # record performances of all experiments
     for key in model_eval_pool:
         accs_all_exps[key] = []
 
     model_weights = torch.load(os.path.join(args.cond_path, f'eval_{args.ipc}ipc.pt'))['weights']
     sens_names = np.array(['Red', 'Blue'])
-    cols = ['Model', 'Pred', 'Target', 'Color']
+    cols = ['Model', 'Acc Red', 'Acc Blue']
 
     df = pd.DataFrame(columns=cols)
     
@@ -65,6 +69,29 @@ def main():
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
             sf = sens_names[sf.astype('int')]
+            metric_frame = MetricFrame(
+                metrics=metrics,
+                y_true=true,
+                y_pred=pred,
+                sensitive_features=sf
+            )
+            
+            res_grouped = metric_frame.by_group
+            row_major = [model_eval, sens_names[0]]
+            row_minor = [model_eval, sens_names[1]]
+            print(res_grouped)
+            for key in res_grouped.keys():
+                major, minor = res_grouped[key]
+                results[model_eval][key][True].append(major)
+                results[model_eval][key][False].append(minor)
+                row_major.append(major)
+                row_minor.append(minor)
+
+            df.loc[len(df.index)] = row_major
+            df.loc[len(df.index)] = row_minor
+            net_eval=None
+            gc.collect()
+            torch.cuda.empty_cache()
             for i, p in enumerate(pred):
                 t = true[i]
                 c = sf[i]
