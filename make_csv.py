@@ -53,7 +53,7 @@ def main():
         accs_all_exps[key] = []
 
     model_weights = torch.load(os.path.join(args.cond_path, f'eval_{args.ipc}ipc.pt'))['weights']
-    sens_names = ['Red', 'Blue']
+    sens_names = np.array(['Red', 'Blue'])
     cols = ['Model', 'Pred', 'Target' 'Color']
 
     df = pd.DataFrame(columns=cols)
@@ -64,7 +64,6 @@ def main():
             net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
-            print(sf.astype('int'))
             sf = sens_names[sf.astype('int')]
             for i, p in enumerate(pred):
                 t = true[i]
