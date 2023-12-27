@@ -92,7 +92,7 @@ def main():
         images_all = torch.cat(images_all, dim=0).to(args.device)
         labels_all = torch.tensor(labels_all, dtype=torch.long, device=args.device)
         embedding_all = []
-        embedding_net = resnet50(weights=ResNet50_Weights.DEFAULT)
+        embedding_net = resnet50(weights=ResNet50_Weights.DEFAULT).to(args.device)
 
         for im in images_all:
             embedding_all.append(embedding_net(im.unsqueeze(0)))
