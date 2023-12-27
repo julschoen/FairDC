@@ -93,10 +93,8 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
             
-
-    print(df_all)
-    df_accs.to_csv(os.path.join('result_all'), args.cond_path.split('/')[-1]+'_accs.csv', sep=str(','))
-    df_all.to_csv(os.path.join('result_all'), args.cond_path.split('/')[-1]+'_all.csv', sep=str(','))
+    df_accs.to_csv(os.path.join('result_all', args.cond_path.split('/')[-1]+'_accs.csv'))
+    df_all.to_csv(os.path.join('result_all', args.cond_path.split('/')[-1]+'_all.csv'))
     
             
 
