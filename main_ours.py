@@ -5,6 +5,7 @@ import argparse
 import numpy as np
 import torch
 import torch.nn as nn
+import torchvision
 from torchvision.utils import save_image
 from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_synset, get_daparam, match_loss, get_time, TensorDataset, epoch, DiffAugment, ParamDiffAug
 from carbontracker.tracker import CarbonTracker
@@ -93,8 +94,9 @@ def main():
         labels_all = torch.tensor(labels_all, dtype=torch.long, device=args.device)
         embedding_all = []
         embedding_net = resnet50(weights=ResNet50_Weights.DEFAULT).to(args.device)
-
+        resize = torchvision.transforms.Resize((224,224))
         for im in images_all:
+            im = resize(im)
             embedding_all.append(embedding_net(im.unsqueeze(0)))
 
         kmeans_labels_all = []
