@@ -62,6 +62,8 @@ def main():
 
     if args.dataset.startswith('MNIST'):
         sens_names = ['Red', 'Blue']
+    elif args.dataset.startswith('HAM'):
+        sens_names = ['Female', 'Male']
     else:
         sens_names = ['Not '+args.sensitive_feature, args.sensitive_feature]
 
@@ -93,7 +95,6 @@ def main():
             net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
-            print(sf)
             sf = sens_names[sf.astype('int')]
             metric_frame = MetricFrame(
                 metrics=metrics,
@@ -116,7 +117,7 @@ def main():
             res_grouped = metric_frame.by_group
             row_major = [model_eval, sens_names[0]]
             row_minor = [model_eval, sens_names[1]]
-
+            print(res_grouped)
             for key in res_grouped.keys():
                 minor, major = res_grouped[key]
                 results[model_eval][key][True].append(major)
