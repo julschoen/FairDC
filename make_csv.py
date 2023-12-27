@@ -77,18 +77,12 @@ def main():
             )
             
             res_grouped = metric_frame.by_group
-            row_major = [model_eval, sens_names[0]]
-            row_minor = [model_eval, sens_names[1]]
-            print(res_grouped)
-            for key in res_grouped.keys():
-                major, minor = res_grouped[key]
-                results[model_eval][key][True].append(major)
-                results[model_eval][key][False].append(minor)
-                row_major.append(major)
-                row_minor.append(minor)
+            blue, red = res_grouped['accuracy']
 
-            df.loc[len(df.index)] = row_major
-            df.loc[len(df.index)] = row_minor
+            row = [model_eval+f'_{it_eval}', blue, red]
+            
+            df.loc[len(df.index)] = row
+            
             net_eval=None
             gc.collect()
             torch.cuda.empty_cache()
