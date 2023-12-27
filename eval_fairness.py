@@ -64,6 +64,8 @@ def main():
         sens_names = ['Red', 'Blue']
     elif args.dataset.startswith('HAM'):
         sens_names = ['Female', 'Male']
+    elif args.dataset.startswith('Athlets'):
+        sens_names = ['Male', 'Female']
     else:
         sens_names = ['Not '+args.sensitive_feature, args.sensitive_feature]
 
@@ -117,6 +119,7 @@ def main():
             res_grouped = metric_frame.by_group
             row_major = [model_eval, sens_names[0]]
             row_minor = [model_eval, sens_names[1]]
+            print(res_grouped)
             for key in res_grouped.keys():
                 major, minor = res_grouped[key]
                 results[model_eval][key][True].append(major)
