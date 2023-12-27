@@ -71,6 +71,7 @@ def main():
                 row = [model_eval, p, t, c]
                 df.loc[len(df.index)] = row
 
+    print(df)
     df.to_csv(os.path.join('result_all'), args.cond_path.split('/')[-1]+'.csv')
             
 
