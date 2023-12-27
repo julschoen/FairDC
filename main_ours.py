@@ -94,6 +94,7 @@ def main():
         labels_all = torch.tensor(labels_all, dtype=torch.long, device=args.device)
         embedding_all = []
         embedding_net = resnet50(weights=ResNet50_Weights.DEFAULT).to(args.device)
+        embedding_net = torch.nn.Sequential(*(list(embedding_net.children())[:-1]))
         resize = torchvision.transforms.Resize((224,224))
         with torch.no_grad():
             for im in images_all:
