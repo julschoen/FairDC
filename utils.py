@@ -26,6 +26,7 @@ class HAM10000(Dataset):
             id_path = os.path.join(self.data_path, 'test_ids.npy')
         self.ids = np.load(id_path)
         self.sf = sf
+        print(self.meta)
 
         self.classes = ['nv','bkl','mel','bcc','akiec','vasc','df']
 
