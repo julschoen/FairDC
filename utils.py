@@ -64,7 +64,6 @@ class Athlets(Dataset):
         self.meta = pd.read_csv(os.path.join(self.data_path,'splits.csv')).drop(columns='Unnamed: 0')
         self.meta = self.meta[self.meta['Train']==train].reset_index()
         self.sf = sf
-        print(self.meta)
         self.classes = ['basket', 'volley']
 
         self.class_num = dict()
@@ -92,7 +91,7 @@ class Athlets(Dataset):
         if im.shape != (3,64,64):
             im = im[:3]
         if self.sf:
-            return im, target, self.meta.loc[idx][self.s_att]
+            return im, target, self.meta.loc[idx][self.s_att[0]]
         else:
             return im, target
 
