@@ -92,11 +92,7 @@ def main():
             net_eval=None
             gc.collect()
             torch.cuda.empty_cache()
-            for i, p in enumerate(pred):
-                t = true[i]
-                c = sf[i]
-                row = [model_eval+str(it_eval), p, t, c]
-                df.loc[len(df.index)] = row
+            
 
     print(df)
     df.to_csv(os.path.join('result_all'), args.cond_path.split('/')[-1]+'.csv')
