@@ -34,7 +34,14 @@ def main():
     for d in datasets:
         df = pd.read_csv(os.path.join('results_all', args.method+'_'+d+'_accs.csv'))
         df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
-        print(df)
+        
+        if d == 'mnist':
+            acc1, acc2 = df['Acc Red'],  df['Acc Blue']
+        else:
+            acc1, acc2 = df['Acc Male'],  df['Acc Not Male']
+
+        print(acc1, acc2)
+
 
 if __name__ == '__main__':
     main()
