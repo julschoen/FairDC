@@ -61,7 +61,7 @@ def main():
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_all.csv'))
             print(df)
             df = df[df['Model'].map(lambda x: x.startswith(args.model))]
-            model_name = df['Model'][0]
+            model_name = df['Model'][-1]
             print(model_name)
             accs = []
             for i in range(25):
