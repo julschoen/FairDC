@@ -46,7 +46,7 @@ def main():
 
         
 
-    print(rslt_str)
+    print(rslt_str[:-2])
 
 
 
