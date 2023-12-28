@@ -80,15 +80,15 @@ def main():
                 sensitive_features=sf
             )
 
-            tpr_not_male = true_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
-            tnr_not_male = true_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
-            fpr_not_male = false_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
-            fnr_not_male = false_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            tpr_not_male = true_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            tnr_not_male = true_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            fpr_not_male = false_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            fnr_not_male = false_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
 
-            tpr_male = true_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
-            tnr_male = true_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
-            fpr_male = false_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
-            fnr_male = false_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            tpr_male = true_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            tnr_male = true_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            fpr_male = false_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            fnr_male = false_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
 
             eod = equalized_odds_difference(true, pred, sensitive_features=sf_nums)
             eor = equalized_odds_ratio(true, pred, sensitive_features=sf_nums)
@@ -97,7 +97,6 @@ def main():
             dpr = demographic_parity_ratio(true, pred, sensitive_features=sf_nums)
 
             res_grouped = metric_frame.by_group
-            print(res_grouped)
             acc_male, acc_female = res_grouped['accuracy']
 
             row = [model_eval+f'_{it_eval}', acc_male, tpr_male, tnr_male, fpr_male, fnr_male, 
