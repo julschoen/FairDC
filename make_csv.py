@@ -58,13 +58,12 @@ def main():
         accs_all_exps[key] = []
 
     model_weights = torch.load(os.path.join(args.cond_path, f'eval_{args.ipc}ipc.pt'))['weights']
-    sens_names = np.array(['Male', 'Not Male'])
+    sens_names = np.array(['Not Male', 'Male'])
 
-    cols = ['Model', 'Acc Male', 'TPR Male', 'TNR Male', 'FPR Male', 'FNR Male',
-            'Acc Not Male', 'TPR Not Male', 'TNR Not Male', 'FPR Not Male', 'FNR Not Male', 'DPR', 'DPD', 'EOR', 'EOD']
+    cols = ['Model', 'Acc Male', 'Acc Not Male']
 
     df_accs = pd.DataFrame(columns=cols)
-    df_all = pd.DataFrame(columns=['Model', 'Prediction', 'Target', 'Male'])
+    df_all = pd.DataFrame(columns=['Model', 'Prediction', 'Target', 'Male', 'Age'])
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
@@ -80,27 +79,12 @@ def main():
                 sensitive_features=sf
             )
 
-            tpr_not_male = true_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
-            tnr_not_male = true_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
-            fpr_not_male = false_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
-            fnr_not_male = false_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
-
-            tpr_male = true_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
-            tnr_male = true_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
-            fpr_male = false_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
-            fnr_male = false_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
-
-            eod = equalized_odds_difference(true, pred, sensitive_features=sf_nums)
-            eor = equalized_odds_ratio(true, pred, sensitive_features=sf_nums)
-
-            dpd = demographic_parity_difference(true, pred, sensitive_features=sf_nums)
-            dpr = demographic_parity_ratio(true, pred, sensitive_features=sf_nums)
 
             res_grouped = metric_frame.by_group
+            print(res_grouped)
             acc_male, acc_female = res_grouped['accuracy']
 
-            row = [model_eval+f'_{it_eval}', acc_male, tpr_male, tnr_male, fpr_male, fnr_male, 
-                    acc_female, tpr_not_male, tnr_not_male, fpr_not_male, fnr_not_male, dpr, dpd, eor, eod]
+            row = [model_eval+f'_{it_eval}', acc_male, acc_female]
             
             df_accs.loc[len(df_accs.index)] = row
 
