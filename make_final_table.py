@@ -65,7 +65,7 @@ def main():
             print(model_name)
             accs = []
             for i in range(25):
-                df_model = df[df['Model'].map(lambda x: x.startswith(args.model+f'_{i}'))]
+                df_model = df[df['Model'].map(lambda x: x.startswith(model_name+f'_{i}'))]
                 pred, target = df_model['Prediction'].to_numpy(),  df_model['Target'].to_numpy()
                 acc = np.equal(pred, target).mean()
                 accs.append(acc)
