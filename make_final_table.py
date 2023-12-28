@@ -40,7 +40,7 @@ def main():
         else:
             acc1, acc2 = df['Acc Male'].to_numpy(),  df['Acc Not Male'].to_numpy()
 
-        print(acc1-acc2)
+        diff = np.abs(acc1-acc2)
 
 
 if __name__ == '__main__':
