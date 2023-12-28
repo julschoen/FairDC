@@ -26,7 +26,7 @@ def main():
 
     args = parser.parse_args()
 
-    methods =  args.methods.split.('_')
+    methods =  args.methods.split('_')
     datasets = ['mnist', 'celeba', 'ham', 'athlets']
     
     rslt_str = ''
