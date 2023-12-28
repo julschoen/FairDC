@@ -2,7 +2,6 @@ import numpy as np
 from fairlearn.metrics import MetricFrame
 from fairlearn.metrics import equalized_odds_difference, demographic_parity_difference
 from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio
-from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -58,19 +57,17 @@ def main():
         accs_all_exps[key] = []
 
     model_weights = torch.load(os.path.join(args.cond_path, f'eval_{args.ipc}ipc.pt'))['weights']
-    sens_names = np.array(['Not Male', 'Male'])
-
-    cols = ['Model', 'Acc Male', 'Acc Not Male']
+    sens_names = np.array(['Red', 'Blue'])
+    cols = ['Model', 'Acc Red', 'Acc Blue']
 
     df_accs = pd.DataFrame(columns=cols)
-    df_all = pd.DataFrame(columns=['Model', 'Prediction', 'Target', 'Male'])
+    df_all = pd.DataFrame(columns=['Model', 'Prediction', 'Target', 'Color'])
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
             net_eval = get_network(model_eval, channel, num_classes, im_size).to(args.device)
             net_eval.load_state_dict(model_weights[model_eval][it_eval])
             pred, true, sf = evaluate_model(net_eval, testloader, args)
-            sf_nums = sf
             sf = sens_names[sf.astype('int')]
             metric_frame = MetricFrame(
                 metrics=metrics,
@@ -79,12 +76,10 @@ def main():
                 sensitive_features=sf
             )
 
-
             res_grouped = metric_frame.by_group
-            print(res_grouped)
-            acc_male, acc_female = res_grouped['accuracy']
+            blue, red = res_grouped['accuracy']
 
-            row = [model_eval+f'_{it_eval}', acc_male, acc_female]
+            row = [model_eval+f'_{it_eval}', blue, red]
             
             df_accs.loc[len(df_accs.index)] = row
 
@@ -100,13 +95,3 @@ def main():
     df_accs.to_csv(os.path.join('results_all', args.cond_path.split('/')[-1]+'_accs.csv'))
     df_all.to_csv(os.path.join('results_all', args.cond_path.split('/')[-1]+'_all.csv'))
     
-            
-
-
-
-
-
-
-if __name__ == '__main__':
-    main()
-
