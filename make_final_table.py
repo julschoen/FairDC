@@ -47,11 +47,11 @@ def main():
             rslt_str += ' $%.2f\\pm%.2f$ &'%(np.mean(diff)*100, np.std(diff)*100)
 
         rslt_str = rslt_str[:-2]
-        if not m == m[-1]:
+        if not m == methods[-1]:
             rslt_str += '\\\\\\hline\n'
         
 
-    print(rslt_str[:-2])
+    print(rslt_str)
 
 
 
