@@ -65,7 +65,7 @@ class Athlets(Dataset):
         self.meta = self.meta[self.meta['Train']==train].reset_index()
         self.sf = sf
         self.classes = ['basket', 'volley']
-
+        print(self.meta)
         self.class_num = dict()
         i = 0
         for c in self.classes:
