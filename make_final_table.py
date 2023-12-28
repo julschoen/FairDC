@@ -32,9 +32,9 @@ def main():
     gap = []
 
     for d in datasets:
-        df_accs = pd.read_csv(os.path.join('results_all', args.method+'_'+d+'_accs.csv'))
-        df_accs = df_accs[df_accs['Model'].startswith('ConvNet')]
-        print(df_accs)
+        df = pd.read_csv(os.path.join('results_all', args.method+'_'+d+'_accs.csv'))
+        df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
+        print(df)
 
 if __name__ == '__main__':
     main()
