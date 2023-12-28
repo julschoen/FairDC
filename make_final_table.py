@@ -59,10 +59,8 @@ def main():
         rslt_str += m.upper()+' &'
         for d in datasets:
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_all.csv'))
-            print(df)
             df = df[df['Model'].map(lambda x: x.startswith(args.model))]
             model_name = df['Model'].to_numpy()[-1].split('_')[0]
-            print(model_name)
             accs = []
             for i in range(25):
                 df_model = df[df['Model'].map(lambda x: x.startswith(model_name+f'_{i}'))]
