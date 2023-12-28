@@ -60,17 +60,15 @@ def main():
         for d in datasets:
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_all.csv'))
             df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
-            print(df)
-            
-            pred, target = df['Prediction'].to_numpy(),  df['Target'].to_numpy()
-            acc = np.equal(pred, target)
-            print(acc.mean(), acc.std())
-            acc = acc.sum()/pred.shape[0]
-            print(acc)
+            accs = []
+            for i in range(25):
+                df_model = df[df['Model'].map(lambda x: x.startswith(f'ConvNet_{i}'))]
+                pred, target = df_model['Prediction'].to_numpy(),  df_model['Target'].to_numpy()
+                acc = np.equal(pred, target).mean()
+                accs.append(acc)
 
-            diff = np.abs(acc1-acc2)
-            
-            rslt_str += ' $%.2f\\pm%.2f$ &'%(np.mean(diff)*100, np.std(diff)*100)
+            accs = np.array(accs)            
+            rslt_str += ' $%.2f\\pm%.2f$ &'%(np.mean(accs)*100, np.std(accs)*100)
 
         rslt_str = rslt_str[:-2]
         if not m == methods[-1]:
