@@ -34,7 +34,7 @@ def main():
     for m in methods:
         rslt_str += m.upper()+' &'
         for d in datasets:
-            df = pd.read_csv(os.path.join('results_all', args.method+'_'+d+'_accs.csv'))
+            df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_accs.csv'))
             df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
             
             if d == 'mnist':
