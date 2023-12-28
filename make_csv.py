@@ -77,7 +77,6 @@ def main():
             )
 
             res_grouped = metric_frame.by_group
-            print(res_grouped)
             blue, red = res_grouped['accuracy']
 
             row = [model_eval+f'_{it_eval}', blue, red]
