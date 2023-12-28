@@ -23,7 +23,7 @@ from utils import get_dataset, get_network, get_eval_pool, evaluate_model, get_d
 def main():
     parser = argparse.ArgumentParser(description='Parameter Processing')
     parser.add_argument('--methods', type=str, default='kcenter_dm_ours', help='path to save results')
-
+    parser.add_argument('--model', type=str, default='ConvNet')
     args = parser.parse_args()
 
     methods =  args.methods.split('_')
@@ -35,7 +35,7 @@ def main():
         rslt_str += m.upper()+' &'
         for d in datasets:
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_accs.csv'))
-            df = df[df['Model'].map(lambda x: x.startswith('ResNet'))]
+            df = df[df['Model'].map(lambda x: x.startswith(args.model))]
             
             if d == 'mnist':
                 acc1, acc2 = df['Acc Red'].to_numpy(),  df['Acc Blue'].to_numpy()
@@ -59,10 +59,10 @@ def main():
         rslt_str += m.upper()+' &'
         for d in datasets:
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_all.csv'))
-            df = df[df['Model'].map(lambda x: x.startswith('ResNet'))]
+            df = df[df['Model'].map(lambda x: x.startswith(args.model))]
             accs = []
             for i in range(25):
-                df_model = df[df['Model'].map(lambda x: x.startswith(f'ResNet_{i}'))]
+                df_model = df[df['Model'].map(lambda x: x.startswith(args.model+f'_{i}'))]
                 pred, target = df_model['Prediction'].to_numpy(),  df_model['Target'].to_numpy()
                 acc = np.equal(pred, target).mean()
                 accs.append(acc)
