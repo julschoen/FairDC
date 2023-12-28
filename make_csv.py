@@ -97,6 +97,7 @@ def main():
             dpr = demographic_parity_ratio(true, pred, sensitive_features=sf_nums)
 
             res_grouped = metric_frame.by_group
+            print(res_grouped)
             acc_male, acc_female = res_grouped['accuracy']
 
             row = [model_eval+f'_{it_eval}', acc_male, tpr_male, tnr_male, fpr_male, fnr_male, 
