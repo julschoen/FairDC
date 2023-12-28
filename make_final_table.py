@@ -53,6 +53,28 @@ def main():
 
     print(rslt_str)
 
+    rslt_str = ''
+
+    for m in methods:
+        rslt_str += m.upper()+' &'
+        for d in datasets:
+            df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_all.csv'))
+            df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
+            
+            pred, target = df['Prediction'].to_numpy(),  df['Target'].to_numpy()
+            acc = np.sum(np.equal(pred, target))
+            print(acc)
+            diff = np.abs(acc1-acc2)
+            
+            rslt_str += ' $%.2f\\pm%.2f$ &'%(np.mean(diff)*100, np.std(diff)*100)
+
+        rslt_str = rslt_str[:-2]
+        if not m == methods[-1]:
+            rslt_str += '\\\\\\hline\n'
+        
+
+    print(rslt_str)
+
 
 
 if __name__ == '__main__':
