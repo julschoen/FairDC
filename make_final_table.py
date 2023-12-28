@@ -36,9 +36,9 @@ def main():
         df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
         
         if d == 'mnist':
-            acc1, acc2 = df['Acc Red'],  df['Acc Blue']
+            acc1, acc2 = df['Acc Red'].to_numpy(),  df['Acc Blue'].to_numpy()
         else:
-            acc1, acc2 = df['Acc Male'],  df['Acc Not Male']
+            acc1, acc2 = df['Acc Male'].to_numpy(),  df['Acc Not Male'].to_numpy()
 
         print(acc1, acc2)
 
