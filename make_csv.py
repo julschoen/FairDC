@@ -58,7 +58,7 @@ def main():
         accs_all_exps[key] = []
 
     model_weights = torch.load(os.path.join(args.cond_path, f'eval_{args.ipc}ipc.pt'))['weights']
-    sens_names = np.array(['Not Male', 'Male'])
+    sens_names = np.array(['Male', 'Not Male'])
 
     cols = ['Model', 'Acc Male', 'TPR Male', 'TNR Male', 'FPR Male', 'FNR Male',
             'Acc Not Male', 'TPR Not Male', 'TNR Not Male', 'FPR Not Male', 'FNR Not Male', 'DPR', 'DPD', 'EOR', 'EOD']
