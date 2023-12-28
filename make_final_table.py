@@ -62,8 +62,11 @@ def main():
             df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
             
             pred, target = df['Prediction'].to_numpy(),  df['Target'].to_numpy()
-            acc = np.sum(np.equal(pred, target))
+            acc = np.equal(pred, target)
+            print(acc.mean(), acc.std())
+            acc = acc.sum()/pred.shape[0]
             print(acc)
+
             diff = np.abs(acc1-acc2)
             
             rslt_str += ' $%.2f\\pm%.2f$ &'%(np.mean(diff)*100, np.std(diff)*100)
