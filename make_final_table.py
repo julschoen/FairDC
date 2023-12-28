@@ -35,7 +35,7 @@ def main():
         rslt_str += m.upper()+' &'
         for d in datasets:
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_accs.csv'))
-            df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
+            df = df[df['Model'].map(lambda x: x.startswith('ResNet'))]
             
             if d == 'mnist':
                 acc1, acc2 = df['Acc Red'].to_numpy(),  df['Acc Blue'].to_numpy()
@@ -59,10 +59,10 @@ def main():
         rslt_str += m.upper()+' &'
         for d in datasets:
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_all.csv'))
-            df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
+            df = df[df['Model'].map(lambda x: x.startswith('ResNet'))]
             accs = []
             for i in range(25):
-                df_model = df[df['Model'].map(lambda x: x.startswith(f'ConvNet_{i}'))]
+                df_model = df[df['Model'].map(lambda x: x.startswith(f'ResNet_{i}'))]
                 pred, target = df_model['Prediction'].to_numpy(),  df_model['Target'].to_numpy()
                 acc = np.equal(pred, target).mean()
                 accs.append(acc)
