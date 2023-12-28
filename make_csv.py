@@ -2,6 +2,7 @@ import numpy as np
 from fairlearn.metrics import MetricFrame
 from fairlearn.metrics import equalized_odds_difference, demographic_parity_difference
 from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio
+from fairlearn.metrics import equalized_odds_ratio, demographic_parity_ratio, true_positive_rate, true_negative_rate, false_positive_rate, false_negative_rate
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -57,11 +58,13 @@ def main():
         accs_all_exps[key] = []
 
     model_weights = torch.load(os.path.join(args.cond_path, f'eval_{args.ipc}ipc.pt'))['weights']
-    sens_names = np.array(['Red', 'Blue'])
-    cols = ['Model', 'Acc Red', 'Acc Blue']
+    sens_names = np.array(['Not Male', 'Male'])
+
+    cols = ['Model', 'Acc Male', 'TPR Male', 'TNR Male', 'FPR Male', 'FNR Male',
+            'Acc Not Male', 'TPR Not Male', 'TNR Not Male', 'FPR Not Male', 'FNR Not Male', 'DPR', 'DPD', 'EOR', 'EOD']
 
     df_accs = pd.DataFrame(columns=cols)
-    df_all = pd.DataFrame(columns=['Model', 'Prediction', 'Target', 'Color'])
+    df_all = pd.DataFrame(columns=['Model', 'Prediction', 'Target', 'Male'])
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
@@ -76,10 +79,28 @@ def main():
                 sensitive_features=sf
             )
 
-            res_grouped = metric_frame.by_group
-            blue, red = res_grouped['accuracy']
+            tpr_not_male = true_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            tnr_not_male = true_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            fpr_not_male = false_positive_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
+            fnr_not_male = false_negative_rate(true[sf==sens_names[0]], pred[sf==sens_names[0]])
 
-            row = [model_eval+f'_{it_eval}', blue, red]
+            tpr_male = true_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            tnr_male = true_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            fpr_male = false_positive_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+            fnr_male = false_negative_rate(true[sf==sens_names[1]], pred[sf==sens_names[1]])
+
+            eod = equalized_odds_difference(true, pred, sensitive_features=sf_nums)
+            eor = equalized_odds_ratio(true, pred, sensitive_features=sf_nums)
+
+            dpd = demographic_parity_difference(true, pred, sensitive_features=sf_nums)
+            dpr = demographic_parity_ratio(true, pred, sensitive_features=sf_nums)
+
+            res_grouped = metric_frame.by_group
+            print(res_grouped)
+            acc_male, acc_female = res_grouped['accuracy']
+
+            row = [model_eval+f'_{it_eval}', acc_male, tpr_male, tnr_male, fpr_male, fnr_male, 
+                    acc_female, tpr_not_male, tnr_not_male, fpr_not_male, fnr_not_male, dpr, dpd, eor, eod]
             
             df_accs.loc[len(df_accs.index)] = row
 
