@@ -22,28 +22,33 @@ from utils import get_dataset, get_network, get_eval_pool, evaluate_model, get_d
 
 def main():
     parser = argparse.ArgumentParser(description='Parameter Processing')
-    parser.add_argument('--method', type=str, default='dm', help='path to save results')
+    parser.add_argument('--methods', type=str, default='kcenter_dm_ours', help='path to save results')
 
     args = parser.parse_args()
 
-    
+    methods =  args.methods.split.('_')
     datasets = ['mnist', 'celeba', 'ham', 'athlets']
     
     rslt_str = ''
 
-    for d in datasets:
-        df = pd.read_csv(os.path.join('results_all', args.method+'_'+d+'_accs.csv'))
-        df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
-        
-        if d == 'mnist':
-            acc1, acc2 = df['Acc Red'].to_numpy(),  df['Acc Blue'].to_numpy()
-        else:
-            acc1, acc2 = df['Acc Male'].to_numpy(),  df['Acc Not Male'].to_numpy()
+    for m in methods:
+        rslt_str += m.upper()+' &'
+        for d in datasets:
+            df = pd.read_csv(os.path.join('results_all', args.method+'_'+d+'_accs.csv'))
+            df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
+            
+            if d == 'mnist':
+                acc1, acc2 = df['Acc Red'].to_numpy(),  df['Acc Blue'].to_numpy()
+            else:
+                acc1, acc2 = df['Acc Male'].to_numpy(),  df['Acc Not Male'].to_numpy()
 
-        diff = np.abs(acc1-acc2)
-        
-        rslt_str += ' $%.2f\\pm%.2f$ &'%(np.mean(diff)*100, np.std(diff)*100)
+            diff = np.abs(acc1-acc2)
+            
+            rslt_str += ' $%.2f\\pm%.2f$ &'%(np.mean(diff)*100, np.std(diff)*100)
 
+        rslt_str = rslt_str[:-2]
+        if not m == m[-1]:
+            rslt_str += '\\\\\\hline\n'
         
 
     print(rslt_str[:-2])
