@@ -63,7 +63,7 @@ def main():
     cols = ['Model', 'Acc Male', 'Acc Not Male']
 
     df_accs = pd.DataFrame(columns=cols)
-    df_all = pd.DataFrame(columns=['Model', 'Prediction', 'Target', 'Male', 'Age'])
+    df_all = pd.DataFrame(columns=['Model', 'Prediction', 'Target', 'Male'])
     
     for model_eval in model_eval_pool:
         for it_eval in range(args.num_eval):
