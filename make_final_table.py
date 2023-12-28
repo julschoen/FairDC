@@ -28,8 +28,8 @@ def main():
 
     
     datasets = ['mnist', 'celeba', 'ham', 'athlets']
-    accs = []
-    gap = []
+    
+    rslt_str = ''
 
     for d in datasets:
         df = pd.read_csv(os.path.join('results_all', args.method+'_'+d+'_accs.csv'))
@@ -41,6 +41,13 @@ def main():
             acc1, acc2 = df['Acc Male'].to_numpy(),  df['Acc Not Male'].to_numpy()
 
         diff = np.abs(acc1-acc2)
+        
+        rslt_str += ' $%.2f\\pm%.2f$ &'%(np.mean(diff)*100, np.std(diff)*100)
+
+        
+
+    print(rslt_str)
+
 
 
 if __name__ == '__main__':
