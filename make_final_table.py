@@ -60,6 +60,7 @@ def main():
         for d in datasets:
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_all.csv'))
             df = df[df['Model'].map(lambda x: x.startswith('ConvNet'))]
+            print(df)
             
             pred, target = df['Prediction'].to_numpy(),  df['Target'].to_numpy()
             acc = np.equal(pred, target)
