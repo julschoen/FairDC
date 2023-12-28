@@ -35,6 +35,7 @@ def main():
         rslt_str += m.upper()+' &'
         for d in datasets:
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_accs.csv'))
+            print(df)
             df = df[df['Model'].map(lambda x: x.startswith(args.model))]
             
             if d == 'mnist':
@@ -59,6 +60,7 @@ def main():
         rslt_str += m.upper()+' &'
         for d in datasets:
             df = pd.read_csv(os.path.join('results_all', m+'_'+d+'_all.csv'))
+            print(df)
             df = df[df['Model'].map(lambda x: x.startswith(args.model))]
             accs = []
             for i in range(25):
