@@ -95,4 +95,6 @@ def main():
             
     df_accs.to_csv(os.path.join('results_all', args.cond_path.split('/')[-1]+'_accs.csv'))
     df_all.to_csv(os.path.join('results_all', args.cond_path.split('/')[-1]+'_all.csv'))
-    
+
+if __name__ == '__main__':
+    main()
