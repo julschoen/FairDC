@@ -32,7 +32,7 @@ def main():
     gap = []
 
     for d in datasets:
-        df_accs = pd.read_csv('results_all', args.method+'_'+d+'_accs.csv')
+        df_accs = pd.read_csv(os.path.join('results_all', args.method+'_'+d+'_accs.csv'))
         df_accs = df_accs[df_accs['Model'].startswith('ConvNet')]
         print(df_accs)
 
