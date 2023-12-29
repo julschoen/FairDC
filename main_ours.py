@@ -11,6 +11,7 @@ from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_s
 from carbontracker.tracker import CarbonTracker
 from fast_pytorch_kmeans import KMeans
 from torchvision.models import resnet50, ResNet50_Weights
+ import pickle
 
 def to_uniform(features):
     flat_features = features.view(-1)
@@ -103,7 +104,6 @@ def main():
                 embedding_all.append(em)
 
         embedding_all = torch.cat(embedding_all, dim=0).to(args.device)
-        print(embedding_all.shape)
 
         kmeans_labels_all = []
         kmeans = KMeans(n_clusters=args.ipc, max_iter = 1000, tol = -1, mode='euclidean', verbose=0)
@@ -113,7 +113,8 @@ def main():
             res = {k: v for k, v in zip(indices, labels)}
             kmeans_labels_all.append(res)
 
-
+        with open(os.path.join(args.cond_path, f'kmeans_labels_{exp}'), "wb") as fp:
+            pickle.dump(kmeans_labels_all, fp)
 
         for c in range(num_classes):
             print('class c = %d: %d real images'%(c, len(indices_class[c])))
