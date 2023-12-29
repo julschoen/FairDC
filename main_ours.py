@@ -11,7 +11,7 @@ from utils import get_loops, get_dataset, get_network, get_eval_pool, evaluate_s
 from carbontracker.tracker import CarbonTracker
 from fast_pytorch_kmeans import KMeans
 from torchvision.models import resnet50, ResNet50_Weights
- import pickle
+import pickle
 
 def to_uniform(features):
     flat_features = features.view(-1)
