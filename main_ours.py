@@ -113,7 +113,7 @@ def main():
             res = {k: v for k, v in zip(indices, labels)}
             kmeans_labels_all.append(res)
 
-        with open(os.path.join(args.cond_path, f'kmeans_labels_{exp}'), "wb") as fp:
+        with open(os.path.join(args.save_path, f'kmeans_labels_{exp}'), "wb") as fp:
             pickle.dump(kmeans_labels_all, fp)
 
         for c in range(num_classes):
